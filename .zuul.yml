@@ -7,12 +7,12 @@ browsers:
   - name: firefox
     version: 30..latest
   - name: iphone
-    version: 4.3..latest
+    version: 6..latest
   - name: ipad
-    version: 4.3..latest
+    version: 6..latest
   - name: android
     version: 4.0..latest
   - name: opera
-    version: 11..latest
+    version: 12..latest
   - name: safari
-    version: 5..latest
+    version: 6..latest
