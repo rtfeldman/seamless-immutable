@@ -115,9 +115,9 @@ var claims = {
     specifiers: [JSC.integer(), JSC.any()]
   },
 
-  "it throws an ImmutabilityError when you try to call its push() method": {
+  "it throws an ImmutableError when you try to call its push() method": {
     predicate: function(array, args, pushArgs) {
-      return throwsException(Immutable.ImmutabilityError, function() {
+      return throwsException(Immutable.ImmutableError, function() {
         array.push.apply(array, pushArgs);
       });
     },
@@ -125,44 +125,44 @@ var claims = {
   },
 
 
-  "it throws an ImmutabilityError when you try to call its shift() method": {
+  "it throws an ImmutableError when you try to call its sort() method": {
     predicate: function(array, args) {
-      return throwsException(Immutable.ImmutabilityError, function() {
+      return throwsException(Immutable.ImmutableError, function() {
         array.sort();
       });
     }
   },
 
-  "it throws an ImmutabilityError when you try to call its splice() method": {
+  "it throws an ImmutableError when you try to call its splice() method": {
     predicate: function(array, args, spliceArg) {
-      return throwsException(Immutable.ImmutabilityError, function() {
+      return throwsException(Immutable.ImmutableError, function() {
         array.splice(spliceArg);
       });
     },
     specifiers: [JSC.any()]
   },
 
-  "it throws an ImmutabilityError when you try to call its shift() method": {
+  "it throws an ImmutableError when you try to call its shift() method": {
     predicate: function(array, args, shiftArg) {
-      return throwsException(Immutable.ImmutabilityError, function() {
+      return throwsException(Immutable.ImmutableError, function() {
         array.shift(shiftArg);
       });
     },
     specifiers: [JSC.any()]
   },
 
-  "it throws an ImmutabilityError when you try to call its unshift() method": {
+  "it throws an ImmutableError when you try to call its unshift() method": {
     predicate: function(array, args, unshiftArgs) {
-      return throwsException(Immutable.ImmutabilityError, function() {
+      return throwsException(Immutable.ImmutableError, function() {
         array.unshift.apply(array, unshiftArgs);
       });
     },
     specifiers: [JSC.array()]
   },
 
-  "it throws an ImmutabilityError when you try to call its reverse() method": {
+  "it throws an ImmutableError when you try to call its reverse() method": {
     predicate: function(array, args) {
-      return throwsException(Immutable.ImmutabilityError, function() {
+      return throwsException(Immutable.ImmutableError, function() {
         array.reverse();
       });
     }
