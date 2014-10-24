@@ -1,0 +1,21 @@
+{
+  "name": "seamless-immutable",
+  "main": "seamless-immutable.js",
+  "version": "0.1.0",
+  "homepage": "https://github.com/rtfeldman/seamless-immutable",
+  "authors": [
+    "Richard Feldman <richard.t.feldman@gmail.com>"
+  ],
+  "description": "Immutable data structures for JavaScript which are backwards compatible with normal JS Arrays and Objects.",
+  "keywords": [
+    "immutable"
+  ],
+  "license": "Apache2",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
