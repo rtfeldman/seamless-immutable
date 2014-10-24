@@ -128,8 +128,9 @@ var claims = {
   },
 
   "it makes nested content immutable as well": {
-    predicate: function(array, args, innerArray) {
+    predicate: function(array, args, innerArray, obj) {
       args.push(innerArray); // Make a nested array
+      args.push(obj); // Get an object in there too
 
       array = Immutable.Array.apply(Immutable.Array, args);
 
@@ -145,14 +146,15 @@ var claims = {
 
       return true;
     },
-    specifiers: [JSC.array()]
+    specifiers: [JSC.array(), JSC.object()]
   },
 
   // TODO this never fails under Node, even after removing Immutable.Array's
   // call to toImmutable(). Need to verify that it can fail in browsers.
   "it reuses existing immutables during construction": {
-    predicate: function(array, args, innerArray) {
+    predicate: function(array, args, innerArray, obj) {
       args.push(innerArray); // Make a nested array
+      args.push(obj); // Get an object in there too
 
       array = Immutable.Array.apply(Immutable.Array, args);
 
@@ -175,7 +177,7 @@ var claims = {
 
       return true;
     },
-    specifiers: [JSC.array()]
+    specifiers: [JSC.array(), JSC.object()]
   }
 };
 
