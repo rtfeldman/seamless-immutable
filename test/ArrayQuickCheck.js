@@ -205,7 +205,7 @@ var claims = {
 
 
 [ // Add a "reports banned" claim for each mutating method on Array.
-  "setPrototypeOf", "push", "sort", "splice", "shift", "unshift", "reverse"
+  "setPrototypeOf", "push", "pop", "sort", "splice", "shift", "unshift", "reverse"
 ].forEach(function(methodName) {
   var description = "it throws an ImmutableError when you try to call its " +
     methodName + "() method";

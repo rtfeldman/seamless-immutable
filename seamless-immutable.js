@@ -37,7 +37,7 @@
   ];
 
   var mutatingArrayMethods = mutatingObjectMethods.concat([
-    "push", "sort", "splice", "shift", "unshift", "reverse"
+    "push", "pop", "sort", "splice", "shift", "unshift", "reverse"
   ]);
 
   function ImmutableError(message) {
