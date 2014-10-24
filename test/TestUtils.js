@@ -76,25 +76,24 @@ function testSuiteFromClaims(suiteName, JSC, claims, claimToPredicate) {
 
         it(description, function() {
           var predicate = claimToPredicate(claim);
-          var resultSpy = jasmine.createSpy('JSCheck result');
+          var completedChecks = 0;
 
           JSC.on_pass(function() {
-            total += 1
+            completedChecks++;
           }).on_fail(function(failedClaim) {
+            completedChecks++;
             expect(false).toBe(true, failedClaim.name +
               " with args: " + JSON.stringify(failedClaim.args));
           }).on_lost(function(lostClaim) {
+            completedChecks++;
             expect(false).toBe(true, lostClaim.name +
               " due to being lost, with args: " + JSON.stringify(lostClaim.args));
-          }).on_result(resultSpy);
+          });
 
           JSC.claim(description, predicate, [JSC.array()].concat(claim.specifiers || []));
           JSC.check(timeoutMs);
 
-          var result = resultSpy.calls.mostRecent().args[0];
-
-          expect(result.total).toBe(100);
-          expect(result.ok).toBe(true);
+          expect(completedChecks).toBe(100);
 
           JSC.clear();
         });
