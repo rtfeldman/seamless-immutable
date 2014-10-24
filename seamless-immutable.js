@@ -74,7 +74,7 @@
     var currentMethod = obj[methodName];
 
     addPropertyTo(obj, methodName, function() {
-      return toImmutable(currentMethod.apply(obj, arguments));
+      return Immutable(currentMethod.apply(obj, arguments));
     })
   }
 
@@ -83,7 +83,7 @@
 
     // Populate the array before it gets frozen.
     for (var index in arguments) {
-      result.push(toImmutable(arguments[index]));
+      result.push(Immutable(arguments[index]));
     }
 
     // Don't change their implementations, but wrap these functions to make sure
@@ -96,20 +96,7 @@
     return makeImmutable(result, mutatingArrayMethods);
   }
 
-  function toImmutable(obj) {
-    // If the user passes multiple arguments, assume what they want is an array.
-    if (arguments.length > 1) {
-      return makeImmutableArray.apply(makeImmutableArray, arguments);
-    } else if (isImmutable(obj)) {
-      return obj;
-    } else if (obj instanceof Array) {
-      return makeImmutableArray.apply(makeImmutableArray, obj);
-    } else {
-      return makeImmutableMap(obj);
-    }
-  }
-
-  function makeImmutableMap(obj) {
+  function makeImmutableObject(obj) {
     var result = {};
 
     // Populate the object before it gets frozen.
@@ -117,7 +104,7 @@
       case "object":
         if (obj !== null) {
           for (var key in obj) {
-            result[key] = toImmutable(obj[key]);
+            result[key] = Immutable(obj[key]);
           }
         }
         break;
@@ -133,10 +120,20 @@
     return makeImmutable(result, mutatingObjectMethods);
   }
 
+  function Immutable(obj) {
+    // If the user passes multiple arguments, assume what they want is an array.
+    if (arguments.length > 1) {
+      return makeImmutableArray.apply(makeImmutableArray, arguments);
+    } else if (isImmutable(obj)) {
+      return obj;
+    } else if (obj instanceof Array) {
+      return makeImmutableArray.apply(makeImmutableArray, obj);
+    } else {
+      return makeImmutableObject(obj);
+    }
+  }
+
   // Export the library
-
-  var Immutable = toImmutable;
-
   Immutable.isImmutable    = isImmutable;
   Immutable.ImmutableError = ImmutableError;
 
