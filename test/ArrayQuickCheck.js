@@ -1,53 +1,10 @@
 var Immutable = require("../seamless-immutable.js");
 var JSC       = require("jscheck");
+var TestUtils = require("../TestUtils.js");
 
-timeoutMs = 3000;
-
-function isEqual(expected, actual) {
-  if ((expected instanceof Array) && (actual instanceof Array)) {
-    if (expected.length !== actual.length) {
-      return false;
-    }
-
-    for (var index in expected) {
-      if (!isEqual(expected[index], actual[index])) {
-        return false;
-      }
-    }
-
-    return true;
-  } else if ((typeof expected === "object") && (typeof actual === "object")) {
-    if (expected === null || actual === null) {
-      return expected === actual;
-    }
-
-    for (var key in expected) {
-      if (!isEqual(expected[key], actual[key])) {
-        return false;
-      }
-    }
-
-    for (var key in actual) {
-      if (!isEqual(actual[key], expected[key])) {
-        return false;
-      }
-    }
-
-    return true;
-  } else {
-    return (expected === actual) || (isNaN(expected) && isNaN(actual));
-  }
-}
-
-function throwsException(exceptionType, logic) {
-  try {
-    logic()
-  } catch (err) {
-    return err instanceof exceptionType;
-  }
-
-  return false;
-}
+var isEqual          = TestUtils.isEqual;
+var throwsException  = TestUtils.throwsException;
+var identityFunction = TestUtils.identityFunction;
 
 var claims = {
   "it is an instanceof Array": {
@@ -203,8 +160,6 @@ var claims = {
   }
 };
 
-function identityFunction(obj){ return obj; }
-
 // Add a "returns immutable" claim for each non-mutating method on Array.
 nonMutatingArrayMethods = {
   map:         [JSC.literal(identityFunction)],
@@ -215,13 +170,6 @@ nonMutatingArrayMethods = {
   slice:       [JSC.integer(), JSC.integer()]
 }
 
-function returnsImmutable(methodName, immutableArray, mutableArray, args) {
-  var mutableResult   =   mutableArray[methodName].apply(mutableArray,   args);
-  var immutableResult = immutableArray[methodName].apply(immutableArray, args);
-
-  return isEqual(immutableResult, Immutable.toImmutable(mutableResult));
-}
-
 for (methodName in nonMutatingArrayMethods) {
   (function(methodName, specifiers) {
     var description = "it returns only immutables when you call its " +
@@ -230,7 +178,7 @@ for (methodName in nonMutatingArrayMethods) {
     claims[description] = {
       predicate: function(array, args) {
         var methodArgs = Array.prototype.slice.call(arguments, 2);
-        return returnsImmutable(methodName, array, args, methodArgs);
+        return TestUtils.returnsImmutable(methodName, array, args, methodArgs);
       },
       specifiers: specifiers
     };
@@ -253,49 +201,14 @@ for (methodName in nonMutatingArrayMethods) {
   };
 });
 
-// Build a nodeunit test suite from the claims.
-var testSuite = {};
-var testObjectsByName = {};
+module.exports = TestUtils.testSuiteFromClaims(JSC, claims, 
+  function(claim) {
+    return function(verdict, arrayConstructorArgs) {
+      var argsWithoutVerdict = Array.prototype.slice.call(arguments, 1);
+      var immutableArray = Immutable.Array.apply(Immutable.Array, arrayConstructorArgs);
+      var newArgs = [immutableArray].concat(argsWithoutVerdict);
+      var result = claim.predicate.apply(claim, newArgs);
 
-JSC.on_pass(function(passedClaim) {
-  var test = testObjectsByName[passedClaim.name];
-  test.ok(true, passedClaim.name +
-    " with args: " + JSON.stringify(passedClaim.args));
-}).on_fail(function(failedClaim) {
-  var test = testObjectsByName[failedClaim.name];
-  test.ok(false, failedClaim.name +
-    " with args: " + JSON.stringify(failedClaim.args));
-}).on_lost(function(lostClaim) {
-  var test = testObjectsByName[lostClaim.name];
-  test.ok(false, lostClaim.name +
-    " due to being lost, with args: " + JSON.stringify(lostClaim.args));
-});
-
-for (var description in claims) {
-  (function(description) {
-    var claim = claims[description];
-
-    testSuite[description] = function(test) {
-      testObjectsByName[description] = test;
-
-      test.expect(100);
-
-      var predicate = function(verdict, arrayConstructorArgs) {
-        var argsWithoutVerdict = Array.prototype.slice.call(arguments, 1);
-        var immutableArray = Immutable.Array.apply(Immutable.Array, arrayConstructorArgs);
-        var newArgs = [immutableArray].concat(argsWithoutVerdict);
-        var result = claim.predicate.apply(claim, newArgs);
-
-        verdict(result);
-      };
-
-      JSC.claim(description, predicate, [JSC.array()].concat(claim.specifiers || []));
-      JSC.check(timeoutMs);
-      JSC.clear();
-
-      test.done();
-    }
-  })(description);
-};
-
-module.exports = testSuite;
+      verdict(result);
+    };
+  });
