@@ -1,13 +1,17 @@
 (function(){
   "use strict";
 
-  function addMethodTo(target, methodName, implementation) {
+  function addPropertyTo(target, methodName, value) {
     Object.defineProperty(target, methodName, {
       enumerable: false,
       configurable: false,
       writable: false,
-      value: implementation
+      value: value
     });
+  }
+
+  function addImmutabilityTag(target) {
+    addPropertyTo(target, "__immutable_invariants_hold", true);
   }
 
   var privateArrayMethods = [
@@ -30,12 +34,15 @@
     // Make all mutating methods throw exceptions.
     for (var index in privateArrayMethods) {
       (function(methodName) {
-        addMethodTo(result, methodName, function() {
+        addPropertyTo(result, methodName, function() {
           throw new ImmutableError("The " + methodName +
             " method cannot be invoked on an ImmutableArray.");
         });
       })(privateArrayMethods[index]);
     }
+
+    // Tag it so we can quickly tell it's immutable later.
+    addImmutabilityTag(result);
 
     // Freeze it and return it.
     Object.freeze(result);
