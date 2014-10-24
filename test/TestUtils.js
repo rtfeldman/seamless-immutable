@@ -1,4 +1,4 @@
-var Immutable = require("./seamless-immutable.js");
+var Immutable = require("../seamless-immutable.js");
 
 var timeoutMs = 3000;
 
@@ -68,45 +68,39 @@ function ImmutableArraySpecifier(JSC) {
 }
 
 // Build a nodeunit test suite from claims.
-function testSuiteFromClaims(JSC, claims, claimToPredicate) {
-  var testSuite = {};
-  var testObjectsByName = {};
+function testSuiteFromClaims(suiteName, JSC, claims, claimToPredicate) {
+  describe(suiteName, function() {
+    for (var description in claims) {
+      (function(description) {
+        var claim = claims[description];
 
-  JSC.on_pass(function(passedClaim) {
-    var test = testObjectsByName[passedClaim.name];
-    test.ok(true, passedClaim.name +
-      " with args: " + JSON.stringify(passedClaim.args));
-  }).on_fail(function(failedClaim) {
-    var test = testObjectsByName[failedClaim.name];
-    test.ok(false, failedClaim.name +
-      " with args: " + JSON.stringify(failedClaim.args));
-  }).on_lost(function(lostClaim) {
-    var test = testObjectsByName[lostClaim.name];
-    test.ok(false, lostClaim.name +
-      " due to being lost, with args: " + JSON.stringify(lostClaim.args));
+        it(description, function() {
+          var predicate = claimToPredicate(claim);
+          var resultSpy = jasmine.createSpy('JSCheck result');
+
+          JSC.on_pass(function() {
+            total += 1
+          }).on_fail(function(failedClaim) {
+            expect(false).toBe(true, failedClaim.name +
+              " with args: " + JSON.stringify(failedClaim.args));
+          }).on_lost(function(lostClaim) {
+            expect(false).toBe(true, lostClaim.name +
+              " due to being lost, with args: " + JSON.stringify(lostClaim.args));
+          }).on_result(resultSpy);
+
+          JSC.claim(description, predicate, [JSC.array()].concat(claim.specifiers || []));
+          JSC.check(timeoutMs);
+
+          var result = resultSpy.calls.mostRecent().args[0];
+
+          expect(result.total).toBe(100);
+          expect(result.ok).toBe(true);
+
+          JSC.clear();
+        });
+      })(description);
+    };
   });
-
-  for (var description in claims) {
-    (function(description) {
-      var claim = claims[description];
-
-      testSuite[description] = function(test) {
-        testObjectsByName[description] = test;
-
-        test.expect(100);
-
-        var predicate = claimToPredicate(claim);
-
-        JSC.claim(description, predicate, [JSC.array()].concat(claim.specifiers || []));
-        JSC.check(timeoutMs);
-        JSC.clear();
-
-        test.done();
-      }
-    })(description);
-  };
-
-  return testSuite;
 }
 
 module.exports = {

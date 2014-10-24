@@ -1,6 +1,6 @@
 var Immutable = require("../seamless-immutable.js");
 var JSC       = require("jscheck");
-var TestUtils = require("../TestUtils.js");
+var TestUtils = require("./TestUtils.js");
 
 var isEqual          = TestUtils.isEqual;
 var throwsException  = TestUtils.throwsException;
@@ -201,7 +201,7 @@ for (methodName in nonMutatingArrayMethods) {
   };
 });
 
-module.exports = TestUtils.testSuiteFromClaims(JSC, claims, 
+TestUtils.testSuiteFromClaims('Immutable.Array', JSC, claims,
   function(claim) {
     return function(verdict, arrayConstructorArgs) {
       var argsWithoutVerdict = Array.prototype.slice.call(arguments, 1);

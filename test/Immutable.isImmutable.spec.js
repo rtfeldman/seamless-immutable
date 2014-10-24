@@ -1,5 +1,5 @@
 var Immutable = require("../seamless-immutable.js");
-var TestUtils = require("../TestUtils.js");
+var TestUtils = require("./TestUtils.js");
 var JSC       = require("jscheck");
 
 var immutabilityByType = {
@@ -36,7 +36,7 @@ for (var type in immutabilityByType) {
   })(type);
 }
 
-module.exports = TestUtils.testSuiteFromClaims(JSC, claims, 
+TestUtils.testSuiteFromClaims('Immutable.isImmutable', JSC, claims, 
   function(claim) {
     return function(verdict, arrayConstructorArgs) {
       var argsWithoutVerdict = Array.prototype.slice.call(arguments, 1);
