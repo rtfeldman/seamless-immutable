@@ -32,9 +32,13 @@
     }
   }
 
-  var privateArrayMethods = [
-    "push", "sort", "splice", "shift", "unshift", "reverse"
+  var mutatingObjectMethods = [
+    "setPrototypeOf"
   ];
+
+  var mutatingArrayMethods = mutatingObjectMethods.concat([
+    "push", "sort", "splice", "shift", "unshift", "reverse"
+  ]);
 
   function ImmutableError(message) {
     this.name    = "ImmutableError";
@@ -43,23 +47,31 @@
 
   ImmutableError.prototype = Error.prototype;
 
-  function makeImmutableArray() {
-    var result = [];
-
-    // Fill the array while it still supports push().
-    result.push.apply(result, arguments);
-
+  function makeImmutable(obj, bannedMethods) {
     // Make all mutating methods throw exceptions.
-    for (var index in privateArrayMethods) {
-      banProperty(result, privateArrayMethods[index]);
+    for (var index in bannedMethods) {
+      banProperty(obj, bannedMethods[index]);
     }
 
     // Tag it so we can quickly tell it's immutable later.
-    addImmutabilityTag(result);
+    addImmutabilityTag(obj);
 
     // Freeze it and return it.
-    Object.freeze(result);
-    return result;
+    Object.freeze(obj);
+
+    return obj;
+  }
+
+  function makeImmutableArray() {
+    var result = [];
+
+    // Populate the array before it gets frozen.
+    for (var index in arguments) {
+      result.push((arguments[index]));
+    }
+
+    return makeImmutable(result, mutatingArrayMethods);
+  }
   }
 
   // TODO: make it immutable

@@ -116,7 +116,7 @@ var claims = {
     }
   },
 
-  "it cannot have elements mutated": {
+  "it cannot have its elements directly mutated": {
     predicate: function(array, args, randomIndex, randomData) {
       array[randomIndex] = randomData;
 
@@ -127,59 +127,74 @@ var claims = {
     specifiers: [JSC.integer(), JSC.any()]
   },
 
-  "it throws an ImmutableError when you try to call its push() method": {
-    predicate: function(array, args, pushArgs) {
-      return throwsException(Immutable.ImmutableError, function() {
-        array.push.apply(array, pushArgs);
-      });
+  "it makes nested content immutable as well": {
+    predicate: function(array, args, innerArray) {
+      args.push(innerArray); // Make a nested array
+
+      array = Immutable.Array.apply(Immutable.Array, args);
+
+      if (array.length !== args.length) {
+        return false;
+      }
+
+      for (var index in args) {
+        if (!Immutable.isImmutable(array[index])) {
+          return false;
+        }
+      }
+
+      return true;
     },
     specifiers: [JSC.array()]
   },
 
+  // TODO this never fails under Node, even after removing Immutable.Array's
+  // call to toImmutable(). Need to verify that it can fail in browsers.
+  "it reuses existing immutables during construction": {
+    predicate: function(array, args, innerArray) {
+      args.push(innerArray); // Make a nested array
 
-  "it throws an ImmutableError when you try to call its sort() method": {
-    predicate: function(array, args) {
-      return throwsException(Immutable.ImmutableError, function() {
-        array.sort();
-      });
-    }
-  },
+      array = Immutable.Array.apply(Immutable.Array, args);
 
-  "it throws an ImmutableError when you try to call its splice() method": {
-    predicate: function(array, args, spliceArg) {
-      return throwsException(Immutable.ImmutableError, function() {
-        array.splice(spliceArg);
-      });
-    },
-    specifiers: [JSC.any()]
-  },
+      var copiedArray = Immutable.Array.apply(Immutable.Array, array);
 
-  "it throws an ImmutableError when you try to call its shift() method": {
-    predicate: function(array, args, shiftArg) {
-      return throwsException(Immutable.ImmutableError, function() {
-        array.shift(shiftArg);
-      });
-    },
-    specifiers: [JSC.any()]
-  },
+      if (copiedArray.length !== array.length) {
+        return false;
+      }
 
-  "it throws an ImmutableError when you try to call its unshift() method": {
-    predicate: function(array, args, unshiftArgs) {
-      return throwsException(Immutable.ImmutableError, function() {
-        array.unshift.apply(array, unshiftArgs);
-      });
+      for (var index in copiedArray) {
+        var expected = array[index];
+        var actual   = copiedArray[index];
+
+        if ((expected !== actual) &&
+          (expected === expected) &&
+          (actual === actual)) {
+          return false;
+        }
+      }
+
+      return true;
     },
     specifiers: [JSC.array()]
-  },
-
-  "it throws an ImmutableError when you try to call its reverse() method": {
-    predicate: function(array, args) {
-      return throwsException(Immutable.ImmutableError, function() {
-        array.reverse();
-      });
-    }
-  },
+  }
 };
+
+
+[ // Add a "reports banned" claim for each mutating method on Array.
+  "setPrototypeOf", "push", "sort", "splice", "shift", "unshift", "reverse"
+].forEach(function(methodName) {
+  var description = "it throws an ImmutableError when you try to call its " +
+    methodName + "() method";
+
+  claims[description] = {
+    predicate: function(array, args, methodArgs) {
+      return throwsException(Immutable.ImmutableError, function() {
+        array[methodName].apply(array, methodArgs);
+      });
+    },
+    specifiers: [JSC.any()]
+  };
+});
 
 // Build a nodeunit test suite from the claims.
 var testSuite = {};
