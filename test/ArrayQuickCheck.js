@@ -16,6 +16,24 @@ function isEqual(expected, actual) {
     }
 
     return true;
+  } else if ((typeof expected === "object") && (typeof actual === "object")) {
+    if (expected === null || actual === null) {
+      return expected === actual;
+    }
+
+    for (var key in expected) {
+      if (!isEqual(expected[key], actual[key])) {
+        return false;
+      }
+    }
+
+    for (var key in actual) {
+      if (!isEqual(actual[key], expected[key])) {
+        return false;
+      }
+    }
+
+    return true;
   } else {
     return (expected === actual) || (isNaN(expected) && isNaN(actual));
   }
