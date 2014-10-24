@@ -83,9 +83,28 @@
     }
   }
 
-  // TODO: make it immutable
   function makeImmutableMap(obj) {
-    return obj;
+    var result = {};
+
+    // Populate the object before it gets frozen.
+    switch (typeof obj) {
+      case "object":
+        if (obj !== null) {
+          for (var key in obj) {
+            result[key] = toImmutable(obj[key]);
+          }
+        }
+        break;
+      case "undefined":
+        // We're making an empty ImmutableMap. No problem.
+        break;
+      default:
+        throw new TypeError(
+          "ImmutableMap constructor does not accept an argument of type " +
+          (typeof obj) + ".")
+    }
+
+    return makeImmutable(result, mutatingObjectMethods);
   }
 
   // Export the library
