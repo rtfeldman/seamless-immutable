@@ -54,16 +54,16 @@ function returnsImmutable(methodName, immutableArray, mutableArray, args) {
   var mutableResult   =   mutableArray[methodName].apply(mutableArray,   args);
   var immutableResult = immutableArray[methodName].apply(immutableArray, args);
 
-  return isEqual(immutableResult, Immutable.toImmutable(mutableResult));
+  return isEqual(immutableResult, Immutable(mutableResult));
 }
 
 function ImmutableArraySpecifier(JSC) {
   var args = Array.prototype.slice.call(arguments);
 
   return function generator() {
-    var array = JSC.array.apply(JSC.array, args)();
+    var mutable = JSC.array.apply(JSC.array, args)();
 
-    return Immutable.Array.apply(Immutable.Array, array);
+    return Immutable(mutable);
   }
 }
 

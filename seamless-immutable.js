@@ -132,13 +132,10 @@
 
   // Export the library
 
-  var Immutable = {
-    Array:          makeImmutableArray,
-    Map:            makeImmutableMap,
-    isImmutable:    isImmutable,
-    toImmutable:    toImmutable,
-    ImmutableError: ImmutableError
-  };
+  var Immutable = toImmutable;
+
+  Immutable.isImmutable    = isImmutable;
+  Immutable.ImmutableError = ImmutableError;
 
   Object.freeze(Immutable);
 

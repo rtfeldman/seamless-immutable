@@ -111,7 +111,7 @@ var claims = {
       mutable.push(innerArray); // Make a nested immutable
       mutable.push(obj); // Get an object in there too
 
-      immutable = Immutable.Array.apply(Immutable.Array, mutable);
+      immutable = Immutable(mutable);
 
       if (immutable.length !== mutable.length) {
         return false;
@@ -135,9 +135,9 @@ var claims = {
       mutable.push(innerArray); // Make a nested immutable
       mutable.push(obj); // Get an object in there too
 
-      immutable = Immutable.Array.apply(Immutable.Array, mutable);
+      immutable = Immutable(mutable);
 
-      var copiedArray = Immutable.Array.apply(Immutable.Array, immutable);
+      var copiedArray = Immutable(immutable);
 
       if (copiedArray.length !== immutable.length) {
         return false;
@@ -176,9 +176,9 @@ for (methodName in nonMutatingArrayMethods) {
       methodName + "() method";
 
     claims[description] = {
-      predicate: function(array, args) {
+      predicate: function(immutable, mutable) {
         var methodArgs = Array.prototype.slice.call(arguments, 2);
-        return TestUtils.returnsImmutable(methodName, array, args, methodArgs);
+        return TestUtils.returnsImmutable(methodName, immutable, mutable, methodArgs);
       },
       specifiers: specifiers
     };
@@ -203,9 +203,9 @@ for (methodName in nonMutatingArrayMethods) {
 
 TestUtils.testSuiteFromClaims('Immutable.Array', JSC, claims,
   function(claim) {
-    return function(verdict, arrayConstructorArgs) {
+    return function(verdict, mutable) {
       var argsWithoutVerdict = Array.prototype.slice.call(arguments, 1);
-      var immutableArray = Immutable.Array.apply(Immutable.Array, arrayConstructorArgs);
+      var immutableArray = Immutable(mutable);
       var newArgs = [immutableArray].concat(argsWithoutVerdict);
       var result = claim.predicate.apply(claim, newArgs);
 
