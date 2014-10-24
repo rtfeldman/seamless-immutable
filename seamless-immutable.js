@@ -97,10 +97,13 @@
   }
 
   function toImmutable(obj) {
-    if (isImmutable(obj)) {
+    // If the user passes multiple arguments, assume what they want is an array.
+    if (arguments.length > 1) {
+      return makeImmutableArray.apply(makeImmutableArray, arguments);
+    } else if (isImmutable(obj)) {
       return obj;
     } else if (obj instanceof Array) {
-      return makeImmutableArray.apply(this, obj);
+      return makeImmutableArray.apply(makeImmutableArray, obj);
     } else {
       return makeImmutableMap(obj);
     }
