@@ -4,6 +4,7 @@ Immutable data structures for JavaScript which are backwards compatible with nor
 
 [![build status][1]][2]
 [![NPM version][3]][4]
+[![Sauce Test Status](https://saucelabs.com/browser-matrix/seamless-immutable.svg)](https://saucelabs.com/u/seamless-immutable)
 
 [1]: https://secure.travis-ci.org/rtfeldman/seamless-immutable.svg
 [2]: https://travis-ci.org/rtfeldman/seamless-immutable
