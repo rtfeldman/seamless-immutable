@@ -92,6 +92,12 @@ var claims = {
     }
   },
 
+  "it has a toString() method that works like a regular array's toString()": {
+    predicate: function(array, args) {
+      return isEqual(array.toString(), args.toString());
+    }
+  },
+
   "it supports being passed to JSON.stringify": {
     predicate: function(array, args) {
       return isEqual(JSON.stringify(array), JSON.stringify(args));
