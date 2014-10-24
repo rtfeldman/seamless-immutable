@@ -13,7 +13,7 @@ var claims = {
     }
   },
 
-  "it has the same length as the length of its constructor mutable": {
+  "it has the same length as its mutable equivalent": {
     predicate: function(immutable, mutable) {
       return immutable.length === mutable.length;
     }
