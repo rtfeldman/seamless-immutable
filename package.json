@@ -13,7 +13,7 @@
     "jscheck": "0.2.0"
   },
   "scripts": {
-    "test": "jasmine-node test/"
+    "test": "jasmine-node test/*.spec.js && zuul -- test/*.spec.js"
   },
   "repository": {
     "type": "git",
