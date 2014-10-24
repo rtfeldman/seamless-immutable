@@ -203,6 +203,39 @@ var claims = {
   }
 };
 
+function identityFunction(obj){ return obj; }
+
+// Add a "returns immutable" claim for each non-mutating method on Array.
+nonMutatingArrayMethods = {
+  map:         [JSC.literal(identityFunction)],
+  filter:      [JSC.literal(identityFunction)],
+  reduce:      [JSC.literal(identityFunction), JSC.any()],
+  reduceRight: [JSC.literal(identityFunction), JSC.any()],
+  concat:      [JSC.array()],
+  slice:       [JSC.integer(), JSC.integer()]
+}
+
+function returnsImmutable(methodName, immutableArray, mutableArray, args) {
+  var mutableResult   =   mutableArray[methodName].apply(mutableArray,   args);
+  var immutableResult = immutableArray[methodName].apply(immutableArray, args);
+
+  return isEqual(immutableResult, Immutable.toImmutable(mutableResult));
+}
+
+for (methodName in nonMutatingArrayMethods) {
+  (function(methodName, specifiers) {
+    var description = "it returns only immutables when you call its " +
+      methodName + "() method";
+
+    claims[description] = {
+      predicate: function(array, args) {
+        var methodArgs = Array.prototype.slice.call(arguments, 2);
+        return returnsImmutable(methodName, array, args, methodArgs);
+      },
+      specifiers: specifiers
+    };
+  })(methodName, nonMutatingArrayMethods[methodName]);
+}
 
 [ // Add a "reports banned" claim for each mutating method on Array.
   "setPrototypeOf", "push", "pop", "sort", "splice", "shift", "unshift", "reverse"

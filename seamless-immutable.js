@@ -36,8 +36,16 @@
     "setPrototypeOf"
   ];
 
+  var nonMutatingObjectMethods = [
+    "keys"
+  ];
+
   var mutatingArrayMethods = mutatingObjectMethods.concat([
     "push", "pop", "sort", "splice", "shift", "unshift", "reverse"
+  ]);
+
+  var nonMutatingArrayMethods = nonMutatingObjectMethods.concat([
+    "map", "filter", "slice", "concat", "reduce", "reduceRight"
   ]);
 
   function ImmutableError(message) {
@@ -62,12 +70,27 @@
     return obj;
   }
 
+  function makeMethodReturnImmutable(obj, methodName) {
+    var currentMethod = obj[methodName];
+
+    addPropertyTo(obj, methodName, function() {
+      return toImmutable(currentMethod.apply(obj, arguments));
+    })
+  }
+
   function makeImmutableArray() {
     var result = [];
 
     // Populate the array before it gets frozen.
     for (var index in arguments) {
       result.push(toImmutable(arguments[index]));
+    }
+
+    // Don't change their implementations, but wrap these functions to make sure
+    // they always return an immutable value.
+    for (var index in nonMutatingArrayMethods) {
+      var methodName = nonMutatingArrayMethods[index];
+      makeMethodReturnImmutable(result, methodName);
     }
 
     return makeImmutable(result, mutatingArrayMethods);
