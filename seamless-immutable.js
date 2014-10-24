@@ -67,11 +67,20 @@
 
     // Populate the array before it gets frozen.
     for (var index in arguments) {
-      result.push((arguments[index]));
+      result.push(toImmutable(arguments[index]));
     }
 
     return makeImmutable(result, mutatingArrayMethods);
   }
+
+  function toImmutable(obj) {
+    if (isImmutable(obj)) {
+      return obj;
+    } else if (obj instanceof Array) {
+      return makeImmutableArray.apply(this, obj);
+    } else {
+      return makeImmutableMap(obj);
+    }
   }
 
   // TODO: make it immutable
@@ -85,6 +94,7 @@
     Array:          makeImmutableArray,
     Map:            makeImmutableMap,
     isImmutable:    isImmutable,
+    toImmutable:    toImmutable,
     ImmutableError: ImmutableError
   };
 
