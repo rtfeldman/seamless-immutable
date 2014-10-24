@@ -1,4 +1,5 @@
 var Immutable = require("../seamless-immutable.js");
+var JSC       = require("jscheck");
 
 var timeoutMs = 3000;
 
@@ -68,7 +69,7 @@ function ImmutableArraySpecifier(JSC) {
 }
 
 // Build a nodeunit test suite from claims.
-function testSuiteFromClaims(suiteName, JSC, claims, claimToPredicate) {
+function testClaims(suiteName, claims, claimToPredicate) {
   describe(suiteName, function() {
     for (var description in claims) {
       (function(description) {
@@ -108,5 +109,5 @@ module.exports = {
   returnsImmutable:        returnsImmutable,
   throwsException:         throwsException,
   ImmutableArraySpecifier: ImmutableArraySpecifier,
-  testSuiteFromClaims:     testSuiteFromClaims
+  testClaims:              testClaims
 }

@@ -36,7 +36,7 @@ for (var type in immutabilityByType) {
   })(type);
 }
 
-TestUtils.testSuiteFromClaims('Immutable.isImmutable', JSC, claims, 
+TestUtils.testClaims('Immutable.isImmutable', claims,
   function(claim) {
     return function(verdict, arrayConstructorArgs) {
       var argsWithoutVerdict = Array.prototype.slice.call(arguments, 1);

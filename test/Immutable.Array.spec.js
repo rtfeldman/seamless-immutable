@@ -201,7 +201,7 @@ for (methodName in nonMutatingArrayMethods) {
   };
 });
 
-TestUtils.testSuiteFromClaims('Immutable.Array', JSC, claims,
+TestUtils.testClaims('Immutable.Array', claims,
   function(claim) {
     return function(verdict, mutable) {
       var argsWithoutVerdict = Array.prototype.slice.call(arguments, 1);
