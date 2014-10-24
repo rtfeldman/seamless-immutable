@@ -1,77 +1,56 @@
 var Immutable = require("../seamless-immutable.js");
 var JSC       = require("jscheck");
 var TestUtils = require("./TestUtils.js");
+var assert    = require("chai").assert;
+var _         = require("lodash");
 
-var isEqual          = TestUtils.isEqual;
-var throwsException  = TestUtils.throwsException;
-var identityFunction = TestUtils.identityFunction;
-
-var claims = {
-  "it converts multiple arguments into an array, but leaves single arguments alone": {
-    predicate: function(immutable, args) {
-      var result = Immutable.apply(Immutable, args);
+describe("Immutable", function() {
+  it("converts multiple arguments into an array, but leaves single arguments alone", function() {
+    TestUtils.check(100, [JSC.array()], function(args) {
+      var immutable = Immutable.apply(Immutable, args);
 
       if (args.length > 1) {
-        return isEqual(result, Immutable(args));
+        assert.deepEqual(immutable, Immutable(args));
+      } else if (isNaN(immutable) && isNaN(args[0])) {
+        assert.ok(true);
       } else {
-        return isEqual(result, args[0]);
+        assert.strictEqual(immutable, args[0]);
       }
-    },
-    specifiers: [JSC.array()]
-  },
-
-  "it makes an Immutable Array when passed a mutable array": {
-    predicate: function(immutable, mutable) {
-      return immutable.length === mutable.length
-        &&  isEqual(immutable, mutable)
-        &&  Immutable.isImmutable(immutable)
-        && !Immutable.isImmutable(mutable);
-    },
-    specifiers: [JSC.array()]
-  },
-
-  "it makes an Immutable Object when passed a mutable object": {
-    predicate: function(immutable, mutable, obj) {
-      immutable = Immutable(obj);
-
-      return (typeof immutable === "object") &&
-        Immutable.isImmutable(immutable) &&
-       !Immutable.isImmutable(mutable);
-    },
-    specifiers: [JSC.object()]
-  }
-}
-
-// These are already immutable, and should pass through Immutable() untouched.
-var passThroughSpecifiers = {
-  "string":    JSC.string(),
-  "number":    JSC.number(),
-  "boolean":   JSC.boolean(),
-  "null":      JSC.literal(null),
-  "undefined": JSC.literal(undefined)
-}
-
-for (var type in passThroughSpecifiers) {
-  var specifier = passThroughSpecifiers[type];
-  var description = "it just returns its argument when passed " +
-    "a value of type " + type;
-
-  claims[description] = {
-    predicate: function(value) {
-      return Immutable(value) === value
-    },
-    specifiers: [specifier]
-  };
-};
-
-TestUtils.testClaims('Immutable()', claims,
-  function(claim) {
-    return function(verdict, mutable) {
-      var argsWithoutVerdict = Array.prototype.slice.call(arguments, 1);
-      var immutableArray = Immutable(mutable);
-      var newArgs = [immutableArray].concat(argsWithoutVerdict);
-      var result = claim.predicate.apply(claim, newArgs);
-
-      verdict(result);
-    };
+    })
   });
+
+  it("makes an Immutable Array when passed a mutable array", function() {
+    TestUtils.check(100, [JSC.array()], function(mutable) {
+      var immutable = Immutable(mutable);
+
+      assert.deepEqual(immutable, mutable);
+      assert.isTrue( Immutable.isImmutable(immutable));
+      assert.isFalse(Immutable.isImmutable(mutable));
+    });
+  });
+
+  it("makes an Immutable Object when passed a mutable object", function() {
+    TestUtils.check(100, [JSC.object()], function(mutable) {
+      var immutable = Immutable(mutable);
+
+      assert.typeOf(immutable, "object")
+      assert.isTrue( Immutable.isImmutable(immutable));
+      assert.isFalse(Immutable.isImmutable(mutable));
+    });
+  });
+
+  // These are already immutable, and should pass through Immutable() untouched.
+  _.each({
+    "string":    JSC.string(),
+    "number":    JSC.number(),
+    "boolean":   JSC.boolean(),
+    "null":      JSC.literal(null),
+    "undefined": JSC.literal(undefined)
+  }, function(specifier, type) {
+    it("simply returns its argument when passed a value of type " + type, function() {
+      TestUtils.check(100, [specifier], function(value) {
+        assert.strictEqual(Immutable(value), value);
+      });
+    });
+  });
+});

@@ -8,12 +8,13 @@
     "zuul": "^1.11.2"
   },
   "devDependencies": {
-    "jasmine": "2.0.1",
-    "jasmine-node": "2.0.0-beta4",
-    "jscheck": "0.2.0"
+    "chai": "^1.9.2",
+    "jscheck": "0.2.0",
+    "lodash": "^2.4.1",
+    "mocha": "^2.0.1"
   },
   "scripts": {
-    "test": "jasmine-node test/*.spec.js",
+    "test": "mocha test/*.spec.js",
     "zuul": "zuul -- test/*.spec.js",
     "travis-test": "npm test && npm run zuul"
   },

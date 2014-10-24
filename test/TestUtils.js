@@ -1,5 +1,6 @@
 var Immutable = require("../seamless-immutable.js");
 var JSC       = require("jscheck");
+var assert    = require("chai").assert;
 
 var timeoutMs = 3000;
 
@@ -103,11 +104,33 @@ function testClaims(suiteName, claims, claimToPredicate) {
   });
 }
 
+function check(runs, generators, runTest) {
+  var completed;
+
+  if (typeof generators === "function") {
+    generators = [generators];
+  } else if (!(generators instanceof Array)) {
+    throw new TypeError("Not a valid generator list: " + JSON.stringify(generators))
+  }
+
+  for (completed=0; completed < runs; completed++) {
+    var generated = generators.map(function(generator) { return generator() });
+
+    runTest.apply(runTest, generated);
+  }
+
+  assert.strictEqual(completed, runs,
+    "The expected " + runs + " runs were not completed.");
+
+  return completed;
+}
+
 module.exports = {
   isEqual:                 isEqual,
   identityFunction:        identityFunction,
   returnsImmutable:        returnsImmutable,
   throwsException:         throwsException,
   ImmutableArraySpecifier: ImmutableArraySpecifier,
+  check:                   check,
   testClaims:              testClaims
 }

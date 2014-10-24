@@ -1,164 +1,146 @@
 var Immutable = require("../seamless-immutable.js");
 var JSC       = require("jscheck");
 var TestUtils = require("./TestUtils.js");
+var assert    = require("chai").assert;
+var _         = require("lodash")
 
-var isEqual          = TestUtils.isEqual;
-var throwsException  = TestUtils.throwsException;
 var identityFunction = TestUtils.identityFunction;
 
-var claims = {
-  "it is an instanceof Array": {
-    predicate: function(immutable, mutable) {
-      return immutable instanceof Array;
-    }
-  },
+function checkImmutableMutable(callback, extraSpecifiers) {
+  extraSpecifiers = extraSpecifiers || [];
 
-  "it has the same length as its mutable equivalent": {
-    predicate: function(immutable, mutable) {
-      return immutable.length === mutable.length;
-    }
-  },
+  TestUtils.check(100, [JSC.array()].concat(extraSpecifiers), function(mutable) {
+    var immutable = Immutable(mutable);
+    var args      = Array.prototype.slice.call(arguments);
 
-  "it supports accessing elements by index via []": {
-    predicate: function(immutable, mutable, randomIndex) {
-      return (typeof randomIndex === "number") &&
-        isEqual(immutable[randomIndex], mutable[randomIndex]);
-    },
-    specifiers: [JSC.integer()]
-  },
+    callback.apply(callback, [immutable].concat(args));
+  });
+}
 
-  "it works with for loops": {
-    predicate: function(immutable, mutable) {
-      for (var index=0; index < immutable.length; index++) {
-        if (!isEqual(immutable[index], mutable[index])) {
-          return false;
+describe("ImmutableArray", function() {
+  describe("which is compatible with vanilla mutable arrays", function() {
+    it("is an instance of Array", function() {
+      checkImmutableMutable(function(immutable, mutable) {
+        assert.instanceOf(immutable, Array);
+      });
+    });
+
+    it("has the same length as its mutable equivalent", function() {
+      checkImmutableMutable(function(immutable, mutable) {
+        assert.strictEqual(immutable.length, mutable.length);
+      });
+    });
+
+    it("supports accessing elements by index via []", function() {
+      checkImmutableMutable(function(immutable, mutable, index) {
+        assert.typeOf(index, "number");
+        assert.deepEqual(immutable[index], mutable[index]);
+      }, [JSC.integer()]);
+    });
+
+    it("works with for loops", function() {
+      checkImmutableMutable(function(immutable, mutable) {
+        for (var index=0; index < immutable.length; index++) {
+          assert.deepEqual(immutable[index], mutable[index]);
         }
-      }
+      });
+    });
 
-      return true;
-    }
-  },
-
-  "it works with for..in loops": {
-    predicate: function(immutable, mutable) {
-      for (var index in immutable) {
-        if (!isEqual(immutable[index], mutable[index])) {
-          return false;
+    it("works with for..in loops", function() {
+      checkImmutableMutable(function(immutable, mutable) {
+        for (var index in immutable) {
+          assert.deepEqual(immutable[index], mutable[index]);
         }
-      }
+      });
+    });
 
-      return true;
-    }
-  },
+    it("supports concat", function() {
+      checkImmutableMutable(function(immutable, mutable, otherArray) {
+        assert.deepEqual(immutable.concat(otherArray), mutable.concat(otherArray));
+      }, [JSC.array()]);
+    });
 
-  "it supports concat": {
-    predicate: function(immutable, mutable, otherArray) {
-      return isEqual(immutable.concat(otherArray), mutable.concat(otherArray));
-    },
-    specifiers: [JSC.array()]
-  },
+    it("supports being an argument to a normal immutable's concat", function() {
+      checkImmutableMutable(function(immutable, mutable, otherArray) {
+        assert.deepEqual(otherArray.concat(immutable), otherArray.concat(mutable));
+      }, [JSC.array()]);
+    });
 
-  "it supports being an argument to a normal immutable's concat": {
-    predicate: function(immutable, mutable, otherArray) {
-      return isEqual(otherArray.concat(immutable), otherArray.concat(mutable));
-    },
-    specifiers: [JSC.array()]
-  },
+    it("can be concatted to itself", function() {
+      checkImmutableMutable(function(immutable, mutable) {
+        assert.deepEqual(immutable.concat(immutable), mutable.concat(mutable));
+      });
+    });
 
-  "it can be concatted to itself": {
-    predicate: function(immutable, mutable) {
-      return isEqual(immutable.concat(immutable), mutable.concat(mutable));
-    }
-  },
+    it("has a toString() method that works like a regular immutable's toString()", function() {
+      checkImmutableMutable(function(immutable, mutable) {
+        assert.strictEqual(immutable.toString(), mutable.toString());
+      });
+    });
 
-  "it has a toString() method that works like a regular immutable's toString()": {
-    predicate: function(immutable, mutable) {
-      return isEqual(immutable.toString(), mutable.toString());
-    }
-  },
+    it("supports being passed to JSON.stringify", function() {
+      checkImmutableMutable(function(immutable, mutable) {
+        assert.deepEqual(JSON.stringify(immutable), JSON.stringify(mutable));
+      });
+    });
 
-  "it supports being passed to JSON.stringify": {
-    predicate: function(immutable, mutable) {
-      return isEqual(JSON.stringify(immutable), JSON.stringify(mutable));
-    }
-  },
+    it("is frozen", function() {
+      checkImmutableMutable(function(immutable, mutable) {
+        assert.isTrue(Object.isFrozen(immutable));
+      });
+    });
 
-  "it is frozen": {
-    predicate: function(immutable, mutable) {
-      return Object.isFrozen(immutable);
-    }
-  },
+    it("is tagged as immutable", function() {
+      checkImmutableMutable(function(immutable, mutable) {
+        assert.isTrue(Immutable.isImmutable(immutable));
+      })
+    });
 
-  "it is tagged as immutable": {
-    predicate: function(immutable, mutable) {
-      return Immutable.isImmutable(immutable);
-    }
-  },
+    it("cannot have its elements directly mutated", function() {
+      checkImmutableMutable(function(immutable, mutable, randomIndex, randomData) {
+        immutable[randomIndex] = randomData;
 
-  "it cannot have its elements directly mutated": {
-    predicate: function(immutable, mutable, randomIndex, randomData) {
-      immutable[randomIndex] = randomData;
+        assert.typeOf(randomIndex, "number");
+        assert.strictEqual(immutable.length, mutable.length);
+        assert.deepEqual(immutable[randomIndex], mutable[randomIndex]);
+      }, [JSC.integer(), JSC.any()]);
+    });
 
-      return (typeof randomIndex === "number") &&
-        immutable.length === mutable.length &&
-        isEqual(immutable[randomIndex], mutable[randomIndex]);
-    },
-    specifiers: [JSC.integer(), JSC.any()]
-  },
+    it("makes nested content immutable as well", function() {
+      checkImmutableMutable(function(immutable, mutable, innerArray, obj) {
+        mutable.push(innerArray); // Make a nested immutable
+        mutable.push(obj); // Get an object in there too
 
-  "it makes nested content immutable as well": {
-    predicate: function(immutable, mutable, innerArray, obj) {
-      mutable.push(innerArray); // Make a nested immutable
-      mutable.push(obj); // Get an object in there too
+        immutable = Immutable(mutable);
 
-      immutable = Immutable(mutable);
+        assert.strictEqual(immutable.length, mutable.length);
 
-      if (immutable.length !== mutable.length) {
-        return false;
-      }
-
-      for (var index in mutable) {
-        if (!Immutable.isImmutable(immutable[index])) {
-          return false;
+        for (var index in mutable) {
+          assert.isTrue(Immutable.isImmutable(immutable[index]));
         }
-      }
+      });
+    });
 
-      return true;
-    },
-    specifiers: [JSC.array(), JSC.object()]
-  },
+    // TODO this never fails under Node, even after removing Immutable.Array's
+    // call to toImmutable(). Need to verify that it can fail in browsers.
+    it("reuses existing immutables during construction", function() {
+      checkImmutableMutable(function(immutable, mutable, innerArray, obj) {
+        mutable.push(innerArray); // Make a nested immutable
+        mutable.push(obj); // Get an object in there too
 
-  // TODO this never fails under Node, even after removing Immutable.Array's
-  // call to toImmutable(). Need to verify that it can fail in browsers.
-  "it reuses existing immutables during construction": {
-    predicate: function(immutable, mutable, innerArray, obj) {
-      mutable.push(innerArray); // Make a nested immutable
-      mutable.push(obj); // Get an object in there too
+        immutable = Immutable(mutable);
 
-      immutable = Immutable(mutable);
+        var copiedArray = Immutable(immutable);
 
-      var copiedArray = Immutable(immutable);
+        assert.strictEqual(copiedArray.length, immutable.length);
 
-      if (copiedArray.length !== immutable.length) {
-        return false;
-      }
-
-      for (var index in copiedArray) {
-        var expected = immutable[index];
-        var actual   = copiedArray[index];
-
-        if ((expected !== actual) &&
-          (expected === expected) &&
-          (actual === actual)) {
-          return false;
+        for (var index in copiedArray) {
+          assert.deepEqual(immutable[index], copiedArray[index]);
         }
-      }
-
-      return true;
-    },
-    specifiers: [JSC.array(), JSC.object()]
-  }
-};
+      }, [JSC.array(), JSC.object()]);
+    });
+  });
+});
 
 // Add a "returns immutable" claim for each non-mutating method on Array.
 nonMutatingArrayMethods = {
@@ -170,20 +152,17 @@ nonMutatingArrayMethods = {
   slice:       [JSC.integer(), JSC.integer()]
 }
 
-for (methodName in nonMutatingArrayMethods) {
-  (function(methodName, specifiers) {
-    var description = "it returns only immutables when you call its " +
-      methodName + "() method";
+_.each(nonMutatingArrayMethods, function(specifiers, methodName) {
+  "it returns only immutables when you call its " +
+    methodName + "() method";
 
-    claims[description] = {
-      predicate: function(immutable, mutable) {
-        var methodArgs = Array.prototype.slice.call(arguments, 2);
-        return TestUtils.returnsImmutable(methodName, immutable, mutable, methodArgs);
-      },
-      specifiers: specifiers
-    };
-  })(methodName, nonMutatingArrayMethods[methodName]);
-}
+  assert.throw(function() {
+    checkImmutableMutable(function(immutable, mutable) {
+      var methodArgs = Array.prototype.slice.call(arguments, 2);
+      assert.isTrue(TestUtils.returnsImmutable(methodName, immutable, mutable, methodArgs));
+    }, Immutable.ImmutableError);
+  });
+});
 
 [ // Add a "reports banned" claim for each mutating method on Array.
   "setPrototypeOf", "push", "pop", "sort", "splice", "shift", "unshift", "reverse"
@@ -191,24 +170,9 @@ for (methodName in nonMutatingArrayMethods) {
   var description = "it throws an ImmutableError when you try to call its " +
     methodName + "() method";
 
-  claims[description] = {
-    predicate: function(array, args, methodArgs) {
-      return throwsException(Immutable.ImmutableError, function() {
-        array[methodName].apply(array, methodArgs);
-      });
-    },
-    specifiers: [JSC.any()]
-  };
-});
-
-TestUtils.testClaims('ImmutableArray', claims,
-  function(claim) {
-    return function(verdict, mutable) {
-      var argsWithoutVerdict = Array.prototype.slice.call(arguments, 1);
-      var immutableArray = Immutable(mutable);
-      var newArgs = [immutableArray].concat(argsWithoutVerdict);
-      var result = claim.predicate.apply(claim, newArgs);
-
-      verdict(result);
-    };
+  checkImmutableMutable(function(immutable, mutable, innerArray, obj) {
+    assert.throw(function() {
+      array[methodName].apply(array, methodArgs);
+    });
   });
+});
