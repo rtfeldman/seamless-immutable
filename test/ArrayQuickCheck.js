@@ -17,10 +17,6 @@ function isEqual(expected, actual) {
   }
 }
 
-function isImmutable(obj) {
-  return obj.hasOwnProperty("__immutable_invariants_hold");
-}
-
 function throwsException(exceptionType, logic) {
   try {
     logic()
@@ -116,7 +112,7 @@ var claims = {
 
   "it is tagged as immutable": {
     predicate: function(array, args) {
-      return isImmutable(array);
+      return Immutable.isImmutable(array);
     }
   },
 

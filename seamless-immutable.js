@@ -10,8 +10,19 @@
     });
   }
 
+  var immutabilityTag = "__immutable_invariants_hold";
+
   function addImmutabilityTag(target) {
-    addPropertyTo(target, "__immutable_invariants_hold", true);
+    addPropertyTo(target, immutabilityTag, true);
+  }
+
+  function isImmutable(target) {
+    if (typeof target === "object") {
+      return target === null || target.hasOwnProperty(immutabilityTag);
+    } else {
+      // Only objects are even potentially mutable.
+      return true;
+    }
   }
 
   var privateArrayMethods = [
@@ -59,6 +70,7 @@
   var Immutable = {
     Array:          makeImmutableArray,
     Map:            makeImmutableMap,
+    isImmutable:    isImmutable,
     ImmutableError: ImmutableError
   };
 
