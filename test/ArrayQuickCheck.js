@@ -232,6 +232,10 @@ JSC.on_pass(function(passedClaim) {
   var test = testObjectsByName[failedClaim.name];
   test.ok(false, failedClaim.name +
     " with args: " + JSON.stringify(failedClaim.args));
+}).on_lost(function(lostClaim) {
+  var test = testObjectsByName[lostClaim.name];
+  test.ok(false, lostClaim.name +
+    " due to being lost, with args: " + JSON.stringify(lostClaim.args));
 });
 
 for (var description in claims) {
