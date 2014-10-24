@@ -8,29 +8,29 @@ var identityFunction = TestUtils.identityFunction;
 
 var claims = {
   "it is an instanceof Array": {
-    predicate: function(array, args) {
-      return array instanceof Array;
+    predicate: function(immutable, mutable) {
+      return immutable instanceof Array;
     }
   },
 
-  "it has the same length as the length of its constructor args": {
-    predicate: function(array, args) {
-      return array.length === args.length;
+  "it has the same length as the length of its constructor mutable": {
+    predicate: function(immutable, mutable) {
+      return immutable.length === mutable.length;
     }
   },
 
   "it supports accessing elements by index via []": {
-    predicate: function(array, args, randomIndex) {
+    predicate: function(immutable, mutable, randomIndex) {
       return (typeof randomIndex === "number") &&
-        isEqual(array[randomIndex], args[randomIndex]);
+        isEqual(immutable[randomIndex], mutable[randomIndex]);
     },
     specifiers: [JSC.integer()]
   },
 
   "it works with for loops": {
-    predicate: function(array, args) {
-      for (var index=0; index < array.length; index++) {
-        if (!isEqual(array[index], args[index])) {
+    predicate: function(immutable, mutable) {
+      for (var index=0; index < immutable.length; index++) {
+        if (!isEqual(immutable[index], mutable[index])) {
           return false;
         }
       }
@@ -40,9 +40,9 @@ var claims = {
   },
 
   "it works with for..in loops": {
-    predicate: function(array, args) {
-      for (var index in array) {
-        if (!isEqual(array[index], args[index])) {
+    predicate: function(immutable, mutable) {
+      for (var index in immutable) {
+        if (!isEqual(immutable[index], mutable[index])) {
           return false;
         }
       }
@@ -52,73 +52,73 @@ var claims = {
   },
 
   "it supports concat": {
-    predicate: function(array, args, otherArray) {
-      return isEqual(array.concat(otherArray), args.concat(otherArray));
+    predicate: function(immutable, mutable, otherArray) {
+      return isEqual(immutable.concat(otherArray), mutable.concat(otherArray));
     },
     specifiers: [JSC.array()]
   },
 
-  "it supports being an argument to a normal array's concat": {
-    predicate: function(array, args, otherArray) {
-      return isEqual(otherArray.concat(array), otherArray.concat(args));
+  "it supports being an argument to a normal immutable's concat": {
+    predicate: function(immutable, mutable, otherArray) {
+      return isEqual(otherArray.concat(immutable), otherArray.concat(mutable));
     },
     specifiers: [JSC.array()]
   },
 
   "it can be concatted to itself": {
-    predicate: function(array, args) {
-      return isEqual(array.concat(array), args.concat(args));
+    predicate: function(immutable, mutable) {
+      return isEqual(immutable.concat(immutable), mutable.concat(mutable));
     }
   },
 
-  "it has a toString() method that works like a regular array's toString()": {
-    predicate: function(array, args) {
-      return isEqual(array.toString(), args.toString());
+  "it has a toString() method that works like a regular immutable's toString()": {
+    predicate: function(immutable, mutable) {
+      return isEqual(immutable.toString(), mutable.toString());
     }
   },
 
   "it supports being passed to JSON.stringify": {
-    predicate: function(array, args) {
-      return isEqual(JSON.stringify(array), JSON.stringify(args));
+    predicate: function(immutable, mutable) {
+      return isEqual(JSON.stringify(immutable), JSON.stringify(mutable));
     }
   },
 
   "it is frozen": {
-    predicate: function(array, args) {
-      return Object.isFrozen(array);
+    predicate: function(immutable, mutable) {
+      return Object.isFrozen(immutable);
     }
   },
 
   "it is tagged as immutable": {
-    predicate: function(array, args) {
-      return Immutable.isImmutable(array);
+    predicate: function(immutable, mutable) {
+      return Immutable.isImmutable(immutable);
     }
   },
 
   "it cannot have its elements directly mutated": {
-    predicate: function(array, args, randomIndex, randomData) {
-      array[randomIndex] = randomData;
+    predicate: function(immutable, mutable, randomIndex, randomData) {
+      immutable[randomIndex] = randomData;
 
       return (typeof randomIndex === "number") &&
-        array.length === args.length &&
-        isEqual(array[randomIndex], args[randomIndex]);
+        immutable.length === mutable.length &&
+        isEqual(immutable[randomIndex], mutable[randomIndex]);
     },
     specifiers: [JSC.integer(), JSC.any()]
   },
 
   "it makes nested content immutable as well": {
-    predicate: function(array, args, innerArray, obj) {
-      args.push(innerArray); // Make a nested array
-      args.push(obj); // Get an object in there too
+    predicate: function(immutable, mutable, innerArray, obj) {
+      mutable.push(innerArray); // Make a nested immutable
+      mutable.push(obj); // Get an object in there too
 
-      array = Immutable.Array.apply(Immutable.Array, args);
+      immutable = Immutable.Array.apply(Immutable.Array, mutable);
 
-      if (array.length !== args.length) {
+      if (immutable.length !== mutable.length) {
         return false;
       }
 
-      for (var index in args) {
-        if (!Immutable.isImmutable(array[index])) {
+      for (var index in mutable) {
+        if (!Immutable.isImmutable(immutable[index])) {
           return false;
         }
       }
@@ -131,20 +131,20 @@ var claims = {
   // TODO this never fails under Node, even after removing Immutable.Array's
   // call to toImmutable(). Need to verify that it can fail in browsers.
   "it reuses existing immutables during construction": {
-    predicate: function(array, args, innerArray, obj) {
-      args.push(innerArray); // Make a nested array
-      args.push(obj); // Get an object in there too
+    predicate: function(immutable, mutable, innerArray, obj) {
+      mutable.push(innerArray); // Make a nested immutable
+      mutable.push(obj); // Get an object in there too
 
-      array = Immutable.Array.apply(Immutable.Array, args);
+      immutable = Immutable.Array.apply(Immutable.Array, mutable);
 
-      var copiedArray = Immutable.Array.apply(Immutable.Array, array);
+      var copiedArray = Immutable.Array.apply(Immutable.Array, immutable);
 
-      if (copiedArray.length !== array.length) {
+      if (copiedArray.length !== immutable.length) {
         return false;
       }
 
       for (var index in copiedArray) {
-        var expected = array[index];
+        var expected = immutable[index];
         var actual   = copiedArray[index];
 
         if ((expected !== actual) &&
