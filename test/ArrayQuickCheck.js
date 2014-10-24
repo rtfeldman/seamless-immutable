@@ -5,15 +5,19 @@ timeoutMs = 3000;
 
 function isEqual(expected, actual) {
   if ((expected instanceof Array) && (actual instanceof Array)) {
+    if (expected.length !== actual.length) {
+      return false;
+    }
+
     for (var index in expected) {
       if (!isEqual(expected[index], actual[index])) {
         return false;
       }
-
-      return true;
     }
+
+    return true;
   } else {
-    return expected === actual || (isNaN(expected) && isNaN(actual));
+    return (expected === actual) || (isNaN(expected) && isNaN(actual));
   }
 }
 
