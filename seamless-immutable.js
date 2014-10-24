@@ -10,6 +10,13 @@
     });
   }
 
+  function banProperty(target, methodName) {
+    addPropertyTo(target, methodName, function() {
+      throw new ImmutableError("The " + methodName +
+        " method cannot be invoked on an ImmutableArray.");
+    });
+  }
+
   var immutabilityTag = "__immutable_invariants_hold";
 
   function addImmutabilityTag(target) {
@@ -44,12 +51,7 @@
 
     // Make all mutating methods throw exceptions.
     for (var index in privateArrayMethods) {
-      (function(methodName) {
-        addPropertyTo(result, methodName, function() {
-          throw new ImmutableError("The " + methodName +
-            " method cannot be invoked on an ImmutableArray.");
-        });
-      })(privateArrayMethods[index]);
+      banProperty(result, privateArrayMethods[index]);
     }
 
     // Tag it so we can quickly tell it's immutable later.
