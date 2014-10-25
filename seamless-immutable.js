@@ -92,28 +92,35 @@
     return makeImmutable(result, mutatingArrayMethods);
   }
 
-  function makeImmutableObject(obj) {
-    var result = {};
+  function merge(other) {
+    if (arguments.length > 0) {
+      var merged = {};
 
-    // Populate the object before it gets frozen.
-    switch (typeof obj) {
-      case "object":
-        if (obj !== null) {
-          for (var key in obj) {
-            result[key] = Immutable(obj[key]);
-          }
+      for (var key in this) {
+        merged[key] = this[key];
+      }
+
+      // Prioritize the other objects in the order in which they were passed.
+      for (var index in arguments) {
+        var other = arguments[index];
+
+        for (var key in other) {
+          merged[key] = other[key];
         }
-        break;
-      case "undefined":
-        // We're making an empty ImmutableMap. No problem.
-        break;
-      default:
-        throw new TypeError(
-          "ImmutableMap constructor does not accept an argument of type " +
-          (typeof obj) + ".")
-    }
+      }
 
-    return makeImmutable(result, mutatingObjectMethods);
+      return makeImmutableObject(merged);
+    } else {
+      // Calling .merge() with no arguments is a no-op. Don't bother cloning.
+      return this;
+    }
+  };
+
+  // Finalizes an object with immutable methods, freezes it, and returns it.
+  function makeImmutableObject(obj) {
+    addPropertyTo(obj, "merge", merge);
+
+    return makeImmutable(obj, mutatingObjectMethods);
   }
 
   function Immutable(obj) {
@@ -125,7 +132,16 @@
     } else if (obj instanceof Array) {
       return makeImmutableArray.apply(makeImmutableArray, obj);
     } else {
-      return makeImmutableObject(obj);
+      // Don't freeze the object we were given; make a clone and use that.
+      var clone = {};
+
+      if (obj !== null && obj !== undefined) {
+        for (var key in obj) {
+          clone[key] = Immutable(obj[key]);
+        }
+      }
+
+      return makeImmutableObject(clone);
     }
   }
 
