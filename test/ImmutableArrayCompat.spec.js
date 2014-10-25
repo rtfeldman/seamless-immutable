@@ -143,14 +143,12 @@ nonMutatingArrayMethods = {
 }
 
 _.each(nonMutatingArrayMethods, function(specifiers, methodName) {
-  "it returns only immutables when you call its " +
-    methodName + "() method";
-
-  assert.throw(function() {
+  it("returns only immutables when you call its " +
+      methodName + "() method", function() {
     checkImmutableMutable(function(immutable, mutable) {
-      var methodArgs = Array.prototype.slice.call(arguments, 2);
+      var methodArgs = specifiers.map(function(generator) { return generator() });
       assert.isTrue(TestUtils.returnsImmutable(methodName, immutable, mutable, methodArgs));
-    }, Immutable.ImmutableError);
+    });
   });
 });
 
