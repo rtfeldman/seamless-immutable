@@ -124,7 +124,7 @@
    *
    * @param {object} other - The other object to merge. Multiple objects can be passed, either as an array or as extra arguments. In such a case, the later an object appears in that list, the higher its priority.
    */
-  function merge(arg) {
+  function merge(others) {
     // Calling .merge() with no arguments is a no-op. Don't bother cloning.
     if (arguments.length === 0) {
       return this;
@@ -136,11 +136,7 @@
       result[key] = this[key];
     }
 
-    var others;
-
-    if (arg instanceof Array) {
-      others = arg;
-    } else {
+    if (!(others instanceof Array)) {
       others = arguments;
     }
 
