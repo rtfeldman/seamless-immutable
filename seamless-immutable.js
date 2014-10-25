@@ -105,10 +105,10 @@
       return this;
     }
 
-    var merged = {};
+    var result = {};
 
     for (var key in this) {
-      merged[key] = this[key];
+      result[key] = this[key];
     }
 
     var others;
@@ -125,11 +125,11 @@
       var other = others[index];
 
       for (var key in other) {
-        merged[key] = other[key];
+        result[key] = other[key];
       }
     }
 
-    return makeImmutableObject(merged);
+    return makeImmutableObject(result);
   };
 
   // Finalizes an object with immutable methods, freezes it, and returns it.
