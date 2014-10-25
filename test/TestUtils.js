@@ -69,41 +69,6 @@ function ImmutableArraySpecifier(JSC) {
   }
 }
 
-// Build a nodeunit test suite from claims.
-function testClaims(suiteName, claims, claimToPredicate) {
-  describe(suiteName, function() {
-    for (var description in claims) {
-      (function(description) {
-        var claim = claims[description];
-
-        it(description, function() {
-          var predicate = claimToPredicate(claim);
-          var completedChecks = 0;
-
-          JSC.on_pass(function() {
-            completedChecks++;
-          }).on_fail(function(failedClaim) {
-            completedChecks++;
-            expect(false).toBe(true, failedClaim.name +
-              " with args: " + JSON.stringify(failedClaim.args));
-          }).on_lost(function(lostClaim) {
-            completedChecks++;
-            expect(false).toBe(true, lostClaim.name +
-              " due to being lost, with args: " + JSON.stringify(lostClaim.args));
-          });
-
-          JSC.claim(description, predicate, [JSC.array()].concat(claim.specifiers || []));
-          JSC.check(timeoutMs);
-
-          expect(completedChecks).toBe(100);
-
-          JSC.clear();
-        });
-      })(description);
-    };
-  });
-}
-
 function check(runs, generators, runTest) {
   var completed;
 
@@ -145,6 +110,5 @@ module.exports = {
   throwsException:         throwsException,
   ImmutableArraySpecifier: ImmutableArraySpecifier,
   check:                   check,
-  testClaims:              testClaims,
   checkImmutableMutable:   checkImmutableMutable
 }
