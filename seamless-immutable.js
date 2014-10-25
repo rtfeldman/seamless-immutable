@@ -74,22 +74,15 @@
     })
   }
 
-  function makeImmutableArray() {
-    var result = [];
-
-    // Populate the array before it gets frozen.
-    for (var index in arguments) {
-      result.push(Immutable(arguments[index]));
-    }
-
+  function makeImmutableArray(array) {
     // Don't change their implementations, but wrap these functions to make sure
     // they always return an immutable value.
     for (var index in nonMutatingArrayMethods) {
       var methodName = nonMutatingArrayMethods[index];
-      makeMethodReturnImmutable(result, methodName);
+      makeMethodReturnImmutable(array, methodName);
     }
 
-    return makeImmutable(result, mutatingArrayMethods);
+    return makeImmutable(array, mutatingArrayMethods);
   }
 
   /**
@@ -142,11 +135,11 @@
   function Immutable(obj) {
     // If the user passes multiple arguments, assume what they want is an array.
     if (arguments.length > 1) {
-      return makeImmutableArray.apply(makeImmutableArray, arguments);
+      return makeImmutableArray(Array.prototype.slice.call(arguments));
     } else if (isImmutable(obj)) {
       return obj;
     } else if (obj instanceof Array) {
-      return makeImmutableArray.apply(makeImmutableArray, obj);
+      return makeImmutableArray(obj.slice());
     } else {
       // Don't freeze the object we were given; make a clone and use that.
       var clone = {};
