@@ -92,28 +92,44 @@
     return makeImmutable(result, mutatingArrayMethods);
   }
 
-  function merge(other) {
-    if (arguments.length > 0) {
-      var merged = {};
-
-      for (var key in this) {
-        merged[key] = this[key];
-      }
-
-      // Prioritize the other objects in the order in which they were passed.
-      for (var index in arguments) {
-        var other = arguments[index];
-
-        for (var key in other) {
-          merged[key] = other[key];
-        }
-      }
-
-      return makeImmutableObject(merged);
-    } else {
-      // Calling .merge() with no arguments is a no-op. Don't bother cloning.
+  /**
+   * Returns an Immutable Object containing the properties and values of both
+   * this object and the provided object, prioritizing the provided object's
+   * values whenever the same key is present in both objects.
+   *
+   * @param {object} other - The other object to merge. Multiple objects can be passed, either as an array or as extra arguments. In such a case, the later an object appears in that list, the higher its priority.
+   */
+  function merge(arg) {
+    // Calling .merge() with no arguments is a no-op. Don't bother cloning.
+    if (arguments.length === 0) {
       return this;
     }
+
+    var merged = {};
+
+    for (var key in this) {
+      merged[key] = this[key];
+    }
+
+    var others;
+
+    if (arg instanceof Array) {
+      others = arg;
+    } else {
+      others = arguments;
+    }
+
+    // Loop through the other objects in order, achieving prioritization by
+    // overwriting any preexisting values that get in the way.
+    for (var index in others) {
+      var other = others[index];
+
+      for (var key in other) {
+        merged[key] = other[key];
+      }
+    }
+
+    return makeImmutableObject(merged);
   };
 
   // Finalizes an object with immutable methods, freezes it, and returns it.
