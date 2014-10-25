@@ -125,6 +125,19 @@ function check(runs, generators, runTest) {
   return completed;
 }
 
+function checkImmutableMutable(runs, specifiers) {
+  return function(callback, extraSpecifiers) {
+    extraSpecifiers = extraSpecifiers || [];
+
+  check(runs, specifiers.concat(extraSpecifiers), function(mutable) {
+      var immutable = Immutable(mutable);
+      var args      = Array.prototype.slice.call(arguments);
+
+      callback.apply(callback, [immutable].concat(args));
+    });
+  };
+}
+
 module.exports = {
   isEqual:                 isEqual,
   identityFunction:        identityFunction,
@@ -132,5 +145,6 @@ module.exports = {
   throwsException:         throwsException,
   ImmutableArraySpecifier: ImmutableArraySpecifier,
   check:                   check,
-  testClaims:              testClaims
+  testClaims:              testClaims,
+  checkImmutableMutable:   checkImmutableMutable
 }

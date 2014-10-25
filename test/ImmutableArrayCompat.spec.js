@@ -4,18 +4,8 @@ var TestUtils = require("./TestUtils.js");
 var assert    = require("chai").assert;
 var _         = require("lodash")
 
-var identityFunction = TestUtils.identityFunction;
-
-function checkImmutableMutable(callback, extraSpecifiers) {
-  extraSpecifiers = extraSpecifiers || [];
-
-  TestUtils.check(100, [JSC.array()].concat(extraSpecifiers), function(mutable) {
-    var immutable = Immutable(mutable);
-    var args      = Array.prototype.slice.call(arguments);
-
-    callback.apply(callback, [immutable].concat(args));
-  });
-}
+var identityFunction      = TestUtils.identityFunction;
+var checkImmutableMutable = TestUtils.checkImmutableMutable(100, [JSC.array()]);
 
 describe("ImmutableArray", function() {
   describe("which is compatible with vanilla mutable arrays", function() {
