@@ -48,11 +48,7 @@
     "map", "filter", "slice", "concat", "reduce", "reduceRight"
   ]);
 
-  function ImmutableError(message) {
-    this.name    = "ImmutableError";
-    this.message = (message || "");
-  }
-
+  function ImmutableError() {}
   ImmutableError.prototype = Error.prototype;
 
   function makeImmutable(obj, bannedMethods) {

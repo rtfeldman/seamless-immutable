@@ -9,15 +9,15 @@ var checkImmutableMutable = TestUtils.checkImmutableMutable(100, [JSC.object()])
 
 describe("ImmutableObject", function() {
   describe("which is compatible with vanilla mutable object", function() {
-    it("is an instance of Array", function() {
+    it("is an instance of Object", function() {
       checkImmutableMutable(function(immutable, mutable) {
-        assert.instanceOf(immutable, Array);
+        assert.instanceOf(immutable, Object);
       });
     });
 
-    it("has the same length as its mutable equivalent", function() {
+    it("has the same keys as its mutable equivalent", function() {
       checkImmutableMutable(function(immutable, mutable) {
-        assert.strictEqual(immutable.length, mutable.length);
+        assert.deepEqual(_.keys(immutable), _.keys(mutable));
       });
     });
 
@@ -41,24 +41,6 @@ describe("ImmutableObject", function() {
         for (var index in immutable) {
           assert.deepEqual(immutable[index], mutable[index]);
         }
-      });
-    });
-
-    it("supports concat", function() {
-      checkImmutableMutable(function(immutable, mutable, otherArray) {
-        assert.deepEqual(immutable.concat(otherArray), mutable.concat(otherArray));
-      }, [JSC.array()]);
-    });
-
-    it("supports being an argument to a normal immutable's concat", function() {
-      checkImmutableMutable(function(immutable, mutable, otherArray) {
-        assert.deepEqual(otherArray.concat(immutable), otherArray.concat(mutable));
-      }, [JSC.array()]);
-    });
-
-    it("can be concatted to itself", function() {
-      checkImmutableMutable(function(immutable, mutable) {
-        assert.deepEqual(immutable.concat(immutable), mutable.concat(mutable));
       });
     });
 
@@ -98,8 +80,8 @@ describe("ImmutableObject", function() {
 
     it("makes nested content immutable as well", function() {
       checkImmutableMutable(function(immutable, mutable, innerArray, obj) {
-        mutable.push(innerArray); // Make a nested immutable
-        mutable.push(obj); // Get an object in there too
+        mutable.foo = innerArray; // Make a nested immutable array
+        mutable.bar = obj;        // Get an object in there too
 
         immutable = Immutable(mutable);
 
@@ -115,8 +97,8 @@ describe("ImmutableObject", function() {
     // call to toImmutable(). Need to verify that it can fail in browsers.
     it("reuses existing immutables during construction", function() {
       checkImmutableMutable(function(immutable, mutable, innerArray, obj) {
-        mutable.push(innerArray); // Make a nested immutable
-        mutable.push(obj); // Get an object in there too
+        mutable.foo = innerArray; // Make a nested immutable array
+        mutable.bar = obj;        // Get an object in there too
 
         immutable = Immutable(mutable);
 
