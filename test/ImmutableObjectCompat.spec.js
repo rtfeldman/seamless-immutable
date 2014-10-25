@@ -113,38 +113,3 @@ describe("ImmutableObject", function() {
     });
   });
 });
-
-// Add a "returns immutable" claim for each non-mutating method on Array.
-nonMutatingArrayMethods = {
-  map:         [JSC.literal(identityFunction)],
-  filter:      [JSC.literal(identityFunction)],
-  reduce:      [JSC.literal(identityFunction), JSC.any()],
-  reduceRight: [JSC.literal(identityFunction), JSC.any()],
-  concat:      [JSC.array()],
-  slice:       [JSC.integer(), JSC.integer()]
-}
-
-_.each(nonMutatingArrayMethods, function(specifiers, methodName) {
-  "it returns only immutables when you call its " +
-    methodName + "() method";
-
-  assert.throw(function() {
-    checkImmutableMutable(function(immutable, mutable) {
-      var methodArgs = Array.prototype.slice.call(arguments, 2);
-      assert.isTrue(TestUtils.returnsImmutable(methodName, immutable, mutable, methodArgs));
-    }, Immutable.ImmutableError);
-  });
-});
-
-[ // Add a "reports banned" claim for each mutating method on Array.
-  "setPrototypeOf", "push", "pop", "sort", "splice", "shift", "unshift", "reverse"
-].forEach(function(methodName) {
-  var description = "it throws an ImmutableError when you try to call its " +
-    methodName + "() method";
-
-  checkImmutableMutable(function(immutable, mutable, innerArray, obj) {
-    assert.throw(function() {
-      array[methodName].apply(array, methodArgs);
-    });
-  });
-});
