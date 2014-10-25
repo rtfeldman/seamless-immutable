@@ -162,5 +162,5 @@ _.each(nonMutatingArrayMethods, function(specifiers, methodName) {
     assert.throw(function() {
       array[methodName].apply(array, methodArgs);
     });
-  });
+  }, Immutable.ImmutableError);
 });
