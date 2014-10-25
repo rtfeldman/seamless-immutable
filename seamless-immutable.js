@@ -118,6 +118,33 @@
   };
 
   /**
+   * Returns an Immutable copy of the object without the given keys included.
+   *
+   * @param {array} - A list of strings representing the keys to exclude in the return value. Instead of providing a single array, this method can also be called by passing multiple strings as separate arguments.
+   */
+  function without(keysToRemove) {
+    // Calling .withoutKeys() with no arguments is a no-op. Don't bother cloning.
+    if (arguments.length === 0) {
+      return this;
+    }
+
+    // If we weren't given an array, use the arguments list.
+    if (!(keysToRemove instanceof Array)) {
+      keysToRemove = Array.slice.call(arguments);
+    }
+
+    var result = {};
+
+    for (key in this) {
+      if (!(key in keysToRemove)) {
+        result[key] = this[key];
+      }
+    }
+
+    return makeImmutableObject(result);
+  }
+
+  /**
    * Returns an Immutable Object containing the properties and values of both
    * this object and the provided object, prioritizing the provided object's
    * values whenever the same key is present in both objects.
