@@ -82,8 +82,40 @@
       makeMethodReturnImmutable(array, methodName);
     }
 
+    addPropertyTo(array, "flatMap", flatMap);
+
     return makeImmutable(array, mutatingArrayMethods);
   }
+
+  /**
+   * Effectively performs a map() over the elements in the array, using the
+   * provided iterator, except that whenever the iterator returns an array, that
+   * array's elements are added to the final result instead of the array itself.
+   *
+   * @param {function} iterator - The iterator function that will be invoked on each element in the array. It will receive three arguments: the current value, the current index, and the current object.
+   */
+  function flatMap(iterator) {
+    // Calling .flatMap() with no arguments is a no-op. Don't bother cloning.
+    if (arguments.length === 0) {
+      return this;
+    }
+
+    var result = [];
+
+    for (var key in this) {
+      var iteratorResult = iterator(this[key], key, this);
+
+      if (iteratorResult instanceof Array) {
+        // Concatenate Array results into the return value we're building up.
+        result.push.apply(result, iteratorResult);
+      } else {
+        // Handle non-Array results the same way map() does.
+        result.push(iteratorResult);
+      }
+    }
+
+    return makeImmutableArray(result);
+  };
 
   /**
    * Returns an Immutable Object containing the properties and values of both
