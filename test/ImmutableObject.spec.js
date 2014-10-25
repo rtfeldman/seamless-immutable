@@ -7,6 +7,10 @@ var _         = require("lodash")
 var identityFunction      = TestUtils.identityFunction;
 var checkImmutableMutable = TestUtils.checkImmutableMutable(100, [JSC.object()]);
 
+function notParseableAsInt(str) {
+  return parseInt(str).toString() !== str;
+}
+
 describe("ImmutableObject", function() {
   describe("which is compatible with vanilla mutable objects", function() {
     it("is an instance of Object", function() {
@@ -17,7 +21,12 @@ describe("ImmutableObject", function() {
 
     it("has the same keys as its mutable equivalent", function() {
       checkImmutableMutable(function(immutable, mutable) {
-        assert.deepEqual(_.keys(immutable), _.keys(mutable));
+        // Exclude properties that can be parsed as 32-bit unsigned integers,
+        // as they have no sort order guarantees.
+        var immutableKeys = Object.keys(immutable).filter(notParseableAsInt);
+        var mutableKeys   = Object.keys(mutable).filter(notParseableAsInt);
+
+        assert.deepEqual(immutableKeys, mutableKeys);
       });
     });
 
@@ -51,7 +60,16 @@ describe("ImmutableObject", function() {
     });
 
     it("supports being passed to JSON.stringify", function() {
-      checkImmutableMutable(function(immutable, mutable) {
+      TestUtils.check(100, [JSC.array()], function(mutable) {
+        // Delete all the keys that could be parsed as 32-bit unsigned integers,
+        // as there is no guaranteed sort order for them.
+        for (var key in mutable) {
+          if (!notParseableAsInt(mutable[key])) {
+            delete mutable[key];
+          }
+        }
+
+        var immutable = Immutable(mutable);
         assert.deepEqual(JSON.stringify(immutable), JSON.stringify(mutable));
       });
     });
