@@ -8,7 +8,7 @@ var identityFunction      = TestUtils.identityFunction;
 var checkImmutableMutable = TestUtils.checkImmutableMutable(100, [JSC.object()]);
 
 describe("ImmutableObject", function() {
-  describe("which is compatible with vanilla mutable object", function() {
+  describe("which is compatible with vanilla mutable objects", function() {
     it("is an instance of Object", function() {
       checkImmutableMutable(function(immutable, mutable) {
         assert.instanceOf(immutable, Object);
