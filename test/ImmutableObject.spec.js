@@ -112,4 +112,67 @@ describe("ImmutableObject", function() {
       }, [JSC.array(), JSC.object()]);
     });
   });
+
+  describe("#merge", function() {
+    it("prioritizes the argument's properties", function() {
+      checkImmutableMutable(function(immutable, mutable) {
+        var
+          other    = JSC.object()(),
+          key      = _.keys(immutable)[0],
+          value    = immutable[key],
+          newValue = value + "foo";
+
+        other[key] = newValue;
+
+        assert.notEqual(newValue, immutable[key]);
+
+        var result = immutable.merge(other);
+
+        assert.deepEqual(newValue, result[key]);
+      });
+    });
+
+    it("contains all the argument's properties", function() {
+      checkImmutableMutable(function(immutable, mutable) {
+        var other  = JSC.object()();
+        var result = immutable.merge(other);
+
+        _.each(other, function (value, key) {
+          assert.deepEqual(value, result[key]);
+        });
+      });
+    });
+
+    it("contains all the original's properties, except where the argument has those properties", function() {
+      checkImmutableMutable(function(immutable, mutable) {
+        var
+          other    = JSC.object()(),
+          key      = _.keys(immutable)[0],
+          value    = immutable[key],
+          newValue = value + "foo";
+
+        other[key] = newValue;
+
+        assert.notEqual(newValue, immutable[key]);
+
+        var result = immutable.merge(other);
+
+        _.each(immutable, function (value, key) {
+          if (!other.hasOwnProperty(key)) {
+            assert.deepEqual(value, result[key]);
+          }
+        });
+      });
+    });
+
+    it("returns immutable objects", function() {
+      checkImmutableMutable(function(immutable, mutable) {
+        var other  = JSC.object()();
+        var result = immutable.merge(mutable);
+
+        assert.instanceOf(result, Object);
+        assert.isTrue(Immutable.isImmutable(result));
+      });
+    });
+  });
 });
