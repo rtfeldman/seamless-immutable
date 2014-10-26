@@ -165,6 +165,7 @@
       // Can't make this stuff up.
     }
 
+    // Start by shallowly cloning this object.
     var result = {};
 
     for (var key in this) {
@@ -172,7 +173,7 @@
     }
 
     // Loop through the other objects in order, achieving prioritization by
-    // overwriting any preexisting values that get in the way.
+    // overwriting any previous values that get in the way.
     for (var index in others) {
       var other = others[index];
 

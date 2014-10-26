@@ -134,19 +134,23 @@ describe("ImmutableObject", function() {
   describe("#merge", function() {
     it("prioritizes the argument's properties", function() {
       checkImmutableMutable(function(immutable, mutable) {
-        var
+        // Pick a key/value pair in the immutable object, and add "foo" to
+        // the value to arrive at newValue, which is necessarily different.
+        var keys   = Object.keys(immutable),
           other    = JSC.object()(),
-          key      = _.keys(immutable)[0],
+          key      = keys[0],
           value    = immutable[key],
           newValue = value + "foo";
 
-        other[key] = newValue;
+        assert.notEqual(keys.length, 0, "Can't usefully check merge() with an empty object!");
+        assert.notEqual(newValue, immutable[key], "Failed to make a different value by appending 'foo'");
 
-        assert.notEqual(newValue, immutable[key]);
+        // Mutate the other object so it has the key/newValue pair.
+        other[key] = newValue;
 
         var result = immutable.merge(other);
 
-        assert.deepEqual(newValue, result[key]);
+        assert.deepEqual(newValue, result[key], "The merged object did not keep the key/newValue pair as expected.");
       });
     });
 
