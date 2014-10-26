@@ -1,0 +1,124 @@
+var Immutable = require("../../seamless-immutable.js");
+var JSC       = require("jscheck");
+var TestUtils = require("../TestUtils.js");
+var assert    = require("chai").assert;
+var _         = require("lodash")
+var check     = TestUtils.check;
+
+function generateArrayOfObjects() {
+  return JSC.array()().map(function() { return JSC.object()(); });
+}
+
+module.exports = function() {
+  describe("#merge", function() {
+    function generateMergeTestsFor(specifiers) {
+      var runs = 100;
+
+      function checkMultiple(callback) {
+        check(runs, specifiers, function(list) {
+          var useVarArgs = !(list instanceof Array);
+
+          if (arguments.length > 1) {
+            list = Array.prototype.slice.call(arguments);
+          } else if (useVarArgs) {
+            list = [list]
+          }
+
+          assert.notStrictEqual(list.length, 0, "Can't usefully check merge() with no objects");
+
+          var immutable = Immutable(list[0]);
+
+          function runMerge(others) {
+            others = others || list;
+
+            return useVarArgs ?
+              immutable.merge.apply(immutable, others) :
+              immutable.merge(others);
+          }
+
+          callback(immutable, list, runMerge);
+        })
+      }
+
+      it("prioritizes the argument's properties", function() {
+        checkMultiple(function(immutable, mutables, runMerge) {
+          var expectedChanges = {};
+
+          _.each(mutables, function(mutable) {
+            var keys = _.keys(immutable);
+
+            assert.notStrictEqual(keys.length, 0, "Can't usefully check merge() with an empty object");
+
+            // Randomly change some values that share keys with the immutable.
+            _.range(0, _.random(0, keys.length)).forEach(function(keyIndex) {
+              var key      = keys[keyIndex],
+                  value    = immutable[key],
+                  suffix   = JSC.string()(),
+                  newValue = value + suffix;
+
+              assert.notStrictEqual(value, newValue, "Failed to change value (" + value + ") by appending \"" + suffix + "\"");
+
+              // Record that we expect this to end up in the final result.
+              expectedChanges[key] = newValue;
+
+              mutable[key]  = newValue;
+            });
+          });
+
+          var result = runMerge(mutables);
+
+          _.each(expectedChanges, function(expectedValue, key) {
+            assert.notStrictEqual(expectedValue, immutable[key],
+              "Expected to change key (" + key + "), but expected change was the same as the old value (" + expectedValue + ")");
+
+            assert.strictEqual(expectedValue, result[key],
+              "The merged object did not keep the key/newValue pair as expected.");
+          });
+        });
+      });
+
+      it("contains all the arguments' properties", function() {
+        checkMultiple(function(immutable, mutables, runMerge) {
+          var result = runMerge();
+
+          _.each(mutables, function(mutable, index) {
+            _.each(mutable, function (value, key) {
+              assert(result.hasOwnProperty(key));
+            });
+          });
+        });
+      });
+
+      it("contains all the original's properties", function() {
+        checkMultiple(function(immutable, mutables, runMerge) {
+          var result = runMerge();
+
+          _.each(immutable, function (value, key) {
+            assert(result.hasOwnProperty(key));
+          });
+        });
+      });
+
+      it("returns an Immutable Object", function() {
+        checkMultiple(function(immutable, mutables, runMerge) {
+          var result = runMerge();
+
+          assert.instanceOf(result, Object);
+          assert(Immutable.isImmutable(result));
+        });
+      });
+    }
+
+    describe("when passed a single object", function() {
+      generateMergeTestsFor([JSC.object()]);
+    });
+
+    describe("when passed multiple objects", function() {
+      generateMergeTestsFor([JSC.object(), JSC.object(), JSC.object()]);
+    });
+
+    describe("when passed an array of objects", function() {
+      generateMergeTestsFor([generateArrayOfObjects]);
+    });
+  });
+};
