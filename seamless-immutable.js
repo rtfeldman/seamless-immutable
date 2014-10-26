@@ -194,7 +194,7 @@
       // The most common use case: just merge one object into the existing one.
       for (var key in arg) { result[key] = arg[key]; }
     } else {
-      // We also accept either an array or multiple arguments.
+      // We also accept either an Array or multiple arguments.
       var others = (arg instanceof Array) ? arg :
         Array.prototype.slice.call(arguments);
         // Note: If we don't convert arguments into an Array, IE9 will end up
