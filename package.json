@@ -15,7 +15,9 @@
   },
   "scripts": {
     "test": "mocha test/*.spec.js",
+    "test-watch": "mocha --watch test/*.spec.js",
     "zuul": "zuul -- test/*.spec.js",
+    "zuul-local": "zuul --local -- test/*.spec.js",
     "travis-test": "npm test && npm run zuul"
   },
   "repository": {
