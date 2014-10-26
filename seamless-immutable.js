@@ -184,18 +184,20 @@
       return this;
     }
 
+    var receivedArray = arg instanceof Array
+
     // Start by shallowly cloning this object.
     var result = {};
 
     for (var key in this) { result[key] = this[key]; }
 
     // Achieve prioritization by overriding previous values that get in the way.
-    if (arguments.length === 1) {
+    if (!receivedArray && arguments.length === 1) {
       // The most common use case: just merge one object into the existing one.
       for (var key in arg) { result[key] = arg[key]; }
     } else {
       // We also accept either an Array or multiple arguments.
-      var others = (arg instanceof Array) ? arg :
+      var others = receivedArray ? arg :
         Array.prototype.slice.call(arguments);
         // Note: If we don't convert arguments into an Array, IE9 will end up
         // including the arguments object in the final result object.
