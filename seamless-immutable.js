@@ -157,14 +157,18 @@
       return this;
     }
 
+    // Accept either an array or varargs.
+    if (!(others instanceof Array)) {
+      others = Array.prototype.slice.call(arguments);
+      // Note: If we don't turn arguments into an Array, IE9 will end up
+      // including the arguments object in the final result object.
+      // Can't make this stuff up.
+    }
+
     var result = {};
 
     for (var key in this) {
       result[key] = this[key];
-    }
-
-    if (!(others instanceof Array)) {
-      others = arguments;
     }
 
     // Loop through the other objects in order, achieving prioritization by
