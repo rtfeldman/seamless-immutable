@@ -6,7 +6,7 @@
   "authors": [
     "Richard Feldman <richard.t.feldman@gmail.com>"
   ],
-  "description": "Immutable data structures for JavaScript which are backwards compatible with normal JS Arrays and Objects.",
+  "description": "Immutable data structures for JavaScript which are backwards-compatible with normal JS Arrays and Objects.",
   "keywords": [
     "immutable"
   ],

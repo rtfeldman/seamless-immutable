@@ -1,7 +1,7 @@
 seamless-immutable
 ==================
 
-Immutable JS data structures which are backwards compatible with normal Arrays and Objects.
+Immutable JS data structures which are backwards-compatible with normal Arrays and Objects.
 
 Use them in `for` loops, pass them to functions expecting vanilla JavaScript data structures, etc.
 
