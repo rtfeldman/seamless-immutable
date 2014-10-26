@@ -120,7 +120,7 @@
   /**
    * Returns an Immutable copy of the object without the given keys included.
    *
-   * @param {array} - A list of strings representing the keys to exclude in the return value. Instead of providing a single array, this method can also be called by passing multiple strings as separate arguments.
+   * @param {array} keysToRemove - A list of strings representing the keys to exclude in the return value. Instead of providing a single array, this method can also be called by passing multiple strings as separate arguments.
    */
   function without(keysToRemove) {
     // Calling .without() with no arguments is a no-op. Don't bother cloning.
@@ -139,6 +139,33 @@
       if (!(key in keysToRemove)) {
         result[key] = this[key];
       }
+    }
+
+    return makeImmutableObject(result);
+  }
+
+  /**
+   * Effectively performs a [map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map) over the elements in the array, expecting that the iterator function
+   * will return an array of two elements - the first representing a key, the other
+   * a value. Then returns an Immutable Object constructed of those keys and values.
+   *
+   * @param {function} iterator - A function which should return an array of two elements - the first representing the desired key, the other the desired value.
+   */
+  function asObject(iterator) {
+    // If no iterator was provided, assume the identity function
+    // (suggesting this array is already a list of key/value pairs.)
+    if (typeof iterator !== "function") {
+      iterator = function(value) { return value };
+    }
+
+    var result = {};
+
+    for (index in this) {
+      var pair  = iterator(this[index]),
+          key   = pair[0],
+          value = pair[1];
+
+      result[key] = value;
     }
 
     return makeImmutableObject(result);
