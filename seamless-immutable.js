@@ -151,34 +151,33 @@
    *
    * @param {object} other - The other object to merge. Multiple objects can be passed, either as an array or as extra arguments. In such a case, the later an object appears in that list, the higher its priority.
    */
-  function merge(others) {
+  function merge(arg) {
     // Calling .merge() with no arguments is a no-op. Don't bother cloning.
     if (arguments.length === 0) {
       return this;
     }
 
-    // Accept either an array or varargs.
-    if (!(others instanceof Array)) {
-      others = Array.prototype.slice.call(arguments);
-      // Note: If we don't turn arguments into an Array, IE9 will end up
-      // including the arguments object in the final result object.
-      // Can't make this stuff up.
-    }
-
     // Start by shallowly cloning this object.
     var result = {};
 
-    for (var key in this) {
-      result[key] = this[key];
-    }
+    for (var key in this) { result[key] = this[key]; }
 
-    // Loop through the other objects in order, achieving prioritization by
-    // overwriting any previous values that get in the way.
-    for (var index in others) {
-      var other = others[index];
+    // Achieve prioritization by overriding previous values that get in the way.
+    if (arguments.length === 1) {
+      // The most common use case: just merge one object into the existing one.
+      for (var key in arg) { result[key] = arg[key]; }
+    } else {
+      // We also accept either an array or multiple arguments.
+      var others = (arg instanceof Array) ? arg :
+        Array.prototype.slice.call(arguments);
+        // Note: If we don't convert arguments into an Array, IE9 will end up
+        // including the arguments object in the final result object.
+        // Can't make this stuff up.
 
-      for (var key in other) {
-        result[key] = other[key];
+      for (var index in others) {
+        var other = others[index];
+
+        for (var key in other) { result[key] = other[key]; }
       }
     }
 
