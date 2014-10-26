@@ -3,9 +3,14 @@ var JSC       = require("jscheck");
 var TestUtils = require("./TestUtils.js");
 var assert    = require("chai").assert;
 var _         = require("lodash")
+var check     = TestUtils.check;
 
 var identityFunction      = TestUtils.identityFunction;
 var checkImmutableMutable = TestUtils.checkImmutableMutable(100, [JSC.object()]);
+
+function generateArrayOfObjects() {
+  return JSC.array()().map(function() { return JSC.object()(); });
+}
 
 function notParseableAsInt(str) {
   return parseInt(str).toString() !== str;
@@ -132,69 +137,114 @@ describe("ImmutableObject", function() {
   });
 
   describe("#merge", function() {
-    it("prioritizes the argument's properties", function() {
-      checkImmutableMutable(function(immutable, mutable) {
-        // Pick a key/value pair in the immutable object, and add "foo" to
-        // the value to arrive at newValue, which is necessarily different.
-        var keys   = Object.keys(immutable),
-          other    = JSC.object()(),
-          key      = keys[0],
-          value    = immutable[key],
-          newValue = value + "foo";
+    function generateMergeTestsFor(specifiers) {
+      var runs = 100;
 
-        assert.notEqual(keys.length, 0, "Can't usefully check merge() with an empty object!");
-        assert.notEqual(newValue, immutable[key], "Failed to make a different value by appending 'foo'");
+      function checkMultiple(callback) {
+        check(runs, specifiers, function(list) {
+          var useVarArgs = !(list instanceof Array);
 
-        // Mutate the other object so it has the key/newValue pair.
-        other[key] = newValue;
-
-        var result = immutable.merge(other);
-
-        assert.deepEqual(newValue, result[key], "The merged object did not keep the key/newValue pair as expected.");
-      });
-    });
-
-    it("contains all the argument's properties", function() {
-      checkImmutableMutable(function(immutable, mutable) {
-        var other  = JSC.object()();
-        var result = immutable.merge(other);
-
-        _.each(other, function (value, key) {
-          assert.deepEqual(value, result[key]);
-        });
-      });
-    });
-
-    it("contains all the original's properties, except where the argument has those properties", function() {
-      checkImmutableMutable(function(immutable, mutable) {
-        var
-          other    = JSC.object()(),
-          key      = _.keys(immutable)[0],
-          value    = immutable[key],
-          newValue = value + "foo";
-
-        other[key] = newValue;
-
-        assert.notEqual(newValue, immutable[key]);
-
-        var result = immutable.merge(other);
-
-        _.each(immutable, function (value, key) {
-          if (!other.hasOwnProperty(key)) {
-            assert.deepEqual(value, result[key]);
+          if (arguments.length > 1) {
+            list = Array.prototype.slice.call(arguments);
+          } else if (useVarArgs) {
+            list = [list]
           }
+
+          assert.notStrictEqual(list.length, 0, "Can't usefully check merge() with no objects");
+
+          var immutable = Immutable(list[0]);
+
+          function runMerge(others) {
+            others = others || list;
+
+            return useVarArgs ?
+              immutable.merge.apply(immutable, others) :
+              immutable.merge(others);
+          }
+
+          callback(immutable, list, runMerge);
+        })
+      }
+
+      it("prioritizes the argument's properties", function() {
+        checkMultiple(function(immutable, mutables, runMerge) {
+          var expectedChanges = {};
+
+          _.each(mutables, function(mutable) {
+            var keys = _.keys(immutable);
+
+            assert.notStrictEqual(keys.length, 0, "Can't usefully check merge() with an empty object");
+
+            // Randomly change some values that share keys with the immutable.
+            _.range(0, _.random(0, keys.length)).forEach(function(keyIndex) {
+              var key      = keys[keyIndex],
+                  value    = immutable[key],
+                  suffix   = JSC.string()(),
+                  newValue = value + suffix;
+
+              assert.notStrictEqual(value, newValue, "Failed to change value (" + value + ") by appending \"" + suffix + "\"");
+
+              // Record that we expect this to end up in the final result.
+              expectedChanges[key] = newValue;
+
+              mutable[key]  = newValue;
+            });
+          });
+
+          var result = runMerge(mutables);
+
+          _.each(expectedChanges, function(expectedValue, key) {
+            assert.notStrictEqual(expectedValue, immutable[key],
+              "Expected to change key (" + key + "), but expected change was the same as the old value (" + expectedValue + ")");
+
+            assert.strictEqual(expectedValue, result[key],
+              "The merged object did not keep the key/newValue pair as expected.");
+          });
         });
       });
+
+      it("contains all the arguments' properties", function() {
+        checkMultiple(function(immutable, mutables, runMerge) {
+          var result = runMerge();
+
+          _.each(mutables, function(mutable, index) {
+            _.each(mutable, function (value, key) {
+              assert(result.hasOwnProperty(key));
+            });
+          });
+        });
+      });
+
+      it("contains all the original's properties", function() {
+        checkMultiple(function(immutable, mutables, runMerge) {
+          var result = runMerge();
+
+          _.each(immutable, function (value, key) {
+            assert(result.hasOwnProperty(key));
+          });
+        });
+      });
+
+      it("returns an Immutable Object", function() {
+        checkMultiple(function(immutable, mutables, runMerge) {
+          var result = runMerge();
+
+          assert.instanceOf(result, Object);
+          assert(Immutable.isImmutable(result));
+        });
+      });
+    }
+
+    describe("when passed a single object", function() {
+      generateMergeTestsFor([JSC.object()]);
     });
 
-    it("returns immutable objects", function() {
-      checkImmutableMutable(function(immutable, mutable) {
-        var other  = JSC.object()();
-        var result = immutable.merge(mutable);
+    describe("when passed multiple objects", function() {
+      generateMergeTestsFor([JSC.object(), JSC.object(), JSC.object()]);
+    });
 
-        assert.instanceOf(result, Object);
-        assert.isTrue(Immutable.isImmutable(result));
-      });
+    describe("when passed an array of objects", function() {
+      generateMergeTestsFor([generateArrayOfObjects]);
     });
   });
 });

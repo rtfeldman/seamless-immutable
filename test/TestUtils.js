@@ -79,7 +79,7 @@ function check(runs, generators, runTest) {
   }
 
   for (completed=0; completed < runs; completed++) {
-    var generated = generators.map(function(generator) { return generator() });
+    var generated = generators.map(function(generator) { return generator.call(JSC); });
 
     runTest.apply(runTest, generated);
   }
