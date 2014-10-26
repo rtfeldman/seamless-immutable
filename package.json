@@ -5,7 +5,7 @@
   "main": "seamless-immutable.js",
   "dependencies": {
     "jscheck": "0.2.0",
-    "zuul": "^1.11.2"
+    "zuul": "1.11.2"
   },
   "devDependencies": {
     "chai": "1.9.2",
