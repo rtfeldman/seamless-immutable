@@ -2,8 +2,6 @@ var Immutable = require("../seamless-immutable.js");
 var JSC       = require("jscheck");
 var assert    = require("chai").assert;
 
-var timeoutMs = 3000;
-
 function isEqual(expected, actual) {
   if ((expected instanceof Array) && (actual instanceof Array)) {
     if (expected.length !== actual.length) {
