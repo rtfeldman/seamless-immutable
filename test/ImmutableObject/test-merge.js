@@ -40,7 +40,7 @@ module.exports = function() {
         })
       }
 
-      it("prioritizes the argument's properties", function() {
+      it("prioritizes the arguments' properties", function() {
         checkMultiple(function(immutable, mutables, runMerge) {
           var expectedChanges = {};
 
@@ -50,18 +50,26 @@ module.exports = function() {
             assert.notStrictEqual(keys.length, 0, "Can't usefully check merge() with an empty object");
 
             // Randomly change some values that share keys with the immutable.
-            _.range(0, _.random(0, keys.length)).forEach(function(keyIndex) {
-              var key      = keys[keyIndex],
-                  value    = immutable[key],
-                  suffix   = JSC.string()(),
-                  newValue = value + suffix;
+            _.each(keys, function(key) {
+              if (Math.random() > 0.5) {
+                var value    = immutable[key],
+                    suffix   = JSC.string()(),
+                    newValue = value + suffix;
 
-              assert.notStrictEqual(value, newValue, "Failed to change value (" + value + ") by appending \"" + suffix + "\"");
+                assert.notStrictEqual(value, newValue, "Failed to change value (" + value + ") by appending \"" + suffix + "\"");
 
-              // Record that we expect this to end up in the final result.
-              expectedChanges[key] = newValue;
+                // Record that we expect this to end up in the final result.
+                expectedChanges[key] = newValue;
 
-              mutable[key]  = newValue;
+                mutable[key]  = newValue;
+              } else if (mutable.hasOwnProperty(key) && mutable[key] !== immutable[key]) {
+                // NaN will break tests, though not the actual function.
+                if (isNaN(mutable[key])) {
+                  mutable[key] = 0;
+                }
+
+                expectedChanges[key] = mutable[key];
+              }
             });
           });
 
@@ -71,7 +79,7 @@ module.exports = function() {
             assert.notStrictEqual(expectedValue, immutable[key],
               "Expected to change key (" + key + "), but expected change was the same as the old value (" + expectedValue + ")");
 
-            assert.strictEqual(expectedValue, result[key],
+            assert.strictEqual(result[key], expectedValue,
               "The merged object did not keep the key/newValue pair as expected.");
           });
         });
