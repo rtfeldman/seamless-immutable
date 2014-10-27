@@ -48,8 +48,13 @@
     "map", "filter", "slice", "concat", "reduce", "reduceRight"
   ]);
 
-  function ImmutableError() {}
-  ImmutableError.prototype = Error.prototype;
+  function ImmutableError(message) {
+    this.name    = 'ImmutableError';
+    this.message = message;
+    this.stack   = (new Error()).stack;
+  }
+
+  ImmutableError.prototype = new Error;
 
   function makeImmutable(obj, bannedMethods) {
     // Make all mutating methods throw exceptions.
