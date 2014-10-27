@@ -49,12 +49,12 @@
   ]);
 
   function ImmutableError(message) {
-    this.name    = 'ImmutableError';
-    this.message = message;
-    this.stack   = (new Error()).stack;
-  }
+    var err       = new Error(message);
+    err.__proto__ = ImmutableError;
 
-  ImmutableError.prototype = new Error;
+    return err;
+  }
+  ImmutableError.prototype = Error.prototype;
 
   function makeImmutable(obj, bannedMethods) {
     // Make all mutating methods throw exceptions.
