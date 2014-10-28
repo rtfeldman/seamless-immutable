@@ -13,7 +13,7 @@
   function banProperty(target, methodName) {
     addPropertyTo(target, methodName, function() {
       throw new ImmutableError("The " + methodName +
-        " method cannot be invoked on an ImmutableArray.");
+        " method cannot be invoked on an Immutable Array.");
     });
   }
 
