@@ -115,6 +115,14 @@ module.exports = function() {
           assert(Immutable.isImmutable(result));
         });
       });
+
+      // Sanity check to make sure our QuickCheck logic isn't off the rails.
+      it("passes a basic sanity check on canned input", function() {
+        var expected = Immutable({all: "your base", are: {belong: "to us"}});
+        var actual   = Immutable({all: "your base", are: {belong: "to them"}}).merge({are: {belong: "to us"}})
+
+        assert.deepEqual(actual, expected);
+      });
     }
 
     describe("when passed a single object", function() {
