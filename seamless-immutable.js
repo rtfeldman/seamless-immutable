@@ -135,13 +135,13 @@
 
     // If we weren't given an array, use the arguments list.
     if (!(keysToRemove instanceof Array)) {
-      keysToRemove = Array.slice.call(arguments);
+      keysToRemove = Array.prototype.slice.call(arguments);
     }
 
     var result = {};
 
-    for (key in this) {
-      if (!(key in keysToRemove)) {
+    for (var key in this) {
+      if (keysToRemove.indexOf(key) === -1) {
         result[key] = this[key];
       }
     }
