@@ -7,6 +7,25 @@ var check     = TestUtils.check;
 
 module.exports = function() {
   describe("#asObject", function() {
+    it("works on arrays of various lengths", function() {
+      check(100, [JSC.array()], function(mutableArray) {
+        var keys   = mutableArray.map(function() { return JSC.string()(); })
+        var values = mutableArray.map(function() { return JSC.any()(); })
+        var array  = Immutable(mutableArray);
+
+        var result = array.asObject(function(value, index) {
+          // Check that the index argument we receive works as expected.
+          assert.deepEqual(value, array[index], "Expected array[" + index + "] to be " + value);
+
+          return [keys[index], values[index]]
+        });
+
+        _.each(function(key, index) {
+          assert.deepEqual(values[index], result[key]);
+        });
+      });
+    });
+
     // Sanity check to make sure our QuickCheck logic isn't off the rails.
     it("passes a basic sanity check on canned input", function() {
       var expected = Immutable({all: "your base", are: {belong: "to us"}});
