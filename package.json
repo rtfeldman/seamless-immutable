@@ -5,15 +5,17 @@
   "main": "seamless-immutable.js",
   "devDependencies": {
     "chai": "1.9.2",
+    "istanbul": "0.3.2",
     "jscheck": "0.2.0",
     "lodash": "2.4.1",
     "mocha": "2.0.1",
-    "jscheck": "0.2.0",
+    "mocha-istanbul": "0.2.0",
     "zuul": "1.11.2"
   },
   "scripts": {
     "test": "mocha test/*.spec.js",
     "test-watch": "mocha --watch test/*.spec.js",
+    "coverage": "rm -rf tmp/ && rm -rf html-report/ && istanbul instrument test/ -o tmp/ && mocha --reporter mocha-istanbul tmp/*.spec.js && echo Open html-report/index.html to view results as HTML.",
     "zuul": "zuul -- test/*.spec.js",
     "zuul-local": "zuul --local -- test/*.spec.js",
     "travis-test": "npm test && npm run zuul"
