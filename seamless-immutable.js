@@ -167,7 +167,7 @@
     var result = {};
 
     for (var index in this) {
-      var pair  = iterator(this[index], index);
+      var pair  = iterator(this[index], index, this);
 
       if (!(pair instanceof Array)) {
         throw new Error(
