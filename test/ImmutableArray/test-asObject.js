@@ -26,6 +26,22 @@ module.exports = function() {
       });
     });
 
+    it("works without an iterator on arrays that are already organized properly", function() {
+      check(100, [JSC.array()], function(mutableArray) {
+        var keys   = mutableArray.map(function() { return JSC.string()(); })
+        var values = mutableArray.map(function() { return JSC.any()(); })
+        var array  = Immutable(_.map(mutableArray, function(value, index) {
+          return [keys[index], values[index]];
+        }));
+
+        var result = array.asObject();
+
+        _.each(function(key, index) {
+          assert.deepEqual(values[index], result[key]);
+        });
+      });
+    });
+
     // Sanity check to make sure our QuickCheck logic isn't off the rails.
     it("passes a basic sanity check on canned input", function() {
       var expected = Immutable({all: "your base", are: {belong: "to us"}});
