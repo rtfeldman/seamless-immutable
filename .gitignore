@@ -29,3 +29,5 @@ node_modules
 
 tmp
 html-report
+lcov.info
+lcov-report
