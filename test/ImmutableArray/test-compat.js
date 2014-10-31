@@ -148,7 +148,7 @@ module.exports = function() {
         methodName + "() method", function() {
       checkImmutableMutable(function(immutable, mutable) {
         var methodArgs = specifiers.map(function(generator) { return generator() });
-        assert.isTrue(TestUtils.returnsImmutable(methodName, immutable, mutable, methodArgs));
+        TestUtils.assertImmutable(methodName, immutable, mutable, methodArgs);
       });
     });
   });
