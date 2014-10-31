@@ -87,7 +87,8 @@
       makeMethodReturnImmutable(array, methodName);
     }
 
-    addPropertyTo(array, "flatMap", flatMap);
+    addPropertyTo(array, "flatMap",  flatMap);
+    addPropertyTo(array, "asObject", asObject);
 
     return makeImmutable(array, mutatingArrayMethods);
   }
@@ -165,9 +166,16 @@
 
     var result = {};
 
-    for (index in this) {
-      var pair  = iterator(this[index]),
-          key   = pair[0],
+    for (var index in this) {
+      var pair  = iterator(this[index]);
+
+      if (!(pair instanceof Array)) {
+        throw new Error(
+          "The iterator function passed to asObject must always return a pair, not " +
+          JSON.stringify(pair));
+      }
+
+      var key   = pair[0],
           value = pair[1];
 
       result[key] = value;
