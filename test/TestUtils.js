@@ -2,6 +2,8 @@ var Immutable = require("../seamless-immutable.js");
 var JSC       = require("jscheck");
 var assert    = require("chai").assert;
 
+var timeoutMs = 3000;
+
 function isEqual(expected, actual) {
   if ((expected instanceof Array) && (actual instanceof Array)) {
     if (expected.length !== actual.length) {
@@ -38,16 +40,6 @@ function isEqual(expected, actual) {
   }
 }
 
-function throwsException(exceptionType, logic) {
-  try {
-    logic()
-  } catch (err) {
-    return err instanceof exceptionType;
-  }
-
-  return false;
-}
-
 function identityFunction(obj){ return obj; }
 
 function returnsImmutable(methodName, immutableArray, mutableArray, args) {
@@ -77,7 +69,7 @@ function check(runs, generators, runTest) {
   }
 
   for (completed=0; completed < runs; completed++) {
-    var generated = generators.map(function(generator) { return generator.call(JSC); });
+    var generated = generators.map(function(generator) { return generator() });
 
     runTest.apply(runTest, generated);
   }
@@ -105,7 +97,6 @@ module.exports = {
   isEqual:                 isEqual,
   identityFunction:        identityFunction,
   returnsImmutable:        returnsImmutable,
-  throwsException:         throwsException,
   ImmutableArraySpecifier: ImmutableArraySpecifier,
   check:                   check,
   checkImmutableMutable:   checkImmutableMutable
