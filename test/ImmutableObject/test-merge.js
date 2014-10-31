@@ -125,6 +125,15 @@ module.exports = function() {
       assert.deepEqual(actual, expected);
     });
 
+    it("is a no-op when passed nothing", function() {
+      check(100, [JSC.object()], function(obj) {
+        var expected = Immutable(obj);
+        var actual   = expected.merge();
+
+        assert.deepEqual(actual, expected);
+      });
+    });
+
     describe("when passed a single object", function() {
       generateMergeTestsFor([JSC.object()]);
     });
