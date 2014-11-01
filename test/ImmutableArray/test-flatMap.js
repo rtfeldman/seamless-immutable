@@ -39,6 +39,15 @@ module.exports = function() {
       });
     });
 
+    it("works the same way as flatten when called with no arguments", function() {
+      check(100, [JSC.array()], function(array) {
+        var expected = _.flatten(array);
+        var actual   = Immutable(array).flatMap();
+
+        assert.deepEqual(actual, expected);
+      });
+    });
+
     it("results in an empty array if the iterator function returns empty array", function() {
       var expected = Immutable([]);
       var iterator = function() { return [] };
