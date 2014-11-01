@@ -2,8 +2,6 @@ var Immutable = require("../seamless-immutable.js");
 var JSC       = require("jscheck");
 var assert    = require("chai").assert;
 
-var timeoutMs = 3000;
-
 function assertImmutable(methodName, immutableArray, mutableArray, args) {
   var mutableResult   =   mutableArray[methodName].apply(mutableArray,   args);
   var immutableResult = Immutable(immutableArray[methodName].apply(immutableArray, args));
@@ -24,12 +22,6 @@ function ImmutableArraySpecifier(JSC) {
 function check(runs, generators, runTest) {
   var completed;
 
-  if (typeof generators === "function") {
-    generators = [generators];
-  } else if (!(generators instanceof Array)) {
-    throw new TypeError("Not a valid generator list: " + JSON.stringify(generators))
-  }
-
   for (completed=0; completed < runs; completed++) {
     var generated = generators.map(function(generator) { return generator() });
 
@@ -46,7 +38,7 @@ function checkImmutableMutable(runs, specifiers) {
   return function(callback, extraSpecifiers) {
     extraSpecifiers = extraSpecifiers || [];
 
-  check(runs, specifiers.concat(extraSpecifiers), function(mutable) {
+    check(runs, specifiers.concat(extraSpecifiers), function(mutable) {
       var immutable = Immutable(mutable);
       var args      = Array.prototype.slice.call(arguments);
 
