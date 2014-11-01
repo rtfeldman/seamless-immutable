@@ -16,5 +16,38 @@ module.exports = function() {
 
       assert.deepEqual(actual, expected);
     });
+
+    it("works the same way as map when the iterator function returns non-arrays", function() {
+      check(100, [JSC.array()], function(array) {
+        var returnValues = array.map(function() { return JSC.any()(); });
+        var iterator = function(value, index) { return returnValues[index]; };
+        var expected = _.map(array, iterator);
+        var actual   = Immutable(array).flatMap(iterator);
+
+        assert.deepEqual(actual, expected);
+      });
+    });
+
+    it("works the same way as map followed by flatten when the iterator function returns arrays", function() {
+      check(100, [JSC.array()], function(array) {
+        var returnValues = array.map(function() { return [JSC.any()()]; });
+        var iterator = function(value, index) { return returnValues[index]; };
+        var expected = _.flatten(_.map(array, iterator));
+        var actual   = Immutable(array).flatMap(iterator);
+
+        assert.deepEqual(actual, expected);
+      });
+    });
+
+    it("results in an empty array if the iterator function returns empty array", function() {
+      var expected = Immutable([]);
+      var iterator = function() { return [] };
+
+      check(100, [JSC.array()], function(array) {
+        var actual = Immutable(array).flatMap(iterator);
+
+        assert.deepEqual(actual, expected);
+      });
+    });
   });
 };
