@@ -6,7 +6,7 @@ var _         = require("lodash")
 var check     = TestUtils.check;
 
 var checkImmutableMutable = TestUtils.checkImmutableMutable(100, [JSC.object()]);
-var identityFunction      = TestUtils.identityFunction;
+var identityFunction      = function(arg) { return arg; }
 
 function notParseableAsInt(str) {
   return parseInt(str).toString() !== str;

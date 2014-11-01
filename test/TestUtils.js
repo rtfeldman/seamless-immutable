@@ -4,8 +4,6 @@ var assert    = require("chai").assert;
 
 var timeoutMs = 3000;
 
-function identityFunction(obj){ return obj; }
-
 function assertImmutable(methodName, immutableArray, mutableArray, args) {
   var mutableResult   =   mutableArray[methodName].apply(mutableArray,   args);
   var immutableResult = Immutable(immutableArray[methodName].apply(immutableArray, args));
@@ -58,7 +56,6 @@ function checkImmutableMutable(runs, specifiers) {
 }
 
 module.exports = {
-  identityFunction:        identityFunction,
   assertImmutable:         assertImmutable,
   ImmutableArraySpecifier: ImmutableArraySpecifier,
   check:                   check,

@@ -4,7 +4,7 @@ var TestUtils = require("../TestUtils.js");
 var assert    = require("chai").assert;
 var _         = require("lodash")
 
-var identityFunction      = TestUtils.identityFunction;
+var identityFunction      = function(arg) { return arg; }
 var checkImmutableMutable = TestUtils.checkImmutableMutable(100, [JSC.array()]);
 
 module.exports = function() {
