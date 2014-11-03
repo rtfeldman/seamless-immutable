@@ -42,7 +42,7 @@ Since numbers, strings, `undefined`, and `null` are all immutable to begin with,
 
 1. All the methods that would normally mutate the data structures instead throw `ImmutableError`.
 2. All the methods that return a relevant value now return an immutable equivalent of that value.
-3. Attempting to reassign values to their elements (e.g. `foo[5] = bar`) will not work. It will throw a `TypeError` if [use strict](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode) is enabled, and will fail silently otherwise.
+3. Attempting to reassign values to their elements (e.g. `foo[5] = bar`) will not work. Browsers other than Internet Explorer will throw a `TypeError` if [use strict](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode) is enabled, and in all other cases it will fail silently.
 4. A few additional methods have been added for convenience.
 
 For example:
