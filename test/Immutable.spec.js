@@ -39,6 +39,17 @@ describe("Immutable", function() {
     });
   });
 
+  it("makes a deeply Immutable Object when passed a complex mutable object", function() {
+    var complexObjFactory = JSC.array([ JSC.integer(), JSC.object() ])
+    TestUtils.check(100, [complexObjFactory], function(mutable) {
+      var immutable = Immutable(mutable)
+
+      assert.deepEqual(immutable, mutable)
+      assert.isTrue( Immutable.isImmutable(immutable) )
+      assert.isTrue( Immutable.isImmutable(immutable[1]) )
+    })
+  })
+
   // These are already immutable, and should pass through Immutable() untouched.
   _.each({
     "string":    JSC.string(),
