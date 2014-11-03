@@ -27,7 +27,8 @@
     if (typeof target === "object") {
       return target === null || target.hasOwnProperty(immutabilityTag);
     } else {
-      // Only objects are even potentially mutable.
+      // In JavaScript, only objects are even potentially mutable.
+      // strings, numbers, null, and undefined are all naturally immutable.
       return true;
     }
   }
