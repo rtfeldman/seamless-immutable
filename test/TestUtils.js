@@ -19,6 +19,13 @@ function ComplexObjectSpecifier() {
         JSC.falsy(), JSC.integer(), JSC.number(), JSC.string(),
         true, Infinity, -Infinity])();
 
+      // Don't choose keys that can be parsed as 32-bit unsigned integers,
+      // as browsers make no guarantee on key ordering for those,
+      // and we rely on ordered keys to simplify several tests.
+      if (JSON.stringify(parseInt(key)) === key) {
+        key = key + "n";
+      }
+
       return [key, value];
     }));
   }
