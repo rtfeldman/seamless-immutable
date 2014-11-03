@@ -6,7 +6,7 @@ var _         = require("lodash")
 var check     = TestUtils.check;
 
 function generateArrayOfObjects() {
-  return JSC.array()().map(function() { return JSC.object()(); });
+  return JSC.array()().map(function() { return TestUtils.ComplexObjectSpecifier()(); });
 }
 
 module.exports = function() {

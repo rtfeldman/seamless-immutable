@@ -5,7 +5,7 @@ var assert    = require("chai").assert;
 var _         = require("lodash")
 var check     = TestUtils.check;
 
-var checkImmutableMutable = TestUtils.checkImmutableMutable(100, [JSC.object()]);
+var checkImmutableMutable = TestUtils.checkImmutableMutable(100, [TestUtils.ComplexObjectSpecifier()]);
 var identityFunction      = function(arg) { return arg; }
 
 function notParseableAsInt(str) {

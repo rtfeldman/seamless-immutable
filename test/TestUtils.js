@@ -1,6 +1,7 @@
 var Immutable = require("../seamless-immutable.js");
 var JSC       = require("jscheck");
 var assert    = require("chai").assert;
+var _         = require("lodash");
 
 function assertImmutable(methodName, immutableArray, mutableArray, args) {
   var mutableResult   =   mutableArray[methodName].apply(mutableArray,   args);
