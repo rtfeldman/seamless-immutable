@@ -9,6 +9,20 @@ function assertImmutable(methodName, immutableArray, mutableArray, args) {
   assert.deepEqual(immutableResult, mutableResult);
 }
 
+// Returns an object which may or may not contain nested objects and arrays.
+function ComplexObjectSpecifier() {
+  return function() {
+    return _.object(_.map(JSC.array()(), function() {
+      var key   = JSC.string()();
+      var value = JSC.one_of([JSC.array(), JSC.object(),
+        JSC.falsy(), JSC.integer(), JSC.number(), JSC.string(),
+        true, Infinity, -Infinity])();
+
+      return [key, value];
+    }));
+  }
+}
+
 function ImmutableArraySpecifier(JSC) {
   var args = Array.prototype.slice.call(arguments);
 
@@ -50,6 +64,7 @@ function checkImmutableMutable(runs, specifiers) {
 module.exports = {
   assertImmutable:         assertImmutable,
   ImmutableArraySpecifier: ImmutableArraySpecifier,
+  ComplexObjectSpecifier:  ComplexObjectSpecifier,
   check:                   check,
   checkImmutableMutable:   checkImmutableMutable
 }
