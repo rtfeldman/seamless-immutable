@@ -90,6 +90,10 @@
     addPropertyTo(array, "flatMap",  flatMap);
     addPropertyTo(array, "asObject", asObject);
 
+    for(var i = 0, length = array.length; i < length; i++) {
+      array[i] = Immutable(array[i])
+    }
+
     return makeImmutable(array, mutatingArrayMethods);
   }
 
