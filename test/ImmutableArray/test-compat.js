@@ -97,16 +97,6 @@ module.exports = function() {
         }, [JSC.integer(), JSC.any()]);
       });
 
-      it("throws exceptions when attempting to directly mutate elements in strict mode", function() {
-        'use strict'
-
-        checkImmutableMutable(function(immutable, mutable, randomIndex, randomData) {
-          assert.throw(function() {
-            immutable[randomIndex] = randomData;
-          });
-        }, [JSC.integer(), JSC.any()]);
-      });
-
       it("makes nested content immutable as well", function() {
         checkImmutableMutable(function(immutable, mutable, innerArray, obj) {
           mutable.push(innerArray); // Make a nested immutable
