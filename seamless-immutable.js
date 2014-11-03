@@ -27,8 +27,8 @@
     if (typeof target === "object") {
       return target === null || target.hasOwnProperty(immutabilityTag);
     } else {
-      // Only objects are even potentially mutable.
-      return true;
+      // Only objects are even potentially immutable.
+      return false;
     }
   }
 
