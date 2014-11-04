@@ -251,10 +251,8 @@
       // Don't freeze the object we were given; make a clone and use that.
       var clone = {};
 
-      if (obj !== null && obj !== undefined) {
-        for (var key in obj) {
-          clone[key] = Immutable(obj[key]);
-        }
+      for (var key in obj) {
+        clone[key] = Immutable(obj[key]);
       }
 
       return makeImmutableObject(clone);
