@@ -191,17 +191,26 @@
   }
 
   function toMutable(thisArg) {
-    var obj = (typeof thisArg === 'undefined' ? this : thisArg )
+    var result, obj;
 
+    obj = (typeof thisArg === 'undefined' ? this : thisArg );
+
+    // returns obj if falsy, non-object, and not immutable
     if( !obj || typeof obj !== 'object' || !obj.hasOwnProperty(immutabilityTag) ) { return obj }
 
     if (obj instanceof Array) {
-      var result = []
+      result = [];
       for(var i = 0, length = obj.length; i < length; i++) {
-        result.push(toMutable(obj[i]))
+        result.push(toMutable(obj[i]));
       }
-      return result
+    } else {
+      result = {};
+      for (var key in obj) {
+        result[key] = obj[key];
+      }
     }
+
+    return result;
   }
 
   /**
@@ -250,6 +259,7 @@
   function makeImmutableObject(obj) {
     addPropertyTo(obj, "merge", merge);
     addPropertyTo(obj, "without", without);
+    addPropertyTo(obj, "toMutable", toMutable);
 
     return makeImmutable(obj, mutatingObjectMethods);
   }
