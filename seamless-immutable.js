@@ -90,6 +90,7 @@
 
     addPropertyTo(array, "flatMap",  flatMap);
     addPropertyTo(array, "asObject", asObject);
+    addPropertyTo(array, "toMutable", toMutable);
 
     for(var i = 0, length = array.length; i < length; i++) {
       array[i] = Immutable(array[i])
@@ -187,6 +188,20 @@
     }
 
     return makeImmutableObject(result);
+  }
+
+  function toMutable(thisArg) {
+    var obj = (typeof thisArg === 'undefined' ? this : thisArg )
+
+    if( !obj || typeof obj !== 'object' || !obj.hasOwnProperty(immutabilityTag) ) { return obj }
+
+    if (obj instanceof Array) {
+      var result = []
+      for(var i = 0, length = obj.length; i < length; i++) {
+        result.push(toMutable(obj[i]))
+      }
+      return result
+    }
   }
 
   /**
