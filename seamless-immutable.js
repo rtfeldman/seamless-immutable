@@ -90,7 +90,7 @@
 
     addPropertyTo(array, "flatMap",  flatMap);
     addPropertyTo(array, "asObject", asObject);
-    addPropertyTo(array, "toMutable", toMutable);
+    addPropertyTo(array, "toMutable", toMutableArray);
 
     for(var i = 0, length = array.length; i < length; i++) {
       array[i] = Immutable(array[i])
@@ -156,6 +156,22 @@
     return makeImmutableObject(result);
   }
 
+  function toMutableArray(opts) {
+    var result = []
+
+    if(!!opts && opts['deep']) {
+      for(var i = 0, length = this.length; i < length; i++) {
+        result.push( toMutable(this[i]) );
+      }
+    } else {
+      for(var i = 0, length = this.length; i < length; i++) {
+        result.push(this[i]);
+      }
+    }
+
+    return result
+  }
+
   /**
    * Effectively performs a [map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map) over the elements in the array, expecting that the iterator function
    * will return an array of two elements - the first representing a key, the other
@@ -190,27 +206,9 @@
     return makeImmutableObject(result);
   }
 
-  function toMutable(thisArg) {
-    var result, obj;
-
-    obj = (typeof thisArg === 'undefined' ? this : thisArg );
-
-    // returns obj if falsy, non-object, and not immutable
-    if( !obj || typeof obj !== 'object' || !obj.hasOwnProperty(immutabilityTag) ) { return obj }
-
-    if (obj instanceof Array) {
-      result = [];
-      for(var i = 0, length = obj.length; i < length; i++) {
-        result.push(toMutable(obj[i]));
-      }
-    } else {
-      result = {};
-      for (var key in obj) {
-        result[key] = obj[key];
-      }
-    }
-
-    return result;
+  function toMutable(obj) {
+    if( !obj || !obj.hasOwnProperty(immutabilityTag) ) { return obj }
+    return obj.toMutable({deep: true})
   }
 
   /**
@@ -255,11 +253,27 @@
     return makeImmutableObject(result);
   };
 
+  function toMutableObject(opts) {
+    var result = {}
+
+    if(!!opts && opts['deep']) {
+      for (var key in this) {
+        result[key] = toMutable(this[key]);
+      };
+    } else {
+      for (var key in this) {
+        result[key] = this[key];
+      };
+    }
+
+    return result
+  };
+
   // Finalizes an object with immutable methods, freezes it, and returns it.
   function makeImmutableObject(obj) {
     addPropertyTo(obj, "merge", merge);
     addPropertyTo(obj, "without", without);
-    addPropertyTo(obj, "toMutable", toMutable);
+    addPropertyTo(obj, "toMutable", toMutableObject);
 
     return makeImmutable(obj, mutatingObjectMethods);
   }
