@@ -7,24 +7,25 @@ var check     = TestUtils.check;
 
 describe("#toMutable", function() {
   it("returns a shallow mutable copy if not provided the deep flag", function() {
-    check(100, [ JSC.array([TestUtils.TraversableObjectSpecifier, JSC.any()]) ], function(array) {
-      immutable = Immutable(array)
+    check(100, [ TestUtils.TraversableObjectSpecifier ], function(obj) {
+      immutable = Immutable(obj)
       mutable = immutable.toMutable()
-      assert.isFalse( Immutable.isImmutable(mutable))
-      assert.isTrue( Immutable.isImmutable(mutable[0]))
-      assert.isTrue( Immutable.isImmutable(mutable[0]['deep']))
+      assert.isFalse( Immutable.isImmutable(mutable) )
+      assert.isTrue( Immutable.isImmutable(mutable['complex']) )
+      assert.isTrue( Immutable.isImmutable(mutable['deep']['complex']) )
+
       assert.deepEqual(immutable,mutable)
     })
-
   })
 
   it("returns a deep mutable copy if provided the deep flag", function() {
-    check(100, [ JSC.array([TestUtils.TraversableObjectSpecifier, JSC.any()]) ], function(array) {
-      immutable = Immutable(array)
+    check(100, [ TestUtils.TraversableObjectSpecifier ], function(obj) {
+      immutable = Immutable(obj)
       mutable = immutable.toMutable({ deep: true })
-      assert.isFalse( Immutable.isImmutable(mutable))
-      assert.isFalse( Immutable.isImmutable(mutable[0]))
-      assert.isFalse( Immutable.isImmutable(mutable[0]['deep']))
+      assert.isFalse( Immutable.isImmutable(mutable) )
+      assert.isFalse( Immutable.isImmutable(mutable['complex']) )
+      assert.isFalse( Immutable.isImmutable(mutable['deep']['complex']) )
+
       assert.deepEqual(immutable,mutable)
     })
   })
