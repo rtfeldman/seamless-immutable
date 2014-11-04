@@ -10,24 +10,36 @@ function assertImmutable(methodName, immutableArray, mutableArray, args) {
   assert.deepEqual(immutableResult, mutableResult);
 }
 
+function withoutItengerKeys(obj) {
+  return _.object(_.map(obj, function(value, key) {
+    // Don't choose keys that can be parsed as 32-bit unsigned integers,
+    // as browsers make no guarantee on key ordering for those,
+    // and we rely on ordered keys to simplify several tests.
+    if (JSON.stringify(parseInt(key)) === key && key !== Infinity && key !== -Infinity && !isNaN(key)) {
+      return [key + "n", value];
+    }
+
+    return [key, value];
+  }));
+}
+
 // Returns an object which may or may not contain nested objects and arrays.
 function ComplexObjectSpecifier() {
   return function() {
-    return _.object(_.map(JSC.array()(), function() {
+    var obj = _.object(_.map(JSC.array()(), function() {
       var key   = JSC.string()();
       var value = JSC.one_of([JSC.array(), JSC.object(),
         JSC.falsy(), JSC.integer(), JSC.number(), JSC.string(),
         true, Infinity, -Infinity])();
 
-      // Don't choose keys that can be parsed as 32-bit unsigned integers,
-      // as browsers make no guarantee on key ordering for those,
-      // and we rely on ordered keys to simplify several tests.
-      if (JSON.stringify(parseInt(key)) === key) {
-        key = key + "n";
+      if (typeof value === "object") {
+        return [key, withoutItengerKeys(value)];
       }
 
       return [key, value];
     }));
+
+    return withoutItengerKeys(obj);
   }
 }
 
