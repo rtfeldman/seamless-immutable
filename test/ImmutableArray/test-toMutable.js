@@ -9,8 +9,8 @@ module.exports = function() {
   describe("#toMutable", function() {
     it("returns a shallow mutable copy if not provided the deep flag", function() {
       check(100, [ JSC.array([TestUtils.TraversableObjectSpecifier, JSC.any()]) ], function(array) {
-        immutable = Immutable(array);
-        mutable = immutable.toMutable();
+        var immutable = Immutable(array);
+        var mutable = immutable.toMutable();
         assert.isFalse( Immutable.isImmutable(mutable));
         assert.isTrue( Immutable.isImmutable(mutable[0]));
         assert.isTrue( Immutable.isImmutable(mutable[0]['deep']));
@@ -21,8 +21,8 @@ module.exports = function() {
 
     it("returns a deep mutable copy if provided the deep flag", function() {
       check(100, [ JSC.array([TestUtils.TraversableObjectSpecifier, JSC.any()]) ], function(array) {
-        immutable = Immutable(array);
-        mutable = immutable.toMutable({ deep: true });
+        var immutable = Immutable(array);
+        var mutable = immutable.toMutable({ deep: true });
         assert.isFalse( Immutable.isImmutable(mutable));
         assert.isFalse( Immutable.isImmutable(mutable[0]));
         assert.isFalse( Immutable.isImmutable(mutable[0]['deep']));
