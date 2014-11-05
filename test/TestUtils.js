@@ -44,12 +44,12 @@ function ComplexObjectSpecifier() {
 }
 
 function TraversableObjectSpecifier() {
-  var complexFactory = JSC.one_of([JSC.object(), JSC.array()]);
+  var complexFactory = JSC.one_of([ComplexObjectSpecifier(), JSC.array()]);
   var obj = JSC.object({complex: complexFactory,
                         deep: JSC.object({complex: complexFactory})
                      })();
 
-  obj[JSC.string()()] = JSC.any();
+  obj[JSC.string()()] = JSC.any()();
   return withoutItengerKeys(obj);
 }
 
