@@ -117,6 +117,18 @@ Effectively performs a [map](https://developer.mozilla.org/en-US/docs/Web/JavaSc
 will return an array of two elements - the first representing a key, the other
 a value. Then returns an Immutable Object constructed of those keys and values.
 
+### asMutable
+
+```javascript
+var mutableArray = Immutable(["hello", "world"]).asMutable();
+
+mutableArray.push("!!!");
+
+mutableArray // ["hello", "world", "!!!"]
+```
+
+Returns a mutable copy of the array. For a deeply mutable copy, in which any instances of `Immutable` contained in nested data structures within the array have been converted back to mutable data structures, call `.asMutable({deep: true})` instead.
+
 ## Immutable Object
 
 Like a regular Object, but immutable! You can construct these by passing an
@@ -165,6 +177,18 @@ Immutable({the: "forests", will: "echo", with: "laughter"}).without("will", "wit
 Returns an Immutable Object excluding the given keys from the existing object.
 
 Multiple keys can be provided, either in an Array or as extra arguments.
+
+### asMutable
+
+```javascript
+var mutableObject = Immutable({when: "the", levee: "breaks"}).asMutable();
+
+mutableObject.have = "no place to go";
+
+mutableObject // {when: "the", levee: "breaks", have: "no place to go"}
+```
+
+Returns a mutable copy of the object. For a deeply mutable copy, in which any instances of `Immutable` contained in nested data structures within the object have been converted back to mutable data structures, call `.asMutable({deep: true})` instead.
 
 [1]: https://secure.travis-ci.org/rtfeldman/seamless-immutable.svg
 [2]: https://travis-ci.org/rtfeldman/seamless-immutable
