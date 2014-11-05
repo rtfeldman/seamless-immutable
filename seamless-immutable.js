@@ -90,6 +90,7 @@
 
     addPropertyTo(array, "flatMap",  flatMap);
     addPropertyTo(array, "asObject", asObject);
+    addPropertyTo(array, "asMutable", asMutableArray);
 
     for(var i = 0, length = array.length; i < length; i++) {
       array[i] = Immutable(array[i])
@@ -155,6 +156,22 @@
     return makeImmutableObject(result);
   }
 
+  function asMutableArray(opts) {
+    var result = []
+
+    if(opts && opts['deep']) {
+      for(var i = 0, length = this.length; i < length; i++) {
+        result.push( asDeepMutable(this[i]) );
+      }
+    } else {
+      for(var i = 0, length = this.length; i < length; i++) {
+        result.push(this[i]);
+      }
+    };
+
+    return result;
+  }
+
   /**
    * Effectively performs a [map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map) over the elements in the array, expecting that the iterator function
    * will return an array of two elements - the first representing a key, the other
@@ -187,6 +204,11 @@
     }
 
     return makeImmutableObject(result);
+  }
+
+  function asDeepMutable(obj) {
+    if( !obj || !obj.hasOwnProperty(immutabilityTag) ) { return obj };
+    return obj.asMutable({deep: true});
   }
 
   /**
@@ -231,10 +253,27 @@
     return makeImmutableObject(result);
   };
 
+  function asMutableObject(opts) {
+    var result = {};
+
+    if(opts && opts['deep']) {
+      for (var key in this) {
+        result[key] = asDeepMutable(this[key]);
+      };
+    } else {
+      for (var key in this) {
+        result[key] = this[key];
+      };
+    };
+
+    return result;
+  };
+
   // Finalizes an object with immutable methods, freezes it, and returns it.
   function makeImmutableObject(obj) {
     addPropertyTo(obj, "merge", merge);
     addPropertyTo(obj, "without", without);
+    addPropertyTo(obj, "asMutable", asMutableObject);
 
     return makeImmutable(obj, mutatingObjectMethods);
   }

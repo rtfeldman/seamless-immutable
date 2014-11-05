@@ -43,6 +43,16 @@ function ComplexObjectSpecifier() {
   }
 }
 
+function TraversableObjectSpecifier() {
+  var complexFactory = JSC.one_of([ComplexObjectSpecifier(), JSC.array()]);
+  var obj = JSC.object({complex: complexFactory,
+                        deep: JSC.object({complex: complexFactory})
+                     })();
+
+  obj[JSC.string()()] = JSC.any()();
+  return withoutItengerKeys(obj);
+}
+
 function ImmutableArraySpecifier(JSC) {
   var args = Array.prototype.slice.call(arguments);
 
@@ -85,6 +95,7 @@ module.exports = {
   assertImmutable:         assertImmutable,
   ImmutableArraySpecifier: ImmutableArraySpecifier,
   ComplexObjectSpecifier:  ComplexObjectSpecifier,
+  TraversableObjectSpecifier: TraversableObjectSpecifier,
   check:                   check,
   checkImmutableMutable:   checkImmutableMutable
 }
