@@ -90,7 +90,7 @@
 
     addPropertyTo(array, "flatMap",  flatMap);
     addPropertyTo(array, "asObject", asObject);
-    addPropertyTo(array, "toMutable", toMutableArray);
+    addPropertyTo(array, "asMutable", asMutableArray);
 
     for(var i = 0, length = array.length; i < length; i++) {
       array[i] = Immutable(array[i])
@@ -156,12 +156,12 @@
     return makeImmutableObject(result);
   }
 
-  function toMutableArray(opts) {
+  function asMutableArray(opts) {
     var result = []
 
-    if(!!opts && opts['deep']) {
+    if(opts && opts['deep']) {
       for(var i = 0, length = this.length; i < length; i++) {
-        result.push( toMutable(this[i]) );
+        result.push( asDeepMutable(this[i]) );
       }
     } else {
       for(var i = 0, length = this.length; i < length; i++) {
@@ -206,9 +206,9 @@
     return makeImmutableObject(result);
   }
 
-  function toMutable(obj) {
+  function asDeepMutable(obj) {
     if( !obj || !obj.hasOwnProperty(immutabilityTag) ) { return obj };
-    return obj.toMutable({deep: true});
+    return obj.asMutable({deep: true});
   }
 
   /**
@@ -253,12 +253,12 @@
     return makeImmutableObject(result);
   };
 
-  function toMutableObject(opts) {
+  function asMutableObject(opts) {
     var result = {};
 
-    if(!!opts && opts['deep']) {
+    if(opts && opts['deep']) {
       for (var key in this) {
-        result[key] = toMutable(this[key]);
+        result[key] = asDeepMutable(this[key]);
       };
     } else {
       for (var key in this) {
@@ -273,7 +273,7 @@
   function makeImmutableObject(obj) {
     addPropertyTo(obj, "merge", merge);
     addPropertyTo(obj, "without", without);
-    addPropertyTo(obj, "toMutable", toMutableObject);
+    addPropertyTo(obj, "asMutable", asMutableObject);
 
     return makeImmutable(obj, mutatingObjectMethods);
   }

@@ -6,11 +6,11 @@ var _         = require("lodash")
 var check     = TestUtils.check;
 
 module.exports = function() {
-  describe("#toMutable", function() {
+  describe("#asMutable", function() {
     it("returns a shallow mutable copy if not provided the deep flag", function() {
       check(100, [ TestUtils.TraversableObjectSpecifier ], function(obj) {
         var immutable = Immutable(obj);
-        var mutable = immutable.toMutable();
+        var mutable = immutable.asMutable();
         assert.isFalse(Immutable.isImmutable(mutable));
         assert.isTrue(Immutable.isImmutable(mutable['complex']));
         assert.isTrue(Immutable.isImmutable(mutable['deep']['complex']));
@@ -21,7 +21,7 @@ module.exports = function() {
     it("returns a deep mutable copy if provided the deep flag", function() {
       check(100, [ TestUtils.TraversableObjectSpecifier ], function(obj) {
         var immutable = Immutable(obj);
-        var mutable = immutable.toMutable({ deep: true });
+        var mutable = immutable.asMutable({ deep: true });
         assert.isFalse(Immutable.isImmutable(mutable));
         assert.isFalse(Immutable.isImmutable(mutable['complex']));
         assert.isFalse(Immutable.isImmutable(mutable['deep']['complex']));
