@@ -49,7 +49,7 @@ function TraversableObjectSpecifier() {
                         deep: JSC.object({complex: complexFactory})
                      })();
 
-  obj[JSC.string()()] = JSC.any()
+  obj[JSC.string()()] = JSC.any();
   return withoutItengerKeys(obj);
 }
 

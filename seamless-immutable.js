@@ -167,9 +167,9 @@
       for(var i = 0, length = this.length; i < length; i++) {
         result.push(this[i]);
       }
-    }
+    };
 
-    return result
+    return result;
   }
 
   /**
@@ -207,8 +207,8 @@
   }
 
   function toMutable(obj) {
-    if( !obj || !obj.hasOwnProperty(immutabilityTag) ) { return obj }
-    return obj.toMutable({deep: true})
+    if( !obj || !obj.hasOwnProperty(immutabilityTag) ) { return obj };
+    return obj.toMutable({deep: true});
   }
 
   /**
@@ -254,7 +254,7 @@
   };
 
   function toMutableObject(opts) {
-    var result = {}
+    var result = {};
 
     if(!!opts && opts['deep']) {
       for (var key in this) {
@@ -264,9 +264,9 @@
       for (var key in this) {
         result[key] = this[key];
       };
-    }
+    };
 
-    return result
+    return result;
   };
 
   // Finalizes an object with immutable methods, freezes it, and returns it.
