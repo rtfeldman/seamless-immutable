@@ -229,7 +229,7 @@
     // Start by shallowly cloning this object.
     var result = {};
 
-    for (var key in this) { result[key] = this[key]; }
+    for (var key in this) { result[key] = Immutable(this[key]); }
 
     // Achieve prioritization by overriding previous values that get in the way.
     if (!receivedArray && arguments.length === 1) {
@@ -246,7 +246,7 @@
       for (var index in others) {
         var other = others[index];
 
-        for (var key in other) { result[key] = other[key]; }
+        for (var key in other) { result[key] = Immutable(other[key]); }
       }
     }
 
