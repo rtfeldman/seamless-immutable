@@ -29,7 +29,7 @@ module.exports = function() {
           // Make an object that at LEAST contains the specified keys.
           var immutable = Immutable(list).asObject(function(key) {
             return [key, JSC.any()()];
-          }).merge(JSC.object()());
+          }).merge(TestUtils.ComplexObjectSpecifier()());
 
           function runWithout(keys) {
             keys = keys || list;
@@ -77,7 +77,7 @@ module.exports = function() {
     });
 
     it("is a no-op when passed nothing", function() {
-      check(100, [JSC.object()], function(obj) {
+      check(100, [TestUtils.ComplexObjectSpecifier()], function(obj) {
         var expected = Immutable(obj);
         var actual   = expected.without();
 
