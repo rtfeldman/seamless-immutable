@@ -304,6 +304,7 @@
 
   Object.freeze(Immutable);
 
+  /* istanbul ignore if */
   if (typeof module === "object") {
     module.exports = Immutable;
   } else if (typeof exports === "object") {
