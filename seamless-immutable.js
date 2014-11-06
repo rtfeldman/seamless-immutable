@@ -77,7 +77,7 @@
 
     addPropertyTo(obj, methodName, function() {
       return Immutable(currentMethod.apply(obj, arguments));
-    })
+    });
   }
 
   function makeImmutableArray(array) {
@@ -93,7 +93,7 @@
     addPropertyTo(array, "asMutable", asMutableArray);
 
     for(var i = 0, length = array.length; i < length; i++) {
-      array[i] = Immutable(array[i])
+      array[i] = Immutable(array[i]);
     }
 
     return makeImmutable(array, mutatingArrayMethods);
@@ -127,7 +127,7 @@
     }
 
     return makeImmutableArray(result);
-  };
+  }
 
   /**
    * Returns an Immutable copy of the object without the given keys included.
@@ -157,17 +157,17 @@
   }
 
   function asMutableArray(opts) {
-    var result = []
+    var result = [], i, length;
 
-    if(opts && opts['deep']) {
-      for(var i = 0, length = this.length; i < length; i++) {
+    if(opts && opts.deep) {
+      for(i = 0, length = this.length; i < length; i++) {
         result.push( asDeepMutable(this[i]) );
       }
     } else {
-      for(var i = 0, length = this.length; i < length; i++) {
+      for(i = 0, length = this.length; i < length; i++) {
         result.push(this[i]);
       }
-    };
+    }
 
     return result;
   }
@@ -183,7 +183,7 @@
     // If no iterator was provided, assume the identity function
     // (suggesting this array is already a list of key/value pairs.)
     if (typeof iterator !== "function") {
-      iterator = function(value) { return value };
+      iterator = function(value) { return value; };
     }
 
     var result = {};
@@ -200,7 +200,7 @@
   }
 
   function asDeepMutable(obj) {
-    if( !obj || !obj.hasOwnProperty(immutabilityTag) ) { return obj };
+    if( !obj || !obj.hasOwnProperty(immutabilityTag) ) { return obj; }
     return obj.asMutable({deep: true});
   }
 
@@ -217,17 +217,17 @@
       return this;
     }
 
-    var receivedArray = arg instanceof Array
+    var receivedArray = arg instanceof Array;
 
     // Start by shallowly cloning this object.
-    var result = {};
+    var result = {}, key;
 
-    for (var key in this) { result[key] = Immutable(this[key]); }
+    for (key in this) { result[key] = Immutable(this[key]); }
 
     // Achieve prioritization by overriding previous values that get in the way.
     if (!receivedArray && arguments.length === 1) {
       // The most common use case: just merge one object into the existing one.
-      for (var key in arg) { result[key] = Immutable(arg[key]); }
+      for (key in arg) { result[key] = Immutable(arg[key]); }
     } else {
       // We also accept either an Array or multiple arguments.
       var others = receivedArray ? arg :
@@ -239,28 +239,28 @@
       for (var index in others) {
         var other = others[index];
 
-        for (var key in other) { result[key] = Immutable(other[key]); }
+        for (key in other) { result[key] = Immutable(other[key]); }
       }
     }
 
     return makeImmutableObject(result);
-  };
+  }
 
   function asMutableObject(opts) {
-    var result = {};
+    var result = {}, key;
 
-    if(opts && opts['deep']) {
-      for (var key in this) {
+    if(opts && opts.deep) {
+      for (key in this) {
         result[key] = asDeepMutable(this[key]);
       }
     } else {
-      for (var key in this) {
+      for (key in this) {
         result[key] = this[key];
       }
-    };
+    }
 
     return result;
-  };
+  }
 
   // Finalizes an object with immutable methods, freezes it, and returns it.
   function makeImmutableObject(obj) {
