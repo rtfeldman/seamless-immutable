@@ -259,11 +259,11 @@
     if(opts && opts['deep']) {
       for (var key in this) {
         result[key] = asDeepMutable(this[key]);
-      };
+      }
     } else {
       for (var key in this) {
         result[key] = this[key];
-      };
+      }
     };
 
     return result;
