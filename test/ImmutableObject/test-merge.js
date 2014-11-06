@@ -107,12 +107,15 @@ module.exports = function() {
         });
       });
 
-      it("returns an Immutable Object", function() {
+      it("returns a deeply Immutable Object", function() {
         checkMultiple(function(immutable, mutables, runMerge) {
           var result = runMerge();
 
           assert.instanceOf(result, Object);
           assert(Immutable.isImmutable(result));
+          for(key in result) {
+            assert(Immutable.isImmutable( result[key] ));
+          };
         });
       });
     }
