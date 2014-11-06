@@ -204,6 +204,12 @@
     return obj.asMutable({deep: true});
   }
 
+  function quickCopy(src, dest) {
+    for (var key in src) { dest[key] = src[key]; }
+
+    return dest;
+  }
+
   /**
    * Returns an Immutable Object containing the properties and values of both
    * this object and the provided object, prioritizing the provided object's
@@ -217,17 +223,32 @@
       return this;
     }
 
-    var receivedArray = arg instanceof Array;
+    var anyChanges    = false,
+        result        = quickCopy(this, {}), // A shallow clone of this object.
+        receivedArray = (arg instanceof Array),
+        key;
 
-    // Start by shallowly cloning this object.
-    var result = {}, key;
+    // Use the given key to extract a value from the given object, then place
+    // that value in the result object under the same key. If that resulted
+    // in a change from this object's value at that key, set anyChanges = true.
+    function addToResult(currentObj, otherObj, key) {
+      var immutableValue = Immutable(otherObj[key]);
 
-    for (key in this) { result[key] = Immutable(this[key]); }
+      anyChanges = anyChanges ||
+        (!currentObj.hasOwnProperty(key) ||
+        ((immutableValue !== currentObj[key]) &&
+          // Avoid false positives due to (NaN !== NaN) evaluating to true
+          (immutableValue === immutableValue)));
+
+      result[key] = immutableValue;
+    }
 
     // Achieve prioritization by overriding previous values that get in the way.
     if (!receivedArray && arguments.length === 1) {
       // The most common use case: just merge one object into the existing one.
-      for (key in arg) { result[key] = Immutable(arg[key]); }
+      for (key in arg) {
+        addToResult(this, arg, key);
+      }
     } else {
       // We also accept either an Array or multiple arguments.
       var others = receivedArray ? arg :
@@ -239,11 +260,17 @@
       for (var index in others) {
         var other = others[index];
 
-        for (key in other) { result[key] = Immutable(other[key]); }
+        for (key in other) {
+          addToResult(this, other, key);
+        }
       }
     }
 
-    return makeImmutableObject(result);
+    if (anyChanges) {
+      return makeImmutableObject(result);
+    } else {
+      return this;
+    }
   }
 
   function asMutableObject(opts) {
