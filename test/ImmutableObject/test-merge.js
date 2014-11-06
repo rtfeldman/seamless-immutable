@@ -60,6 +60,7 @@ module.exports = function() {
 
                 // Record that we expect this to end up in the final result.
                 expectedChanges[key] = newValue;
+                assert(Immutable.isImmutable(expectedChanges[key]))
 
                 mutable[key]  = newValue;
               } else if (mutable.hasOwnProperty(key) && mutable[key] !== immutable[key]) {
@@ -126,7 +127,7 @@ module.exports = function() {
     });
 
     it("is a no-op when passed nothing", function() {
-      check(100, [JSC.object()], function(obj) {
+      check(100, [TestUtils.ComplexObjectSpecifier()], function(obj) {
         var expected = Immutable(obj);
         var actual   = expected.merge();
 
@@ -135,11 +136,11 @@ module.exports = function() {
     });
 
     describe("when passed a single object", function() {
-      generateMergeTestsFor([JSC.object()]);
+      generateMergeTestsFor([TestUtils.ComplexObjectSpecifier()]);
     });
 
     describe("when passed multiple objects", function() {
-      generateMergeTestsFor([JSC.object(), JSC.object(), JSC.object()]);
+      generateMergeTestsFor([TestUtils.ComplexObjectSpecifier(), TestUtils.ComplexObjectSpecifier(), TestUtils.ComplexObjectSpecifier()]);
     });
 
     describe("when passed an array of objects", function() {
