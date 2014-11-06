@@ -37,5 +37,10 @@
   "bugs": {
     "url": "https://github.com/rtfeldman/seamless-immutable/issues"
   },
+  "jshintConfig": {
+    "newcap": false,
+    "validthis": true,
+    "proto": true
+  },
   "homepage": "https://github.com/rtfeldman/seamless-immutable"
 }
