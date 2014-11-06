@@ -189,15 +189,8 @@
     var result = {};
 
     for (var index in this) {
-      var pair  = iterator(this[index], index, this);
-
-      if (!(pair instanceof Array)) {
-        throw new Error(
-          "The iterator function passed to asObject must always return a pair, not " +
-          JSON.stringify(pair));
-      }
-
-      var key   = pair[0],
+      var pair  = iterator(this[index], index, this),
+          key   = pair[0],
           value = pair[1];
 
       result[key] = value;
