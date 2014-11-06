@@ -92,7 +92,7 @@ module.exports = function() {
 
           _.each(mutables, function(mutable, index) {
             _.each(mutable, function (value, key) {
-              assert(result.hasOwnProperty(key));
+              assert(result.hasOwnProperty(key), "Result " + JSON.stringify(result) + " did not have property " + key);
             });
           });
         });
