@@ -12,8 +12,8 @@ module.exports = function() {
         var immutable = Immutable(array);
         var mutable = immutable.asMutable();
         assert.isFalse( Immutable.isImmutable(mutable));
-        assert.isTrue( Immutable.isImmutable(mutable[0]));
-        assert.isTrue( Immutable.isImmutable(mutable[0]['deep']));
+        TestUtils.assertIsDeeplyImmutable(mutable[0]);
+        TestUtils.assertIsDeeplyImmutable(mutable[0].deep);
         assert.deepEqual(immutable,mutable);
       });
 

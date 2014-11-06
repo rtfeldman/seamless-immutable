@@ -83,7 +83,7 @@ module.exports = function() {
 
       it("is tagged as immutable", function() {
         checkImmutableMutable(function(immutable, mutable) {
-          assert.isTrue(Immutable.isImmutable(immutable));
+          TestUtils.assertIsDeeplyImmutable(immutable);
         })
       });
 
@@ -107,8 +107,10 @@ module.exports = function() {
           assert.strictEqual(immutable.length, mutable.length);
 
           for (var index in mutable) {
-            assert.isTrue(Immutable.isImmutable(immutable[index]));
+            TestUtils.assertIsDeeplyImmutable(immutable[index]);
           }
+
+          TestUtils.assertIsDeeplyImmutable(immutable);
         });
       });
 

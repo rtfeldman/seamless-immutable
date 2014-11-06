@@ -12,8 +12,8 @@ module.exports = function() {
         var immutable = Immutable(obj);
         var mutable = immutable.asMutable();
         assert.isFalse(Immutable.isImmutable(mutable));
-        assert.isTrue(Immutable.isImmutable(mutable['complex']));
-        assert.isTrue(Immutable.isImmutable(mutable['deep']['complex']));
+        TestUtils.assertIsDeeplyImmutable(mutable.complex);
+        TestUtils.assertIsDeeplyImmutable(mutable.deep.complex);
         assert.deepEqual(immutable,mutable);
       })
     })

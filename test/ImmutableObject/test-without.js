@@ -62,7 +62,8 @@ module.exports = function() {
           var result = runWithout();
 
           assert.instanceOf(result, Object);
-          assert(Immutable.isImmutable(result));
+
+          TestUtils.assertIsDeeplyImmutable(result);
         });
       });
     }

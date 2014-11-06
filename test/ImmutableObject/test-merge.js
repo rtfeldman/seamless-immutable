@@ -112,10 +112,7 @@ module.exports = function() {
           var result = runMerge();
 
           assert.instanceOf(result, Object);
-          assert(Immutable.isImmutable(result));
-          for(key in result) {
-            assert(Immutable.isImmutable( result[key] ));
-          };
+          TestUtils.assertIsDeeplyImmutable(result);
         });
       });
     }

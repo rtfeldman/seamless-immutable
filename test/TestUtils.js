@@ -10,6 +10,16 @@ function assertImmutable(methodName, immutableArray, mutableArray, args) {
   assert.deepEqual(immutableResult, mutableResult);
 }
 
+// Immutable.isImmutable only checks (for performance reasons) that objects
+// are shallowly immutable. For tests, though, we want to be thorough!
+function assertIsDeeplyImmutable(obj) {
+  assert(Immutable.isImmutable(obj));
+
+  if (typeof obj === "object") {
+    _.each(obj, assertIsDeeplyImmutable);
+  }
+}
+
 function withoutItengerKeys(obj) {
   return _.object(_.map(obj, function(value, key) {
     // Don't choose keys that can be parsed as 32-bit unsigned integers,
@@ -93,6 +103,7 @@ function checkImmutableMutable(runs, specifiers) {
 
 module.exports = {
   assertImmutable:         assertImmutable,
+  assertIsDeeplyImmutable: assertIsDeeplyImmutable,
   ImmutableArraySpecifier: ImmutableArraySpecifier,
   ComplexObjectSpecifier:  ComplexObjectSpecifier,
   TraversableObjectSpecifier: TraversableObjectSpecifier,
