@@ -234,7 +234,7 @@
     // Achieve prioritization by overriding previous values that get in the way.
     if (!receivedArray && arguments.length === 1) {
       // The most common use case: just merge one object into the existing one.
-      for (var key in arg) { result[key] = arg[key]; }
+      for (var key in arg) { result[key] = Immutable(arg[key]); }
     } else {
       // We also accept either an Array or multiple arguments.
       var others = receivedArray ? arg :
