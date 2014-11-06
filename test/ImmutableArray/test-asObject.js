@@ -8,10 +8,12 @@ var check     = TestUtils.check;
 module.exports = function() {
   describe("#asObject", function() {
     it("works on arrays of various lengths", function() {
-      check(100, [JSC.array()], function(mutableArray) {
-        var keys   = mutableArray.map(function() { return JSC.string()(); })
-        var values = mutableArray.map(function() { return JSC.any()(); })
-        var array  = Immutable(mutableArray);
+      check(100, [TestUtils.ComplexObjectSpecifier()], function(obj) {
+        var keys   = _.keys(obj);
+        var values = _.values(obj);
+        var array  = Immutable(_.map(obj, function(value, key) {
+          return [key, value];
+        }));
 
         var result = array.asObject(function(value, index) {
           // Check that the index argument we receive works as expected.
@@ -20,29 +22,20 @@ module.exports = function() {
           return [keys[index], values[index]]
         });
 
-        _.each(keys, function(key, index) {
-          assert.deepEqual(values[index], result[key]);
-        });
+        assert.deepEqual(result, obj);
       });
     });
 
     it("works without an iterator on arrays that are already organized properly", function() {
-      check(100, [JSC.array()], function(mutableArray) {
-        var keys   = mutableArray.map(function() { return JSC.string()(); })
-        var values = mutableArray.map(function() { return JSC.any()(); })
-        var array  = Immutable(_.map(mutableArray, function(value, index) {
-          return [keys[index], values[index]];
+      check(100, [TestUtils.ComplexObjectSpecifier()], function(obj) {
+        var keys  = _.keys(obj);
+        var array = Immutable(_.map(obj, function(value, key) {
+          return [key, value];
         }));
 
         var result = array.asObject();
 
-        _.each(keys, function(key, index) {
-          var value = values[index];
-
-          assert.deepEqual(key,   array[index][0]);
-          assert.deepEqual(value, array[index][1]);
-          assert.deepEqual(value, result[key]);
-        });
+        assert.deepEqual(result, obj);
       });
     });
 
