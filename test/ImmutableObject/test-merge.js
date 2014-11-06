@@ -108,6 +108,27 @@ module.exports = function() {
         });
       });
 
+      it("does nothing when passed a merge that will result in no changes", function() {
+        checkMultiple(function(immutable, mutables, runMerge) {
+          // Make sure all the changes will be no-ops.
+          _.each(mutables, function(mutable, index) {
+            _.each(mutable, function (value, key) {
+              // If the immutable one has this key, use the same value.
+              // Otherwise, delete the key.
+              if (immutable.hasOwnProperty(key)) {
+                mutable[key] = immutable[key];
+              } else {
+                delete mutable[key];
+              }
+            });
+          });
+
+          var result = runMerge();
+
+          assert.strictEqual(result, immutable);
+        });
+      });
+
       it("returns a deeply Immutable Object", function() {
         checkMultiple(function(immutable, mutables, runMerge) {
           var result = runMerge();
@@ -124,6 +145,13 @@ module.exports = function() {
       var actual   = Immutable({all: "your base", are: {belong: "to them"}}).merge({are: {belong: "to us"}})
 
       assert.deepEqual(actual, expected);
+    });
+
+    it("does nothing when passed a canned merge that will result in no changes", function() {
+      var expected = Immutable({all: "your base", are: {belong: "to us"}});
+      var actual   = expected.merge({all: "your base"}); // Should result in a no-op.
+
+      assert.strictEqual(expected, actual, JSON.stringify(expected) + " did not equal " + JSON.stringify(actual));
     });
 
     it("is a no-op when passed nothing", function() {
