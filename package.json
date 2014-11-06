@@ -8,6 +8,7 @@
     "coveralls": "2.11.2",
     "istanbul": "0.3.2",
     "jscheck": "0.2.0",
+    "jshint": "2.5.8",
     "lodash": "2.4.1",
     "mocha": "2.0.1",
     "mocha-istanbul": "0.2.0",
@@ -17,10 +18,11 @@
   "scripts": {
     "test": "mocha test/*.spec.js",
     "test-watch": "mocha --watch test/*.spec.js",
+    "jshint": "jshint seamless-immutable.js",
     "coverage": "export ISTANBUL_REPORTERS=text-summary,html,lcov && rm -rf tmp/ && rm -rf html-report/ && istanbul instrument test/ -o tmp/ && mocha --reporter mocha-istanbul tmp/*.spec.js && echo Open html-report/index.html to view results as HTML.",
     "zuul": "zuul -- test/*.spec.js",
     "zuul-local": "zuul --local -- test/*.spec.js",
-    "travis-test": "npm test && npm run zuul && npm run coveralls",
+    "travis-test": "npm run jshint && npm test && npm run zuul && npm run coveralls",
     "coveralls": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
   },
   "repository": {
