@@ -20,7 +20,7 @@ module.exports = function() {
           return [keys[index], values[index]]
         });
 
-        _.each(function(key, index) {
+        _.each(keys, function(key, index) {
           assert.deepEqual(values[index], result[key]);
         });
       });
@@ -36,8 +36,12 @@ module.exports = function() {
 
         var result = array.asObject();
 
-        _.each(function(key, index) {
-          assert.deepEqual(values[index], result[key]);
+        _.each(keys, function(key, index) {
+          var value = values[index];
+
+          assert.deepEqual(key,   array[index][0]);
+          assert.deepEqual(value, array[index][1]);
+          assert.deepEqual(value, result[key]);
         });
       });
     });
