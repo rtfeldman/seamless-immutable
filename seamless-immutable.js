@@ -91,6 +91,9 @@
     addPropertyTo(array, "flatMap",  flatMap);
     addPropertyTo(array, "asObject", asObject);
     addPropertyTo(array, "asMutable", asMutableArray);
+    addPropertyTo(array, "deepEquals", function(other) {
+      return deepEquals(array, other, true, true);
+    });
 
     for(var i = 0, length = array.length; i < length; i++) {
       array[i] = Immutable(array[i]);
@@ -289,11 +292,55 @@
     return result;
   }
 
+  function deepEquals(immutable, other, immutableIsObject, immutableIsArray) {
+    // To be strictly equal, either they're === or they're both NaN.
+    var areStrictlyEqual =
+      (immutable === other) ||
+      ((immutable !== immutable) && (other !== other));
+
+    if (immutableIsObject && (typeof other === "object")) {
+      var key;
+
+      // If they're both immutable and strictly equal, they must be deeply equal.
+      if (areStrictlyEqual && isImmutable(other))              { return true; }
+
+      // If they're both objects and only one is null, they can't be equal.
+      if (immutable === null || other === null)                { return false; }
+
+      // If one is an Array and the other is not, they can't be equal.
+      if (immutableIsArray !== (other instanceof Array))       { return false; }
+
+      // If either has a key the other lacks, they can't be equal.
+      for (key in immutable) { if (!other.hasOwnProperty(key)) { return false; } }
+      for (key in other) { if (!immutable.hasOwnProperty(key)) { return false; } }
+
+      // If any shared keys don't yield deeply equal values, they can't be equal.
+      for (key in immutable) {
+        var value = immutable[key];
+
+        if (!deepEquals(value, other[key],
+            (typeof value === "object"),
+            (value instanceof Array))) {
+          return false;
+        }
+      }
+
+      // We ran out of disqualifications...they must be equal!
+      return true;
+    } else {
+      // If either one isn't an object, strict equality will suffice.
+      return areStrictlyEqual;
+    }
+  }
+
   // Finalizes an object with immutable methods, freezes it, and returns it.
   function makeImmutableObject(obj) {
     addPropertyTo(obj, "merge", merge);
     addPropertyTo(obj, "without", without);
     addPropertyTo(obj, "asMutable", asMutableObject);
+    addPropertyTo(obj, "deepEquals", function(other) {
+      return deepEquals(obj, other, true, false);
+    });
 
     return makeImmutable(obj, mutatingObjectMethods);
   }
