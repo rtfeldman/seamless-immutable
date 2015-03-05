@@ -215,9 +215,10 @@
    * this object and the provided object, prioritizing the provided object's
    * values whenever the same key is present in both objects.
    *
-   * @param {object} other - The other object to merge. Multiple objects can be passed, either as an array or as extra arguments. In such a case, the later an object appears in that list, the higher its priority.
+   * @param {object} other - The other object to merge. Multiple objects can be passed as an array. In such a case, the later an object appears in that list, the higher its priority.
+   * @param {object} config - Optional config object what contains settings. Right now only {deep: true} is supported for a merge deep
    */
-  function merge(arg) {
+  function merge(other, config) {
     // Calling .merge() with no arguments is a no-op. Don't bother cloning.
     if (arguments.length === 0) {
       return this;
@@ -225,7 +226,8 @@
 
     var anyChanges    = false,
         result        = quickCopy(this, {}), // A shallow clone of this object.
-        receivedArray = (arg instanceof Array),
+        receivedArray = (other instanceof Array),
+        deep          = config && config.deep,
         key;
 
     // Use the given key to extract a value from the given object, then place
@@ -240,97 +242,26 @@
           // Avoid false positives due to (NaN !== NaN) evaluating to true
           (immutableValue === immutableValue)));
 
-      result[key] = immutableValue;
-    }
-
-    // Achieve prioritization by overriding previous values that get in the way.
-    if (!receivedArray && arguments.length === 1) {
-      // The most common use case: just merge one object into the existing one.
-      for (key in arg) {
-        addToResult(this, arg, key);
-      }
-    } else {
-      // We also accept either an Array or multiple arguments.
-      var others = receivedArray ? arg :
-        Array.prototype.slice.call(arguments);
-        // Note: If we don't convert arguments into an Array, IE9 will end up
-        // including the arguments object in the final result object.
-        // Can't make this stuff up.
-
-      for (var index in others) {
-        var other = others[index];
-
-        for (key in other) {
-          addToResult(this, other, key);
-        }
-      }
-    }
-
-    if (anyChanges) {
-      return makeImmutableObject(result);
-    } else {
-      return this;
-    }
-  }
-
-  /**
-   * Returns an Immutable Object containing the properties and values of both
-   * this object and the provided object, prioritizing the provided object's
-   * values whenever the same key is present in both objects.
-   *
-   * This will recurse down all objects and merge them.
-   *
-   * @param {object} other - The other object to merge. Multiple objects can be passed, either as an array or as extra arguments. In such a case, the later an object appears in that list, the higher its priority.
-   */
-  function mergeDeep(arg) {
-    // Calling .merge() with no arguments is a no-op. Don't bother cloning.
-    if (arguments.length === 0) {
-      return this;
-    }
-
-    var anyChanges    = false,
-        result        = quickCopy(this, {}), // A shallow clone of this object.
-        receivedArray = (arg instanceof Array),
-        key;
-
-    // Use the given key to extract a value from the given object, then place
-    // that value in the result object under the same key. If that resulted
-    // in a change from this object's value at that key, set anyChanges = true.
-    function addToResult(currentObj, otherObj, key) {
-      var immutableValue = Immutable(otherObj[key]);
-
-      anyChanges = anyChanges ||
-        (!currentObj.hasOwnProperty(key) ||
-        ((immutableValue !== currentObj[key]) &&
-          // Avoid false positives due to (NaN !== NaN) evaluating to true
-          (immutableValue === immutableValue)));
-
-      if (currentObj[key] !== null && typeof currentObj[key] === "object" && typeof immutableValue === "object" ) {
-        result[key] = currentObj[key].mergeDeep(immutableValue);
+      if (deep && typeof currentObj[key] === "object" && typeof immutableValue === "object" ) {
+        result[key] = currentObj[key].merge(immutableValue, config);
       } else {
         result[key] = immutableValue;
       }
     }
 
     // Achieve prioritization by overriding previous values that get in the way.
-    if (!receivedArray && arguments.length === 1) {
+    if (!receivedArray) {
       // The most common use case: just merge one object into the existing one.
-      for (key in arg) {
-        addToResult(this, arg, key);
+      for (key in other) {
+        addToResult(this, other, key);
       }
     } else {
-      // We also accept either an Array or multiple arguments.
-      var others = receivedArray ? arg :
-          Array.prototype.slice.call(arguments);
-      // Note: If we don't convert arguments into an Array, IE9 will end up
-      // including the arguments object in the final result object.
-      // Can't make this stuff up.
+      // We also accept an Array
+      for (var index in other) {
+        var otherFromArray = other[index];
 
-      for (var index in others) {
-        var other = others[index];
-
-        for (key in other) {
-          addToResult(this, other, key);
+        for (key in otherFromArray) {
+          addToResult(this, otherFromArray, key);
         }
       }
     }
@@ -361,7 +292,6 @@
   // Finalizes an object with immutable methods, freezes it, and returns it.
   function makeImmutableObject(obj) {
     addPropertyTo(obj, "merge", merge);
-    addPropertyTo(obj, "mergeDeep", mergeDeep);
     addPropertyTo(obj, "without", without);
     addPropertyTo(obj, "asMutable", asMutableObject);
 

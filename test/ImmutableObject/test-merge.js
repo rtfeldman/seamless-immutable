@@ -16,13 +16,7 @@ module.exports = function() {
 
       function checkMultiple(callback) {
         check(runs, specifiers, function(list) {
-          var useVarArgs = !(list instanceof Array);
-
-          if (arguments.length > 1) {
-            list = Array.prototype.slice.call(arguments);
-          } else if (useVarArgs) {
-            list = [list]
-          }
+          list = list instanceof Array ? list : [list];
 
           assert.notStrictEqual(list.length, 0, "Can't usefully check merge() with no objects");
 
@@ -31,9 +25,7 @@ module.exports = function() {
           function runMerge(others) {
             others = others || list;
 
-            return useVarArgs ?
-              immutable.merge.apply(immutable, others) :
-              immutable.merge(others);
+            return immutable.merge(others);
           }
 
           callback(immutable, list, runMerge);
@@ -167,12 +159,16 @@ module.exports = function() {
       generateMergeTestsFor([TestUtils.ComplexObjectSpecifier()]);
     });
 
-    describe("when passed multiple objects", function() {
-      generateMergeTestsFor([TestUtils.ComplexObjectSpecifier(), TestUtils.ComplexObjectSpecifier(), TestUtils.ComplexObjectSpecifier()]);
+    describe("when passed a single object with deep set to true", function() {
+      generateMergeTestsFor([TestUtils.ComplexObjectSpecifier()], {deep: true});
     });
 
     describe("when passed an array of objects", function() {
       generateMergeTestsFor([generateArrayOfObjects]);
+    });
+
+    describe("when passed an array of objects with deep set to true", function() {
+      generateMergeTestsFor([generateArrayOfObjects], {deep: true});
     });
   });
 };
