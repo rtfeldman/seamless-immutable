@@ -242,7 +242,7 @@
           // Avoid false positives due to (NaN !== NaN) evaluating to true
           (immutableValue === immutableValue)));
 
-      if (deep && typeof currentObj[key] === "object" && typeof immutableValue === "object" ) {
+      if (deep && currentObj[key] !== null && typeof currentObj[key] === "object" && typeof immutableValue === "object" ) {
         result[key] = currentObj[key].merge(immutableValue, config);
       } else {
         result[key] = immutableValue;
