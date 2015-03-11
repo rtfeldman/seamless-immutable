@@ -9,6 +9,15 @@ function generateArrayOfObjects() {
   return JSC.array()().map(function() { return TestUtils.ComplexObjectSpecifier()(); });
 }
 
+// Anything but an object, array, or undefined.
+function invalidMergeArgumentSpecifier() {
+  return JSC.one_of([
+    (function() { return function() {}; }),
+    JSC.integer(), JSC.number(), JSC.string(),
+    true, Infinity, -Infinity
+  ]);
+}
+
 module.exports = function() {
   describe("#merge", function() {
     function generateMergeTestsFor(specifiers, config) {
@@ -152,6 +161,19 @@ module.exports = function() {
         var actual   = expected.merge();
 
         assert.deepEqual(actual, expected);
+      });
+    });
+
+    it("Throws an exception if you pass it a non-object", function() {
+      check(100, [TestUtils.ComplexObjectSpecifier(), invalidMergeArgumentSpecifier()], function(obj, nonObj) {
+        assert.isObject(obj, 0, "Test error: this specifier should always generate an object, which " + JSON.stringify(obj) + " was not.");
+        assert.isNotObject(nonObj, 0, "Test error: this specifier should always generate a non-object, which" + JSON.stringify(nonObj) + " was not.");
+
+        var immutable = Immutable(obj);
+
+        assert.throws(function() {
+          immutable.merge(nonObj);
+        }, TypeError)
       });
     });
 
