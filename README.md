@@ -190,6 +190,28 @@ mutableObject // {when: "the", levee: "breaks", have: "no place to go"}
 
 Returns a mutable copy of the object. For a deeply mutable copy, in which any instances of `Immutable` contained in nested data structures within the object have been converted back to mutable data structures, call `.asMutable({deep: true})` instead.
 
+### Releases
+
+#### 2.0.0
+
+Breaking API change: `#merge` now takes exactly one or exactly two arguments. The second is optional and allows specifying `deep: true`.
+
+#### 1.3.0
+
+Don't bother returning a new value from `#merge` if no changes would result.
+
+#### 1.2.0
+
+Make error message for invalid `#asObject` less fancy, resulting in a performance improvement.
+
+#### 1.1.0
+
+Adds `#asMutable`
+
+#### 1.0.0
+
+Initial stable release
+
 [1]: https://secure.travis-ci.org/rtfeldman/seamless-immutable.svg
 [2]: https://travis-ci.org/rtfeldman/seamless-immutable
 [3]: https://badge.fury.io/js/seamless-immutable.svg
