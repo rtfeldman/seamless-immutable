@@ -11,18 +11,12 @@ function generateArrayOfObjects() {
 
 module.exports = function() {
   describe("#merge", function() {
-    function generateMergeTestsFor(specifiers) {
+    function generateMergeTestsFor(specifiers, config) {
       var runs = 100;
 
       function checkMultiple(callback) {
         check(runs, specifiers, function(list) {
-          var useVarArgs = !(list instanceof Array);
-
-          if (arguments.length > 1) {
-            list = Array.prototype.slice.call(arguments);
-          } else if (useVarArgs) {
-            list = [list]
-          }
+          list = list instanceof Array ? list : [list];
 
           assert.notStrictEqual(list.length, 0, "Can't usefully check merge() with no objects");
 
@@ -31,9 +25,7 @@ module.exports = function() {
           function runMerge(others) {
             others = others || list;
 
-            return useVarArgs ?
-              immutable.merge.apply(immutable, others) :
-              immutable.merge(others);
+            return immutable.merge(others, config);
           }
 
           callback(immutable, list, runMerge);
@@ -60,7 +52,7 @@ module.exports = function() {
 
                 // Record that we expect this to end up in the final result.
                 expectedChanges[key] = newValue;
-                assert(Immutable.isImmutable(expectedChanges[key]))
+                assert(Immutable.isImmutable(expectedChanges[key]));
 
                 mutable[key]  = newValue;
               } else if (mutable.hasOwnProperty(key) && mutable[key] !== immutable[key]) {
@@ -163,16 +155,35 @@ module.exports = function() {
       });
     });
 
+    it("merges deep when the config tells it to", function() {
+      var original = Immutable({all: "your base", are: {belong: "to us", you: {have: "x", make: "your time"}}});
+      var toMerge  = {are: {you: {have: "no chance to survive"}}};
+
+      var expectedShallow = Immutable({all: "your base", are: {you: {have: "no chance to survive"}}});
+      var actualShallow   = original.merge(toMerge);
+
+      assert.deepEqual(actualShallow, expectedShallow);
+
+      var expectedDeep = Immutable({all: "your base", are: {belong: "to us", you: {have: "no chance to survive", make: "your time"}}});
+      var actualDeep   = original.merge(toMerge, {deep: true});
+
+      assert.deepEqual(actualDeep, expectedDeep);
+    });
+
     describe("when passed a single object", function() {
       generateMergeTestsFor([TestUtils.ComplexObjectSpecifier()]);
     });
 
-    describe("when passed multiple objects", function() {
-      generateMergeTestsFor([TestUtils.ComplexObjectSpecifier(), TestUtils.ComplexObjectSpecifier(), TestUtils.ComplexObjectSpecifier()]);
+    describe("when passed a single object with deep set to true", function() {
+      generateMergeTestsFor([TestUtils.ComplexObjectSpecifier()], {deep: true});
     });
 
     describe("when passed an array of objects", function() {
       generateMergeTestsFor([generateArrayOfObjects]);
+    });
+
+    describe("when passed an array of objects with deep set to true", function() {
+      generateMergeTestsFor([generateArrayOfObjects], {deep: true});
     });
   });
 };
