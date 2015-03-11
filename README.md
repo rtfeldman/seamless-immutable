@@ -192,6 +192,10 @@ Returns a mutable copy of the object. For a deeply mutable copy, in which any in
 
 ### Releases
 
+#### 2.0.1
+
+Minor documentation typo fix.
+
 #### 2.0.0
 
 Breaking API change: `#merge` now takes exactly one or exactly two arguments. The second is optional and allows specifying `deep: true`.
