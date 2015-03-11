@@ -216,7 +216,7 @@
    * values whenever the same key is present in both objects.
    *
    * @param {object} other - The other object to merge. Multiple objects can be passed as an array. In such a case, the later an object appears in that list, the higher its priority.
-   * @param {object} config - Optional config object what contains settings. Right now only {deep: true} is supported for a merge deep
+   * @param {object} config - Optional config object that contains settings. Right now only {deep: true} is supported for a merge deep.
    */
   function merge(other, config) {
     // Calling .merge() with no arguments is a no-op. Don't bother cloning.
