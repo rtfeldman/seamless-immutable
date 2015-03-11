@@ -224,6 +224,10 @@
       return this;
     }
 
+    if (other === null || (typeof other !== "object")) {
+      throw new TypeError("Immutable#merge can only be invoked with objects or arrays, not " + JSON.stringify(other));
+    }
+
     var anyChanges    = false,
         result        = quickCopy(this, {}), // A shallow clone of this object.
         receivedArray = (other instanceof Array),
