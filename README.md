@@ -157,9 +157,10 @@ Returns an Immutable Object containing the properties and values of both
 this object and the provided object, prioritizing the provided object's
 values whenever the same key is present in both objects.
 
-Multiple objects can be provided, either in an Array or as extra arguments,
-in which case more `merge` invocations will be performed using each
-provided object in turn.
+Multiple objects can be provided in an Array in which case more `merge`
+invocations will be performed using each provided object in turn.
+
+A second argument can be provided to perform a deep merge: `{deep: true}`.
 
 ### without
 
