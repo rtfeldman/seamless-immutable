@@ -220,7 +220,8 @@
    * values whenever the same key is present in both objects.
    *
    * @param {object} other - The other object to merge. Multiple objects can be passed as an array. In such a case, the later an object appears in that list, the higher its priority.
-   * @param {object} config - Optional config object that contains settings. Right now only {deep: true} is supported for a merge deep.
+   * @param {object} config - Optional config object that contains settings. Supported settings are: {deep: true} for deep merge and {merger: mergerFunc} where mergerFunc is a function
+   *                          that takes a property from both objects. If anything is returned it overrides the normal merge behaviour.
    */
   function merge(other, config) {
     // Calling .merge() with no arguments is a no-op. Don't bother cloning.
@@ -236,6 +237,7 @@
         result        = quickCopy(this, {}), // A shallow clone of this object.
         receivedArray = (other instanceof Array),
         deep          = config && config.deep,
+        merger        = config && config.merger,
         key;
 
     // Use the given key to extract a value from the given object, then place
@@ -243,14 +245,18 @@
     // in a change from this object's value at that key, set anyChanges = true.
     function addToResult(currentObj, otherObj, key) {
       var immutableValue = Immutable(otherObj[key]);
+      var mergerResult = merger && merger(currentObj[key], immutableValue);
 
       anyChanges = anyChanges ||
+        mergerResult !== undefined ||
         (!currentObj.hasOwnProperty(key) ||
         ((immutableValue !== currentObj[key]) &&
           // Avoid false positives due to (NaN !== NaN) evaluating to true
           (immutableValue === immutableValue)));
 
-      if (deep && isObject(currentObj[key]) && isObject(immutableValue)) {
+      if (mergerResult) {
+        result[key] = mergerResult;
+      } else if (deep && isObject(currentObj[key]) && isObject(immutableValue)) {
         result[key] = currentObj[key].merge(immutableValue, config);
       } else {
         result[key] = immutableValue;

@@ -202,6 +202,29 @@ module.exports = function() {
       assert.deepEqual(actual, expected);
     });
 
+    function arrayMerger(thisValue, providedValue) {
+      if (thisValue instanceof Array && providedValue instanceof Array) {
+        return thisValue.concat(providedValue);
+      }
+    }
+
+    it("merges with a custom merger when the config tells it to", function() {
+      var expected = Immutable({all: "your base", are: {belong: "to us"}, you: ['have', 'no', 'chance', 'to', 'survive']});
+      var actual = Immutable({all: "your base", are: {belong: "to us"}, you: ['have', 'no']}).merge({you: ['chance', 'to', 'survive']}, {merger: arrayMerger});
+
+      assert.deepEqual(actual, expected);
+    });
+
+    it("merges deep with a custom merger when the config tells it to", function() {
+      var original = Immutable({id: 3, name: "three", valid: true, a: {id: 2}, b: [50], x: [1, 2], sub: {z: [100]}});
+      var toMerge = {id: 3, name: "three", valid: false, a: [1000], b: {id: 4}, x: [3, 4], sub: {y: [10, 11], z: [101, 102]}};
+
+      var expected = Immutable({id: 3, name: "three", valid: false, a: [1000], b: {id: 4}, x: [1, 2, 3, 4], sub: {z: [100, 101, 102], y: [10, 11]}});
+      var actual   = original.merge(toMerge, {deep: true, merger: arrayMerger});
+
+      assert.deepEqual(actual, expected);
+    });
+
     describe("when passed a single object", function() {
       generateMergeTestsFor([TestUtils.ComplexObjectSpecifier()]);
     });
