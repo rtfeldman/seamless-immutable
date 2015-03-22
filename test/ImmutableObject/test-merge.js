@@ -192,6 +192,16 @@ module.exports = function() {
       assert.deepEqual(actualDeep, expectedDeep);
     });
 
+    it("merges deep on only objects", function() {
+      var original = Immutable({id: 3, name: "three", valid: true, a: {id: 2}, b: [50], x: [1, 2], sub: {z: [100]}});
+      var toMerge = {id: 3, name: "three", valid: false, a: [1000], b: {id: 4}, x: [3, 4], sub: {y: [10, 11], z: [101, 102]}};
+
+      var expected = Immutable({id: 3, name: "three", valid: false, a: [1000], b: {id: 4}, x: [3, 4], sub: {z: [101, 102], y: [10, 11]}});
+      var actual   = original.merge(toMerge, {deep: true});
+
+      assert.deepEqual(actual, expected);
+    });
+
     describe("when passed a single object", function() {
       generateMergeTestsFor([TestUtils.ComplexObjectSpecifier()]);
     });
