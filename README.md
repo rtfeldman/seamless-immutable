@@ -193,6 +193,10 @@ Returns a mutable copy of the object. For a deeply mutable copy, in which any in
 
 ### Releases
 
+#### 2.0.2
+
+Bugfix: `#merge` with `{deep: true}` no longer attempts (unsuccessfully) to deeply merge arrays as though they were regular objects.
+
 #### 2.0.1
 
 Minor documentation typo fix.
