@@ -233,12 +233,20 @@ module.exports = function() {
       generateMergeTestsFor([TestUtils.ComplexObjectSpecifier()], {deep: true});
     });
 
+    describe("when passed a single object with a custom merger", function() {
+      generateMergeTestsFor([TestUtils.ComplexObjectSpecifier()], {merger: arrayMerger()});
+    });
+
     describe("when passed an array of objects", function() {
       generateMergeTestsFor([generateArrayOfObjects]);
     });
 
     describe("when passed an array of objects with deep set to true", function() {
       generateMergeTestsFor([generateArrayOfObjects], {deep: true});
+    });
+
+    describe("when passed an array of objects with a custom merger", function() {
+      generateMergeTestsFor([generateArrayOfObjects], {merger: arrayMerger()});
     });
   });
 };
