@@ -6,8 +6,9 @@
   "devDependencies": {
     "chai": "1.9.2",
     "coveralls": "2.11.2",
-    "grunt": "^0.4.5",
-    "grunt-mocha-test": "^0.12.7",
+    "envify": "3.4.0",
+    "grunt": "0.4.5",
+    "grunt-mocha-test": "0.12.7",
     "istanbul": "0.3.2",
     "jscheck": "0.2.0",
     "jshint": "2.5.8",
