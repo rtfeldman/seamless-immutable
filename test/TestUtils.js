@@ -1,4 +1,4 @@
-var Immutable = require("../seamless-immutable.js");
+var Immutable = require("../seamless-immutable.development.js");
 var JSC       = require("jscheck");
 var assert    = require("chai").assert;
 var _         = require("lodash");

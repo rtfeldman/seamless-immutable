@@ -13,14 +13,14 @@ module.exports = function(grunt) {
         env: {
           NODE_ENV: "development"
         },
-        input: "seamless-immutable.js",
+        input: "src/seamless-immutable.js",
         output: "seamless-immutable.development.js"
       },
       prod: {
         env: {
           NODE_ENV: "production"
         },
-        input: "seamless-immutable.js",
+        input: "src/seamless-immutable.js",
         output: "seamless-immutable.production.min.js"
       }
     },

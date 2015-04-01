@@ -2,7 +2,7 @@
   "name": "seamless-immutable",
   "version": "2.1.0",
   "description": "Immutable data structures for JavaScript which are backwards-compatible with normal JS Arrays and Objects.",
-  "main": "seamless-immutable.js",
+  "main": "seamless-immutable.development.js",
   "devDependencies": {
     "chai": "1.9.2",
     "coveralls": "2.11.2",
@@ -23,7 +23,7 @@
   "scripts": {
     "test": "mocha test/*.spec.js",
     "test-watch": "mocha --watch test/*.spec.js",
-    "jshint": "jshint seamless-immutable.js",
+    "jshint": "jshint seamless-immutable.development.js",
     "coverage": "export ISTANBUL_REPORTERS=text-summary,html,lcov && rm -rf tmp/ && rm -rf html-report/ && istanbul instrument test/ -o tmp/ && mocha --reporter mocha-istanbul tmp/*.spec.js && echo Open html-report/index.html to view results as HTML.",
     "zuul": "zuul -- test/*.spec.js",
     "zuul-local": "zuul --local -- test/*.spec.js",
