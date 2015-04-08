@@ -193,6 +193,10 @@ Returns a mutable copy of the object. For a deeply mutable copy, in which any in
 
 ### Releases
 
+#### 2.2.0
+
+Adds a minified production build with no freezing or defensive unsupported methods, for a ~2x performance boost.
+
 #### 2.1.0
 
 Adds optional `merger` function to `#merge`.
