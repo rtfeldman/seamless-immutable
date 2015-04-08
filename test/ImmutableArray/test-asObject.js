@@ -1,11 +1,12 @@
-var Immutable = require("../../seamless-immutable.development.js");
 var JSC       = require("jscheck");
-var TestUtils = require("../TestUtils.js");
 var assert    = require("chai").assert;
-var _         = require("lodash")
-var check     = TestUtils.check;
+var _         = require("lodash");
 
-module.exports = function() {
+module.exports = function(config) {
+  var Immutable = require(config.src);
+  var TestUtils = require("../TestUtils.js")(Immutable);
+  var check     = TestUtils.check;
+
   describe("#asObject", function() {
     it("works on arrays of various lengths", function() {
       check(100, [TestUtils.ComplexObjectSpecifier()], function(obj) {
