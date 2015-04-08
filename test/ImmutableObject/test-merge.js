@@ -1,13 +1,6 @@
-var Immutable = require("../../seamless-immutable.js");
 var JSC       = require("jscheck");
-var TestUtils = require("../TestUtils.js");
 var assert    = require("chai").assert;
-var _         = require("lodash")
-var check     = TestUtils.check;
-
-function generateArrayOfObjects() {
-  return JSC.array()().map(function() { return TestUtils.ComplexObjectSpecifier()(); });
-}
+var _         = require("lodash");
 
 // Anything but an object, array, or undefined.
 function invalidMergeArgumentSpecifier() {
@@ -18,7 +11,15 @@ function invalidMergeArgumentSpecifier() {
   ]);
 }
 
-module.exports = function() {
+module.exports = function(config) {
+  var Immutable = require(config.src);
+  var TestUtils = require("../TestUtils.js")(Immutable);
+  var check     = TestUtils.check;
+
+  function generateArrayOfObjects() {
+    return JSC.array()().map(function() { return TestUtils.ComplexObjectSpecifier()(); });
+  }
+
   describe("#merge", function() {
     function generateMergeTestsFor(specifiers, config) {
       var runs = 100;

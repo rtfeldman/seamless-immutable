@@ -1,18 +1,19 @@
-var Immutable = require("../../seamless-immutable.js");
 var JSC       = require("jscheck");
-var TestUtils = require("../TestUtils.js");
 var assert    = require("chai").assert;
-var _         = require("lodash")
-var check     = TestUtils.check;
+var _         = require("lodash");
 
-var checkImmutableMutable = TestUtils.checkImmutableMutable(100, [TestUtils.ComplexObjectSpecifier()]);
-var identityFunction      = function(arg) { return arg; }
+var identityFunction      = function(arg) { return arg; };
 
 function notParseableAsInt(str) {
   return parseInt(str).toString() !== str;
 }
 
-module.exports = function() {
+module.exports = function(config) {
+  var Immutable = require(config.src);
+  var TestUtils = require("../TestUtils.js")(Immutable);
+
+  var checkImmutableMutable = TestUtils.checkImmutableMutable(100, [TestUtils.ComplexObjectSpecifier()]);
+
   describe("which is compatible with vanilla mutable objects", function() {
     it("is an instance of Object", function() {
       checkImmutableMutable(function(immutable, mutable) {
@@ -75,11 +76,21 @@ module.exports = function() {
       });
     });
 
-    it("is frozen", function() {
-      checkImmutableMutable(function(immutable, mutable) {
-        assert.isTrue(Object.isFrozen(immutable));
+    if (config.id === "dev") {
+      it("is frozen", function () {
+        checkImmutableMutable(function (immutable, mutable) {
+          assert.isTrue(Object.isFrozen(immutable));
+        });
       });
-    });
+    }
+
+    if (config.id === "prod") {
+      it("is frozen", function () {
+        checkImmutableMutable(function (immutable, mutable) {
+          assert.isFalse(Object.isFrozen(immutable));
+        });
+      });
+    }
 
     it("is tagged as immutable", function() {
       checkImmutableMutable(function(immutable, mutable) {
@@ -87,15 +98,29 @@ module.exports = function() {
       })
     });
 
-    it("cannot have its elements directly mutated", function() {
-      checkImmutableMutable(function(immutable, mutable, randomIndex, randomData) {
-        immutable[randomIndex] = randomData;
+    if (config.id === "dev") {
+      it("cannot have its elements directly mutated", function () {
+        checkImmutableMutable(function (immutable, mutable, randomIndex, randomData) {
+          immutable[randomIndex] = randomData;
 
-        assert.typeOf(randomIndex, "number");
-        assert.strictEqual(immutable.length, mutable.length);
-        assert.deepEqual(immutable[randomIndex], mutable[randomIndex]);
-      }, [JSC.integer(), JSC.any()]);
-    });
+          assert.typeOf(randomIndex, "number");
+          assert.strictEqual(immutable.length, mutable.length);
+          assert.deepEqual(immutable[randomIndex], mutable[randomIndex]);
+        }, [JSC.integer(), JSC.any()]);
+      });
+    }
+
+    if (config.id === "prod") {
+      it("can have its elements directly mutated", function () {
+        var immutable = Immutable({id: 3, name: "base"});
+
+        immutable.id = 4;
+        immutable.name = "belong";
+
+        assert.equal(immutable.id, 4);
+        assert.equal(immutable.name, "belong");
+      });
+    }
 
     it("makes nested content immutable as well", function() {
       checkImmutableMutable(function(immutable, mutable, innerArray, obj) {

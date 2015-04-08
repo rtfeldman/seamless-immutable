@@ -1,22 +1,25 @@
-var Immutable = require("../seamless-immutable.js");
 var JSC       = require("jscheck");
 var assert    = require("chai").assert;
 var _         = require("lodash");
 
-function assertImmutable(methodName, immutableArray, mutableArray, args) {
-  var mutableResult   =   mutableArray[methodName].apply(mutableArray,   args);
-  var immutableResult = Immutable(immutableArray[methodName].apply(immutableArray, args));
+function wrapAssertImmutable(Immutable) {
+  return function assertImmutable(methodName, immutableArray, mutableArray, args) {
+    var mutableResult = mutableArray[methodName].apply(mutableArray, args);
+    var immutableResult = Immutable(immutableArray[methodName].apply(immutableArray, args));
 
-  assert.deepEqual(immutableResult, mutableResult);
+    assert.deepEqual(immutableResult, mutableResult);
+  }
 }
 
 // Immutable.isImmutable only checks (for performance reasons) that objects
 // are shallowly immutable. For tests, though, we want to be thorough!
-function assertIsDeeplyImmutable(obj) {
-  assert(Immutable.isImmutable(obj));
+function wrapAssertIsDeeplyImmutable(Immutable) {
+  return function assertIsDeeplyImmutable(obj) {
+    assert(Immutable.isImmutable(obj));
 
-  if (typeof obj === "object") {
-    _.each(obj, assertIsDeeplyImmutable);
+    if (typeof obj === "object") {
+      _.each(obj, assertIsDeeplyImmutable);
+    }
   }
 }
 
@@ -63,13 +66,15 @@ function TraversableObjectSpecifier() {
   return withoutItengerKeys(obj);
 }
 
-function ImmutableArraySpecifier(JSC) {
-  var args = Array.prototype.slice.call(arguments);
+function wrapImmutableArraySpecifier(Immutable) {
+  return function ImmutableArraySpecifier(JSC) {
+    var args = Array.prototype.slice.call(arguments);
 
-  return function generator() {
-    var mutable = JSC.array.apply(JSC.array, args)();
+    return function generator() {
+      var mutable = JSC.array.apply(JSC.array, args)();
 
-    return Immutable(mutable);
+      return Immutable(mutable);
+    }
   }
 }
 
@@ -88,25 +93,29 @@ function check(runs, generators, runTest) {
   return completed;
 }
 
-function checkImmutableMutable(runs, specifiers) {
-  return function(callback, extraSpecifiers) {
-    extraSpecifiers = extraSpecifiers || [];
+function wrapCheckImmutableMutable(Immutable) {
+  return function checkImmutableMutable(runs, specifiers) {
+    return function (callback, extraSpecifiers) {
+      extraSpecifiers = extraSpecifiers || [];
 
-    check(runs, specifiers.concat(extraSpecifiers), function(mutable) {
-      var immutable = Immutable(mutable);
-      var args      = Array.prototype.slice.call(arguments);
+      check(runs, specifiers.concat(extraSpecifiers), function (mutable) {
+        var immutable = Immutable(mutable);
+        var args = Array.prototype.slice.call(arguments);
 
-      callback.apply(callback, [immutable].concat(args));
-    });
-  };
+        callback.apply(callback, [immutable].concat(args));
+      });
+    };
+  }
 }
 
-module.exports = {
-  assertImmutable:         assertImmutable,
-  assertIsDeeplyImmutable: assertIsDeeplyImmutable,
-  ImmutableArraySpecifier: ImmutableArraySpecifier,
-  ComplexObjectSpecifier:  ComplexObjectSpecifier,
-  TraversableObjectSpecifier: TraversableObjectSpecifier,
-  check:                   check,
-  checkImmutableMutable:   checkImmutableMutable
-}
+module.exports = function(Immutable) {
+  return {
+    assertImmutable:         wrapAssertImmutable(Immutable),
+    assertIsDeeplyImmutable: wrapAssertIsDeeplyImmutable(Immutable),
+    ImmutableArraySpecifier: wrapImmutableArraySpecifier(Immutable),
+    ComplexObjectSpecifier:  ComplexObjectSpecifier,
+    TraversableObjectSpecifier: TraversableObjectSpecifier,
+    check:                   check,
+    checkImmutableMutable:   wrapCheckImmutableMutable(Immutable)
+  }
+};

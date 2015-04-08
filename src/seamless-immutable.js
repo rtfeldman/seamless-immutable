@@ -62,16 +62,18 @@
   ImmutableError.prototype = Error.prototype;
 
   function makeImmutable(obj, bannedMethods) {
-    // Make all mutating methods throw exceptions.
-    for (var index in bannedMethods) {
-      banProperty(obj, bannedMethods[index]);
-    }
-
     // Tag it so we can quickly tell it's immutable later.
     addImmutabilityTag(obj);
 
-    // Freeze it and return it.
-    Object.freeze(obj);
+    if (process.env.NODE_ENV === "development") {
+      // Make all mutating methods throw exceptions.
+      for (var index in bannedMethods) {
+        banProperty(obj, bannedMethods[index]);
+      }
+
+      // Freeze it and return it.
+      Object.freeze(obj);
+    }
 
     return obj;
   }

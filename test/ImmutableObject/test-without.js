@@ -1,18 +1,19 @@
-var Immutable = require("../../seamless-immutable.js");
 var JSC       = require("jscheck");
-var TestUtils = require("../TestUtils.js");
 var assert    = require("chai").assert;
-var _         = require("lodash")
-var check     = TestUtils.check;
+var _         = require("lodash");
 
 function generateArrayOfStrings() {
   return JSC.array()().map(function() { return JSC.string()(); });
 }
 
-module.exports = function() {
+module.exports = function(config) {
+  var Immutable = require(config.src);
+  var TestUtils = require("../TestUtils.js")(Immutable);
+  var check     = TestUtils.check;
+
   describe("#without", function() {
     function generateWithoutTestsFor(specifiers) {
-      var runs = 100
+      var runs = 100;
 
       function checkMultiple(callback) {
         check(runs, specifiers, function(list) {
