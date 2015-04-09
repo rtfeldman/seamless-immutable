@@ -1,16 +1,17 @@
-var JSC       = require("jscheck");
-var assert    = require("chai").assert;
-var _         = require("lodash");
+var JSC          = require("jscheck");
+var assert       = require("chai").assert;
+var _            = require("lodash");
+var getTestUtils = require("../TestUtils.js");
 
-var identityFunction      = function(arg) { return arg; };
+var identityFunction = function(arg) { return arg; };
 
 function notParseableAsInt(str) {
   return parseInt(str).toString() !== str;
 }
 
 module.exports = function(config) {
-  var Immutable = require(config.src);
-  var TestUtils = require("../TestUtils.js")(Immutable);
+  var Immutable = config.implementation;
+  var TestUtils = getTestUtils(Immutable);
 
   var checkImmutableMutable = TestUtils.checkImmutableMutable(100, [TestUtils.ComplexObjectSpecifier()]);
 

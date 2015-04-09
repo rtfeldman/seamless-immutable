@@ -1,10 +1,11 @@
-var JSC       = require("jscheck");
-var assert    = require("chai").assert;
-var _         = require("lodash");
+var JSC          = require("jscheck");
+var assert       = require("chai").assert;
+var _            = require("lodash");
+var getTestUtils = require("../TestUtils.js");
 
 module.exports = function(config) {
-  var Immutable = require(config.src);
-  var TestUtils = require("../TestUtils.js")(Immutable);
+  var Immutable = config.implementation;
+  var TestUtils = getTestUtils(Immutable);
   var check     = TestUtils.check;
 
   describe("#asObject", function() {
