@@ -32,7 +32,9 @@ This level of backwards compatibility requires [ECMAScript 5](http://kangax.gith
 
 Whenever you deeply clone large nested objects, it should typically go much faster with `Immutable` data structures. This is because the library reuses the existing nested objects rather than instantiating new ones.
 
-Note that these objects are [frozen](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze), and [Safari is relatively slow to iterate over frozen objects](http://jsperf.com/performance-frozen-object/20). If this makes a noticeable difference in your use case, you can monkey patch `Object.freeze` to be [the identity function](http://stackoverflow.com/questions/11485508/use-of-the-identity-function-in-javascript) before using `Immutable`. If you do, be aware that this carries the drawback of re-enabling property reassignment like `array[2] = "new value"`.
+In the development build, objects are [frozen](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze). (Note that [Safari is relatively slow to iterate over frozen objects](http://jsperf.com/performance-frozen-object/20).) The development build also overrides unsupported methods (methods that ordinarily mutate the underlying data structure) to throw helpful exceptions.
+
+The production (minified) build does neither of these, which significantly improves performance.
 
 ## API Overview
 
