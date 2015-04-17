@@ -123,6 +123,24 @@ module.exports = function(config) {
       });
     }
 
+    it("supports handling dates without converting them to regular objects", function() {
+      var date = new Date();
+      var immutableDate = Immutable(date);
+
+      TestUtils.assertIsDeeplyImmutable(immutableDate);
+
+      assert.notEqual(date, immutableDate);
+      assert.equal(date.toISOString(), immutableDate.toISOString());
+
+      var objectWithDate = {date: new Date()};
+      var immutableObjectWithDate = Immutable(objectWithDate);
+
+      TestUtils.assertIsDeeplyImmutable(immutableObjectWithDate);
+
+      assert.notEqual(objectWithDate, immutableObjectWithDate);
+      assert.equal(objectWithDate.date.toISOString(), immutableObjectWithDate.date.toISOString());
+    });
+
     it("makes nested content immutable as well", function() {
       checkImmutableMutable(function(immutable, mutable, innerArray, obj) {
         mutable.foo = innerArray; // Make a nested immutable array
