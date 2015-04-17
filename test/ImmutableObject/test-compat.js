@@ -128,6 +128,7 @@ module.exports = function(config) {
       var immutableDate = Immutable(date);
 
       TestUtils.assertIsDeeplyImmutable(immutableDate);
+      assert.isTrue(immutableDate instanceof Date);
 
       assert.notEqual(date, immutableDate);
       assert.equal(date.toISOString(), immutableDate.toISOString());
@@ -136,6 +137,7 @@ module.exports = function(config) {
       var immutableObjectWithDate = Immutable(objectWithDate);
 
       TestUtils.assertIsDeeplyImmutable(immutableObjectWithDate);
+      assert.isTrue(immutableObjectWithDate.date instanceof Date);
 
       assert.notEqual(objectWithDate, immutableObjectWithDate);
       assert.equal(objectWithDate.date.toISOString(), immutableObjectWithDate.date.toISOString());
