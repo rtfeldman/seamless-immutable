@@ -33,8 +33,8 @@
     }
   }
 
-  function isObject(target) {
-    return target !== null && typeof target === "object" && !(target instanceof Array);
+  function isMergableObject(target) {
+    return target !== null && typeof target === "object" && !(target instanceof Array) && !(target instanceof Date);
   }
 
   var mutatingObjectMethods = [
@@ -258,7 +258,7 @@
 
       if (mergerResult) {
         result[key] = mergerResult;
-      } else if (deep && isObject(currentObj[key]) && isObject(immutableValue)) {
+      } else if (deep && isMergableObject(currentObj[key]) && isMergableObject(immutableValue)) {
         result[key] = currentObj[key].merge(immutableValue, config);
       } else {
         result[key] = immutableValue;
@@ -322,6 +322,8 @@
       return obj;
     } else if (obj instanceof Array) {
       return makeImmutableArray(obj.slice());
+    } else if (obj instanceof Date) {
+      return makeImmutable(new Date(obj));
     } else {
       // Don't freeze the object we were given; make a clone and use that.
       var clone = {};

@@ -195,6 +195,10 @@ Returns a mutable copy of the object. For a deeply mutable copy, in which any in
 
 ### Releases
 
+#### 2.3.0
+
+Dates now retain their prototypes, the same way Arrays do.
+
 #### 2.2.0
 
 Adds a minified production build with no freezing or defensive unsupported methods, for a ~2x performance boost.
