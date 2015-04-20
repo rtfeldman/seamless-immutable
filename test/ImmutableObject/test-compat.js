@@ -131,7 +131,7 @@ module.exports = function(config) {
       assert.isTrue(immutableDate instanceof Date);
 
       assert.notEqual(date, immutableDate);
-      assert.equal(date.toISOString(), immutableDate.toISOString());
+      assert.equal(date.getTime(), immutableDate.getTime());
 
       var objectWithDate = {date: new Date()};
       var immutableObjectWithDate = Immutable(objectWithDate);
@@ -140,7 +140,7 @@ module.exports = function(config) {
       assert.isTrue(immutableObjectWithDate.date instanceof Date);
 
       assert.notEqual(objectWithDate, immutableObjectWithDate);
-      assert.equal(objectWithDate.date.toISOString(), immutableObjectWithDate.date.toISOString());
+      assert.equal(objectWithDate.date.getTime(), immutableObjectWithDate.date.getTime());
     });
 
     it("makes nested content immutable as well", function() {
