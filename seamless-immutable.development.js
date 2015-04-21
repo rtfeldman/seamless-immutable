@@ -323,7 +323,7 @@
     } else if (obj instanceof Array) {
       return makeImmutableArray(obj.slice());
     } else if (obj instanceof Date) {
-      return makeImmutable(new Date(obj));
+      return makeImmutable(new Date(obj.getTime()));
     } else {
       // Don't freeze the object we were given; make a clone and use that.
       var clone = {};
