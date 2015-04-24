@@ -247,7 +247,7 @@
     // in a change from this object's value at that key, set anyChanges = true.
     function addToResult(currentObj, otherObj, key) {
       var immutableValue = Immutable(otherObj[key]);
-      var mergerResult = merger && merger(currentObj[key], immutableValue);
+      var mergerResult = merger && merger(currentObj[key], immutableValue, config);
 
       anyChanges = anyChanges ||
         mergerResult !== undefined ||
