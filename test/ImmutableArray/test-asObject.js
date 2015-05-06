@@ -18,6 +18,8 @@ module.exports = function(config) {
         }));
 
         var result = array.asObject(function(value, index) {
+          assert.strictEqual((typeof index), "number");
+
           // Check that the index argument we receive works as expected.
           assert.deepEqual(value, array[index], "Expected array[" + index + "] to be " + value);
 
