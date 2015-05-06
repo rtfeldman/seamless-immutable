@@ -30,7 +30,6 @@ module.exports = function(config) {
 
     it("works without an iterator on arrays that are already organized properly", function() {
       check(100, [TestUtils.ComplexObjectSpecifier()], function(obj) {
-        var keys  = _.keys(obj);
         var array = Immutable(_.map(obj, function(value, key) {
           return [key, value];
         }));
