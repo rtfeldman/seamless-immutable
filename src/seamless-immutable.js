@@ -118,10 +118,12 @@
       return this;
     }
 
-    var result = [];
+    var result = [],
+        length = this.length,
+        index;
 
-    for (var key in this) {
-      var iteratorResult = iterator(this[key], parseInt(key), this);
+    for (index = 0; index < length; index++) {
+      var iteratorResult = iterator(this[index], index, this);
 
       if (iteratorResult instanceof Array) {
         // Concatenate Array results into the return value we're building up.
@@ -192,10 +194,12 @@
       iterator = function(value) { return value; };
     }
 
-    var result = {};
+    var result = {},
+        length = this.length,
+        index;
 
-    for (var index in this) {
-      var pair  = iterator(this[index], parseInt(index), this),
+    for (index = 0; index < length; index++) {
+      var pair  = iterator(this[index], index, this),
           key   = pair[0],
           value = pair[1];
 
