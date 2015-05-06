@@ -119,6 +119,9 @@ Effectively performs a [map](https://developer.mozilla.org/en-US/docs/Web/JavaSc
 will return an array of two elements - the first representing a key, the other
 a value. Then returns an Immutable Object constructed of those keys and values.
 
+You can also call `.asObject` without passing an iterator, in which case it will proceed assuming the Array
+is already organized as desired.
+
 ### asMutable
 
 ```javascript
