@@ -121,7 +121,7 @@
     var result = [];
 
     for (var key in this) {
-      var iteratorResult = iterator(this[key], key, this);
+      var iteratorResult = iterator(this[key], parseInt(key), this);
 
       if (iteratorResult instanceof Array) {
         // Concatenate Array results into the return value we're building up.
