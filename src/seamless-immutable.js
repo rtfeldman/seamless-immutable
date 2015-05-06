@@ -195,7 +195,7 @@
     var result = {};
 
     for (var index in this) {
-      var pair  = iterator(this[index], index, this),
+      var pair  = iterator(this[index], parseInt(index), this),
           key   = pair[0],
           value = pair[1];
 
