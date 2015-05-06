@@ -83,7 +83,7 @@ Immutable(1)
 // Just the number 1 (not an array), as numbers are already immutable in JS.
 ```
 
-Beyond the usual Array fare, the following methods have been added.
+Beyond [the usual Array fare](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array#Accessor_methods), the following methods have been added.
 
 ### flatMap
 
@@ -144,7 +144,7 @@ Immutable({foo: "bar"})
 // An immutable object containing the key "foo" and the value "bar".
 ```
 
-Beyond the usual Object fare, the following methods have been added.
+Beyond [the usual Object fare](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object#Methods_of_Object_instances), the following methods have been added.
 
 ### merge
 
