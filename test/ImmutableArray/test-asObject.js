@@ -18,6 +18,8 @@ module.exports = function(config) {
         }));
 
         var result = array.asObject(function(value, index) {
+          assert.strictEqual((typeof index), "number");
+
           // Check that the index argument we receive works as expected.
           assert.deepEqual(value, array[index], "Expected array[" + index + "] to be " + value);
 
@@ -30,7 +32,6 @@ module.exports = function(config) {
 
     it("works without an iterator on arrays that are already organized properly", function() {
       check(100, [TestUtils.ComplexObjectSpecifier()], function(obj) {
-        var keys  = _.keys(obj);
         var array = Immutable(_.map(obj, function(value, key) {
           return [key, value];
         }));

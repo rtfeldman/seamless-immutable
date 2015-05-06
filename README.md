@@ -195,6 +195,10 @@ Returns a mutable copy of the object. For a deeply mutable copy, in which any in
 
 ### Releases
 
+#### 2.3.2
+
+Fixes a bug where indices passed into iterators for flatMap and asObject were strings instead of numbers.
+
 #### 2.3.1
 
 Fixes an IE and Firefox bug related to cloning Dates while preserving their prototypes.

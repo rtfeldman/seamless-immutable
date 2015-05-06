@@ -121,7 +121,7 @@
     var result = [];
 
     for (var key in this) {
-      var iteratorResult = iterator(this[key], key, this);
+      var iteratorResult = iterator(this[key], parseInt(key), this);
 
       if (iteratorResult instanceof Array) {
         // Concatenate Array results into the return value we're building up.
@@ -195,7 +195,7 @@
     var result = {};
 
     for (var index in this) {
-      var pair  = iterator(this[index], index, this),
+      var pair  = iterator(this[index], parseInt(index), this),
           key   = pair[0],
           value = pair[1];
 
@@ -247,7 +247,7 @@
     // in a change from this object's value at that key, set anyChanges = true.
     function addToResult(currentObj, otherObj, key) {
       var immutableValue = Immutable(otherObj[key]);
-      var mergerResult = merger && merger(currentObj[key], immutableValue);
+      var mergerResult = merger && merger(currentObj[key], immutableValue, config);
 
       anyChanges = anyChanges ||
         mergerResult !== undefined ||

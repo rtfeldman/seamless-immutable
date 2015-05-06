@@ -30,6 +30,16 @@ module.exports = function(config) {
       });
     });
 
+    it("passes the expected index value", function() {
+      check(100, [JSC.array()], function(array) {
+        var iterator = function(value, index) { return index; };
+        var expected = _.map(array, iterator);
+        var actual   = Immutable(array).flatMap(iterator);
+
+        assert.deepEqual(actual, expected);
+      });
+    });
+
     it("works the same way as map followed by flatten when the iterator function returns arrays", function() {
       check(100, [JSC.array()], function(array) {
         var returnValues = array.map(function() { return [JSC.any()()]; });
