@@ -227,6 +227,21 @@ module.exports = function(config) {
       assert.deepEqual(actual, expected);
     });
 
+    it("merges with a custom merger that returns the current object the result is the same as the original", function() {
+      var data = {id: 3, name: "three", valid: true, a: {id: 2}, b: [50], x: [1, 2], sub: {z: [100]}};
+      var original = Immutable(data);
+      var actualWithoutMerger = original.merge(data);
+      assert.notEqual(original, actualWithoutMerger);
+
+      var config = {
+        merger: function(current, other) {
+          return current;
+        }
+      };
+      var actualWithMerger = original.merge(data, config);
+      assert.equal(original, actualWithMerger);
+    });
+
     describe("when passed a single object", function() {
       generateMergeTestsFor([TestUtils.ComplexObjectSpecifier()]);
     });
