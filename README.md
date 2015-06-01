@@ -198,6 +198,10 @@ Returns a mutable copy of the object. For a deeply mutable copy, in which any in
 
 ### Releases
 
+#### 2.4.0
+
+Custom mergers now check for reference equality and abort early if there is no more work needed, allowing improved performance.
+
 #### 2.3.2
 
 Fixes a bug where indices passed into iterators for flatMap and asObject were strings instead of numbers.
