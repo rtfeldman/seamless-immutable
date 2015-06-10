@@ -68,7 +68,9 @@
     if (process.env.NODE_ENV === "development") {
       // Make all mutating methods throw exceptions.
       for (var index in bannedMethods) {
-        banProperty(obj, bannedMethods[index]);
+        if (bannedMethods.hasOwnProperty(index)) {
+          banProperty(obj, bannedMethods[index]);
+        }
       }
 
       // Freeze it and return it.
