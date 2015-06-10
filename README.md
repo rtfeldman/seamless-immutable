@@ -198,6 +198,10 @@ Returns a mutable copy of the object. For a deeply mutable copy, in which any in
 
 ### Releases
 
+#### 2.4.1
+
+Arrays with nonstandard prototypes no longer throw exceptions when passed to `Immutable`.
+
 #### 2.4.0
 
 Custom mergers now check for reference equality and abort early if there is no more work needed, allowing improved performance.
