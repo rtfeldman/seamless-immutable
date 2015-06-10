@@ -59,6 +59,12 @@ var getTestUtils = require("./TestUtils.js");
         })
       })
 
+      it("doesn't fail when a function is defined on Array.prototype", function() {
+        Array.prototype.veryEvilFunction = function() {};
+        Immutable([]);
+        delete Array.prototype.veryEvilFunction;
+      });
+
       // These are already immutable, and should pass through Immutable() untouched.
       _.each({
         "string": JSC.string(),
