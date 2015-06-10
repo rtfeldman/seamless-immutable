@@ -37,7 +37,7 @@
     "immutable"
   ],
   "author": "Richard Feldman",
-  "license": "Apache2",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/rtfeldman/seamless-immutable/issues"
   },
