@@ -92,8 +92,10 @@
     // Don't change their implementations, but wrap these functions to make sure
     // they always return an immutable value.
     for (var index in nonMutatingArrayMethods) {
-      var methodName = nonMutatingArrayMethods[index];
-      makeMethodReturnImmutable(array, methodName);
+      if (nonMutatingArrayMethods.hasOwnProperty(index)) {
+        var methodName = nonMutatingArrayMethods[index];
+        makeMethodReturnImmutable(array, methodName);
+      }
     }
 
     addPropertyTo(array, "flatMap",  flatMap);
