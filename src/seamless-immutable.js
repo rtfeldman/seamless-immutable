@@ -160,7 +160,7 @@
     var result = {};
 
     for (var key in this) {
-      if (keysToRemove.indexOf(key) === -1) {
+      if (this.hasOwnProperty(key) && (keysToRemove.indexOf(key) === -1)) {
         result[key] = this[key];
       }
     }
@@ -219,7 +219,11 @@
   }
 
   function quickCopy(src, dest) {
-    for (var key in src) { dest[key] = src[key]; }
+    for (var key in src) {
+      if (src.hasOwnProperty(key)) {
+        dest[key] = src[key];
+      }
+    }
 
     return dest;
   }
@@ -278,15 +282,19 @@
     if (!receivedArray) {
       // The most common use case: just merge one object into the existing one.
       for (key in other) {
-        addToResult(this, other, key);
+        if (other.hasOwnProperty(key)) {
+          addToResult(this, other, key);
+        }
       }
     } else {
       // We also accept an Array
-      for (var index in other) {
+      for (var index=0; index < other.length; index++) {
         var otherFromArray = other[index];
 
         for (key in otherFromArray) {
-          addToResult(this, otherFromArray, key);
+          if (otherFromArray.hasOwnProperty(key)) {
+            addToResult(this, otherFromArray, key);
+          }
         }
       }
     }
@@ -303,11 +311,15 @@
 
     if(opts && opts.deep) {
       for (key in this) {
-        result[key] = asDeepMutable(this[key]);
+        if (this.hasOwnProperty(key)) {
+          result[key] = asDeepMutable(this[key]);
+        }
       }
     } else {
       for (key in this) {
-        result[key] = this[key];
+        if (this.hasOwnProperty(key)) {
+          result[key] = this[key];
+        }
       }
     }
 
@@ -338,7 +350,9 @@
       var clone = {};
 
       for (var key in obj) {
-        clone[key] = Immutable(obj[key]);
+        if (obj.hasOwnProperty(key)) {
+          clone[key] = Immutable(obj[key]);
+        }
       }
 
       return makeImmutableObject(clone);
