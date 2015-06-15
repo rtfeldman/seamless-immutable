@@ -198,6 +198,10 @@ Returns a mutable copy of the object. For a deeply mutable copy, in which any in
 
 ### Releases
 
+#### 2.4.2
+
+Calling .asMutable({deep: true}) on an Immutable data structure with a nested Date no longer throws an exception.
+
 #### 2.4.1
 
 Arrays with nonstandard prototypes no longer throw exceptions when passed to `Immutable`.
