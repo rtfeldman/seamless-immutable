@@ -30,5 +30,12 @@ module.exports = function(config) {
         assert.deepEqual(immutable,mutable);
       });
     });
+
+      it("does not throw an error when asMutable deep = true is called on an Immutable with a nested date", function() {
+          check(100, [ TestUtils.TraversableObjectSpecifier ], function(obj) {
+              var test = Immutable({ testDate: new Date()});
+              test.asMutable({deep: true});
+          });
+      });
   });
 };

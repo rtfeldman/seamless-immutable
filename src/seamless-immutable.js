@@ -214,7 +214,7 @@
   }
 
   function asDeepMutable(obj) {
-    if( !obj || !obj.hasOwnProperty(immutabilityTag) ) { return obj; }
+    if(!obj || !obj.hasOwnProperty(immutabilityTag) || obj instanceof Date) { return obj; }
     return obj.asMutable({deep: true});
   }
 
