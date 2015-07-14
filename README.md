@@ -34,6 +34,8 @@ Whenever you deeply clone large nested objects, it should typically go much fast
 
 In the development build, objects are [frozen](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze). (Note that [Safari is relatively slow to iterate over frozen objects](http://jsperf.com/performance-frozen-object/20).) The development build also overrides unsupported methods (methods that ordinarily mutate the underlying data structure) to throw helpful exceptions.
 
+In Node.js you need to set the environmental variable `NODE_ENV` to `development` to enable the development-time checks.
+
 The production (minified) build does neither of these, which significantly improves performance.
 
 ## API Overview
