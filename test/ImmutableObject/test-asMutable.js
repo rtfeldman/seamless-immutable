@@ -31,11 +31,23 @@ module.exports = function(config) {
       });
     });
 
-      it("does not throw an error when asMutable deep = true is called on an Immutable with a nested date", function() {
-          check(100, [ TestUtils.TraversableObjectSpecifier ], function(obj) {
-              var test = Immutable({ testDate: new Date()});
-              test.asMutable({deep: true});
-          });
+    it("does not throw an error when asMutable deep = true is called on an Immutable with a nested date", function() {
+      check(100, [ TestUtils.TraversableObjectSpecifier ], function(obj) {
+        var test = Immutable({ testDate: new Date()});
+        test.asMutable({deep: true});
       });
+    });
+ 
+    it("preserves prototypes after call to asMutable", function() {
+      function TestClass(o) { _.extend(this, o); };
+      var data = new TestClass({a: 1, b: 2});
+
+      var immutable = Immutable(data, {prototype: TestClass.prototype});
+      var result = immutable.asMutable();
+
+      assert.deepEqual(result, data);
+      TestUtils.assertHasPrototype(result, TestClass.prototype);
+    });
+                                           
   });
 };

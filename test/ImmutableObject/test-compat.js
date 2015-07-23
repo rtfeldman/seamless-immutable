@@ -142,7 +142,14 @@ module.exports = function(config) {
       assert.notEqual(objectWithDate, immutableObjectWithDate);
       assert.equal(objectWithDate.date.getTime(), immutableObjectWithDate.date.getTime());
     });
+                           
+    it("supports handling dates without using prototype option", function() {
+      var date = new Date();
+      var immutableDate = Immutable(date, {prototype: Object.prototype});
 
+      assert.isTrue(immutableDate instanceof Date);
+    });
+                           
     it("makes nested content immutable as well", function() {
       checkImmutableMutable(function(immutable, mutable, innerArray, obj) {
         mutable.foo = innerArray; // Make a nested immutable array

@@ -157,7 +157,7 @@
       keysToRemove = Array.prototype.slice.call(arguments);
     }
 
-    var result = {};
+    var result = this.instantiateEmptyObject();
 
     for (var key in this) {
       if (this.hasOwnProperty(key) && (keysToRemove.indexOf(key) === -1)) {
@@ -248,7 +248,7 @@
     }
 
     var anyChanges    = false,
-        result        = quickCopy(this, {}), // A shallow clone of this object.
+        result        = quickCopy(this, this.instantiateEmptyObject()), // A shallow clone of this object.
         receivedArray = (other instanceof Array),
         deep          = config && config.deep,
         merger        = config && config.merger,
@@ -307,7 +307,7 @@
   }
 
   function asMutableObject(opts) {
-    var result = {}, key;
+    var result = this.instantiateEmptyObject(), key;
 
     if(opts && opts.deep) {
       for (key in this) {
@@ -326,20 +326,24 @@
     return result;
   }
 
+  // Creates empty object, using prototype if present
+  function instantiateEmptyObject() {
+    var prototype = Object.getPrototypeOf(this);
+    return prototype !== Object.prototype ? Object.create(prototype) : {};
+  }
+
   // Finalizes an object with immutable methods, freezes it, and returns it.
   function makeImmutableObject(obj) {
     addPropertyTo(obj, "merge", merge);
     addPropertyTo(obj, "without", without);
     addPropertyTo(obj, "asMutable", asMutableObject);
+    addPropertyTo(obj, "instantiateEmptyObject", instantiateEmptyObject);
 
     return makeImmutable(obj, mutatingObjectMethods);
   }
 
-  function Immutable(obj) {
-    // If the user passes multiple arguments, assume what they want is an array.
-    if (arguments.length > 1) {
-      return makeImmutableArray(Array.prototype.slice.call(arguments));
-    } else if (isImmutable(obj)) {
+  function Immutable(obj, options) {
+    if (isImmutable(obj)) {
       return obj;
     } else if (obj instanceof Array) {
       return makeImmutableArray(obj.slice());
@@ -347,7 +351,8 @@
       return makeImmutable(new Date(obj.getTime()));
     } else {
       // Don't freeze the object we were given; make a clone and use that.
-      var clone = {};
+      var clone = options && options.prototype ? 
+          Object.create(options.prototype) : {};
 
       for (var key in obj) {
         if (obj.hasOwnProperty(key)) {
