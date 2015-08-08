@@ -69,18 +69,12 @@ Immutable({all: "your base", are: {belong: "to them"}}).merge({are: {belong: "to
 
 ## Immutable Array
 
-Like a regular Array, but immutable! You can construct these either by passing
-an array to `Immutable()`, or simply by passing it multiple arguments:
+Like a regular Array, but immutable! You can construct these by passing
+an array to `Immutable()`:
 
 ```javascript
 Immutable([1, 2, 3])
 // An immutable array containing 1, 2, and 3.
-
-Immutable(1, 2, 3)
-// Also an immutable array containing 1, 2, and 3.
-
-Immutable(1)
-// Just the number 1 (not an array), as numbers are already immutable in JS.
 ```
 
 Beyond [the usual Array fare](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array#Accessor_methods), the following methods have been added.
@@ -142,6 +136,19 @@ object to `Immutable()`.
 ```javascript
 Immutable({foo: "bar"})
 // An immutable object containing the key "foo" and the value "bar".
+```
+
+To construct an Immutable Object with a custom prototype, simply specify the
+prototype in `options` (while useful for preserving prototypes, please note
+that custom mutator methods will not work as the object will be immutable):
+
+```
+function Square(length) { this.length = length };
+Square.prototype.area = function() { return Math.pow(this.length, 2) };
+
+Immutable(new Square(2), {prototype: Square.prototype}).area();
+// An immutable object, with prototype Square,
+// containing the key "length" and method `area()` returning 4
 ```
 
 Beyond [the usual Object fare](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object#Methods_of_Object_instances), the following methods have been added.
