@@ -165,7 +165,8 @@
       }
     }
 
-    return makeImmutableObject(result);
+    return makeImmutableObject(result,
+      {instantiateEmptyObject: this.instantiateEmptyObject});
   }
 
   function asMutableArray(opts) {
@@ -300,7 +301,8 @@
     }
 
     if (anyChanges) {
-      return makeImmutableObject(result);
+      return makeImmutableObject(result, 
+        {instantiateEmptyObject: this.instantiateEmptyObject});
     } else {
       return this;
     }
@@ -326,14 +328,18 @@
     return result;
   }
 
-  // Creates empty object, using prototype if present
-  function instantiateEmptyObject() {
-    var prototype = Object.getPrototypeOf(this);
-    return prototype !== Object.prototype ? Object.create(prototype) : {};
+  // Creates plain object to be used for cloning
+  function instantiatePlainObject() {
+    return {};
   }
 
   // Finalizes an object with immutable methods, freezes it, and returns it.
-  function makeImmutableObject(obj) {
+  function makeImmutableObject(obj, options) {
+    var instantiateEmptyObject =
+      (options && options.instantiateEmptyObject) 
+        ? options.instantiateEmptyObject
+        : instantiatePlainObject;
+
     addPropertyTo(obj, "merge", merge);
     addPropertyTo(obj, "without", without);
     addPropertyTo(obj, "asMutable", asMutableObject);
@@ -351,8 +357,12 @@
       return makeImmutable(new Date(obj.getTime()));
     } else {
       // Don't freeze the object we were given; make a clone and use that.
-      var clone = options && options.prototype ? 
-          Object.create(options.prototype) : {};
+      var prototype = options && options.prototype;
+      var instantiateEmptyObject =
+        (!prototype || prototype === Object.prototype)
+          ? instantiatePlainObject
+          : (function() { return Object.create(prototype); });
+      var clone = instantiateEmptyObject();
 
       for (var key in obj) {
         if (obj.hasOwnProperty(key)) {
@@ -360,7 +370,8 @@
         }
       }
 
-      return makeImmutableObject(clone);
+      return makeImmutableObject(clone, 
+        {instantiateEmptyObject: instantiateEmptyObject});
     }
   }
 
