@@ -157,7 +157,7 @@
       keysToRemove = Array.prototype.slice.call(arguments);
     }
 
-    var result = {};
+    var result = this.instantiateEmptyObject();
 
     for (var key in this) {
       if (this.hasOwnProperty(key) && (keysToRemove.indexOf(key) === -1)) {
@@ -165,7 +165,8 @@
       }
     }
 
-    return makeImmutableObject(result);
+    return makeImmutableObject(result,
+      {instantiateEmptyObject: this.instantiateEmptyObject});
   }
 
   function asMutableArray(opts) {
@@ -248,7 +249,7 @@
     }
 
     var anyChanges    = false,
-        result        = quickCopy(this, {}), // A shallow clone of this object.
+        result        = quickCopy(this, this.instantiateEmptyObject()), // A shallow clone of this object.
         receivedArray = (other instanceof Array),
         deep          = config && config.deep,
         merger        = config && config.merger,
@@ -300,14 +301,15 @@
     }
 
     if (anyChanges) {
-      return makeImmutableObject(result);
+      return makeImmutableObject(result, 
+        {instantiateEmptyObject: this.instantiateEmptyObject});
     } else {
       return this;
     }
   }
 
   function asMutableObject(opts) {
-    var result = {}, key;
+    var result = this.instantiateEmptyObject(), key;
 
     if(opts && opts.deep) {
       for (key in this) {
@@ -326,20 +328,28 @@
     return result;
   }
 
+  // Creates plain object to be used for cloning
+  function instantiatePlainObject() {
+    return {};
+  }
+
   // Finalizes an object with immutable methods, freezes it, and returns it.
-  function makeImmutableObject(obj) {
+  function makeImmutableObject(obj, options) {
+    var instantiateEmptyObject =
+      (options && options.instantiateEmptyObject) 
+        ? options.instantiateEmptyObject
+        : instantiatePlainObject;
+
     addPropertyTo(obj, "merge", merge);
     addPropertyTo(obj, "without", without);
     addPropertyTo(obj, "asMutable", asMutableObject);
+    addPropertyTo(obj, "instantiateEmptyObject", instantiateEmptyObject);
 
     return makeImmutable(obj, mutatingObjectMethods);
   }
 
-  function Immutable(obj) {
-    // If the user passes multiple arguments, assume what they want is an array.
-    if (arguments.length > 1) {
-      return makeImmutableArray(Array.prototype.slice.call(arguments));
-    } else if (isImmutable(obj)) {
+  function Immutable(obj, options) {
+    if (isImmutable(obj)) {
       return obj;
     } else if (obj instanceof Array) {
       return makeImmutableArray(obj.slice());
@@ -347,7 +357,12 @@
       return makeImmutable(new Date(obj.getTime()));
     } else {
       // Don't freeze the object we were given; make a clone and use that.
-      var clone = {};
+      var prototype = options && options.prototype;
+      var instantiateEmptyObject =
+        (!prototype || prototype === Object.prototype)
+          ? instantiatePlainObject
+          : (function() { return Object.create(prototype); });
+      var clone = instantiateEmptyObject();
 
       for (var key in obj) {
         if (obj.hasOwnProperty(key)) {
@@ -355,7 +370,8 @@
         }
       }
 
-      return makeImmutableObject(clone);
+      return makeImmutableObject(clone, 
+        {instantiateEmptyObject: instantiateEmptyObject});
     }
   }
 

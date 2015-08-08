@@ -14,20 +14,7 @@ var getTestUtils = require("./TestUtils.js");
 
   describe(config.name, function () {
     describe("Immutable", function () {
-      it("converts multiple arguments into an array, but leaves single arguments alone", function () {
-        TestUtils.check(100, [JSC.array()], function (args) {
-          var immutable = Immutable.apply(Immutable, args);
-
-          if (args.length > 1) {
-            assert.deepEqual(immutable, Immutable(args));
-          } else if (isNaN(immutable) && isNaN(args[0])) {
-            assert.ok(true);
-          } else {
-            assert.strictEqual(immutable, args[0]);
-          }
-        })
-      });
-
+      
       it("makes an Immutable Array when passed a mutable array", function () {
         TestUtils.check(100, [JSC.array()], function (mutable) {
           var immutable = Immutable(mutable);
@@ -64,7 +51,17 @@ var getTestUtils = require("./TestUtils.js");
         Immutable([]);
         delete Array.prototype.veryEvilFunction;
       });
+                                                                  
+      it("returns an object with the given optional prototype", function() {
+        function TestClass(o) { _.extend(this, o); };
+        var data = new TestClass({a: 1, b: 2});
 
+        var immutable = Immutable(data, {prototype: TestClass.prototype});
+
+        assert.deepEqual(immutable, data);
+        TestUtils.assertHasPrototype(immutable, TestClass.prototype);
+      });
+                                                                  
       // These are already immutable, and should pass through Immutable() untouched.
       _.each({
         "string": JSC.string(),
@@ -76,6 +73,9 @@ var getTestUtils = require("./TestUtils.js");
         it("simply returns its argument when passed a value of type " + type, function () {
           TestUtils.check(100, [specifier], function (value) {
             assert.strictEqual(Immutable(value), value);
+
+            // should still pass through with a faulty prototype option
+            assert.strictEqual(Immutable(value, {prototype: Object.prototype}), value);
           });
         });
       });

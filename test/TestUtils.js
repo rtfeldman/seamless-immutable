@@ -23,6 +23,10 @@ function wrapAssertIsDeeplyImmutable(Immutable) {
   }
 }
 
+function assertHasPrototype(obj, expectedPrototype) {
+  assert.strictEqual(Object.getPrototypeOf(obj), expectedPrototype);
+}
+
 function withoutItengerKeys(obj) {
   return _.object(_.map(obj, function(value, key) {
     // Don't choose keys that can be parsed as 32-bit unsigned integers,
@@ -112,6 +116,7 @@ module.exports = function(Immutable) {
   return {
     assertImmutable:         wrapAssertImmutable(Immutable),
     assertIsDeeplyImmutable: wrapAssertIsDeeplyImmutable(Immutable),
+    assertHasPrototype:      assertHasPrototype,
     ImmutableArraySpecifier: wrapImmutableArraySpecifier(Immutable),
     ComplexObjectSpecifier:  ComplexObjectSpecifier,
     TraversableObjectSpecifier: TraversableObjectSpecifier,

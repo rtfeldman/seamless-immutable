@@ -86,6 +86,17 @@ module.exports = function(config) {
         assert.deepEqual(actual, expected);
       });
     });
+ 
+    it("preserves prototypes after call to without", function() {
+      function TestClass(o) { _.extend(this, o); };
+      var data = new TestClass({a: 1, b: 2});
+
+      var immutable = Immutable(data, {prototype: TestClass.prototype});
+      var result = immutable.without('b');
+
+      assert.deepEqual(result, _.omit(data, 'b'));
+      TestUtils.assertHasPrototype(result, TestClass.prototype);
+    });
 
     describe("when passed a single key", function() {
       generateWithoutTestsFor([JSC.string()]);

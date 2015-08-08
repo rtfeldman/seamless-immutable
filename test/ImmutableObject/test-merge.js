@@ -242,6 +242,18 @@ module.exports = function(config) {
       assert.equal(original, actualWithMerger);
     });
 
+    it("preserves prototypes across merges", function() {
+      function TestClass(o) { _.extend(this, o); };
+      var data = new TestClass({a: 1, b: 2});
+      var mergeData = {b: 3, c: 4};
+
+      var immutable = Immutable(data, {prototype: TestClass.prototype});
+      var result = immutable.merge(mergeData);
+
+      assert.deepEqual(result, _.extend({}, data, mergeData));
+      TestUtils.assertHasPrototype(result, TestClass.prototype);
+    });
+
     describe("when passed a single object", function() {
       generateMergeTestsFor([TestUtils.ComplexObjectSpecifier()]);
     });
