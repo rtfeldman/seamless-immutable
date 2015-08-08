@@ -205,6 +205,11 @@ Returns a mutable copy of the object. For a deeply mutable copy, in which any in
 
 ### Releases
 
+
+#### 3.0.0
+
+Add support for optional prototyping.
+
 #### 2.4.2
 
 Calling .asMutable({deep: true}) on an Immutable data structure with a nested Date no longer throws an exception.
