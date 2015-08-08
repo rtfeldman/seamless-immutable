@@ -301,7 +301,7 @@
     }
 
     if (anyChanges) {
-      return makeImmutableObject(result, 
+      return makeImmutableObject(result,
         {instantiateEmptyObject: this.instantiateEmptyObject});
     } else {
       return this;
@@ -336,9 +336,8 @@
   // Finalizes an object with immutable methods, freezes it, and returns it.
   function makeImmutableObject(obj, options) {
     var instantiateEmptyObject =
-      (options && options.instantiateEmptyObject) 
-        ? options.instantiateEmptyObject
-        : instantiatePlainObject;
+      (options && options.instantiateEmptyObject) ?
+        options.instantiateEmptyObject : instantiatePlainObject;
 
     addPropertyTo(obj, "merge", merge);
     addPropertyTo(obj, "without", without);
@@ -359,9 +358,8 @@
       // Don't freeze the object we were given; make a clone and use that.
       var prototype = options && options.prototype;
       var instantiateEmptyObject =
-        (!prototype || prototype === Object.prototype)
-          ? instantiatePlainObject
-          : (function() { return Object.create(prototype); });
+        (!prototype || prototype === Object.prototype) ?
+          instantiatePlainObject : (function() { return Object.create(prototype); });
       var clone = instantiateEmptyObject();
 
       for (var key in obj) {
@@ -370,7 +368,7 @@
         }
       }
 
-      return makeImmutableObject(clone, 
+      return makeImmutableObject(clone,
         {instantiateEmptyObject: instantiateEmptyObject});
     }
   }
