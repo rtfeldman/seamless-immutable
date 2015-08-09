@@ -15,4 +15,4 @@ browsers:
   - name: opera
     version: 12..latest
   - name: safari
-    version: 6..latest
+    version: 6..8
