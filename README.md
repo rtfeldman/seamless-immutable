@@ -206,6 +206,10 @@ Returns a mutable copy of the object. For a deeply mutable copy, in which any in
 ### Releases
 
 
+#### 4.0.0
+
+`main` now points to `src/seamless-immutable.js` so you can more easily build with `envify` yourself.
+
 #### 3.0.0
 
 Add support for optional prototyping.
