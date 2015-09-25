@@ -13,6 +13,9 @@ module.exports = function(config) {
       check(100, [ TestUtils.TraversableObjectSpecifier ], function(obj) {
         var immutable = Immutable(obj);
         var mutable = immutable.asMutable();
+
+        assertNotArray(mutable);
+        assertCanBeMutated(mutable);
         assert.isFalse(Immutable.isImmutable(mutable));
         TestUtils.assertIsDeeplyImmutable(mutable.complex);
         TestUtils.assertIsDeeplyImmutable(mutable.deep.complex);
@@ -24,6 +27,9 @@ module.exports = function(config) {
       check(100, [ TestUtils.TraversableObjectSpecifier ], function(obj) {
         var immutable = Immutable(obj);
         var mutable = immutable.asMutable({ deep: true });
+
+        assertNotArray(mutable);
+        assertCanBeMutated(mutable);
         assert.isFalse(Immutable.isImmutable(mutable));
         assert.isFalse(Immutable.isImmutable(mutable['complex']));
         assert.isFalse(Immutable.isImmutable(mutable['deep']['complex']));
@@ -37,7 +43,7 @@ module.exports = function(config) {
         test.asMutable({deep: true});
       });
     });
- 
+
     it("preserves prototypes after call to asMutable", function() {
       function TestClass(o) { _.extend(this, o); };
       var data = new TestClass({a: 1, b: 2});
@@ -48,6 +54,31 @@ module.exports = function(config) {
       assert.deepEqual(result, data);
       TestUtils.assertHasPrototype(result, TestClass.prototype);
     });
-                                           
+
   });
+
+  function assertCanBeMutated(obj) {
+    try {
+      var newElement = { foo: "bar" };
+      var originalKeyCount = Object.keys(obj).length;
+      var key = "__test__field__";
+
+      assert.equal(false, obj.hasOwnProperty(key));
+
+      obj[key] = newElement;
+
+      assert.equal(true, obj.hasOwnProperty(key));
+
+      assert.equal(obj[key], newElement);
+      assert.equal(Object.keys(obj).length, originalKeyCount + 1);
+
+      delete obj[key];
+    } catch(error) {
+      assert.fail("Exception when trying to verify that this object was mutable: " + JSON.stringify(obj));
+    }
+  }
+
+  function assertNotArray(obj) {
+    assert(!(obj instanceof Array, "Did not expect an Array, but got one. Got: " + JSON.stringify(obj)))
+  }
 };
