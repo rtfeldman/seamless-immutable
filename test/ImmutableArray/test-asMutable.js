@@ -13,6 +13,8 @@ module.exports = function(config) {
       check(100, [ JSC.array([TestUtils.TraversableObjectSpecifier, JSC.any()]) ], function(array) {
         var immutable = Immutable(array);
         var mutable = immutable.asMutable();
+
+        assertCanBeMutated(mutable);
         assert.isFalse( Immutable.isImmutable(mutable));
         TestUtils.assertIsDeeplyImmutable(mutable[0]);
         TestUtils.assertIsDeeplyImmutable(mutable[0].deep);
@@ -25,11 +27,29 @@ module.exports = function(config) {
       check(100, [ JSC.array([TestUtils.TraversableObjectSpecifier, JSC.any()]) ], function(array) {
         var immutable = Immutable(array);
         var mutable = immutable.asMutable({ deep: true });
+
+        assertCanBeMutated(mutable);
         assert.isFalse( Immutable.isImmutable(mutable));
         assert.isFalse( Immutable.isImmutable(mutable[0]));
         assert.isFalse( Immutable.isImmutable(mutable[0]['deep']));
         assert.deepEqual(immutable,mutable);
       });
     });
-  });  
+  });
+
+  function assertCanBeMutated(array) {
+    try {
+      var newElement = { foo: "bar" };
+      var originalLength = array.length;
+
+      array.push(newElement);
+
+      assert.equal(array[array.length - 1], newElement);
+      assert.equal(array.length, originalLength + 1);
+
+      array.pop(newElement);
+    } catch(error) {
+      assert.fail("Exception when trying to verify that this array was mutable: " + JSON.stringify(array));
+    }
+  }
 };
