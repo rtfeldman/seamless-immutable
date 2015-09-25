@@ -9,6 +9,16 @@ module.exports = function(config) {
   var check     = TestUtils.check;
 
   describe("#asMutable", function() {
+    it("returns an empty mutable array from an empty immutable array", function() {
+        var immutable = Immutable([]);
+        var mutable = immutable.asMutable();
+
+        assertIsArray(mutable);
+        assertCanBeMutated(mutable);
+        assert.isFalse( Immutable.isImmutable(mutable));
+        assert.deepEqual(immutable,mutable);
+    });
+
     it("returns a shallow mutable copy if not provided the deep flag", function() {
       check(100, [ JSC.array([TestUtils.TraversableObjectSpecifier, JSC.any()]) ], function(array) {
         var immutable = Immutable(array);

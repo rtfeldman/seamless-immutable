@@ -9,6 +9,17 @@ module.exports = function(config) {
   var check     = TestUtils.check;
 
   describe("#asMutable", function() {
+    it("returns an empty mutable oject from an empty immutable array", function() {
+        var immutable = Immutable({});
+        var mutable = immutable.asMutable();
+
+        assertNotArray(mutable);
+        assertCanBeMutated(mutable);
+        assert.isFalse( Immutable.isImmutable(mutable));
+        assert.deepEqual(immutable,mutable);
+        assert.equal(Object.keys(mutable).length, 0);
+    });
+
     it("returns a shallow mutable copy if not provided the deep flag", function() {
       check(100, [ TestUtils.TraversableObjectSpecifier ], function(obj) {
         var immutable = Immutable(obj);
@@ -79,6 +90,6 @@ module.exports = function(config) {
   }
 
   function assertNotArray(obj) {
-    assert(!(obj instanceof Array, "Did not expect an Array, but got one. Got: " + JSON.stringify(obj)))
+    assert(!(obj instanceof Array), "Did not expect an Array, but got one. Got: " + JSON.stringify(obj))
   }
 };
