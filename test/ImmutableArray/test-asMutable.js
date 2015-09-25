@@ -14,6 +14,7 @@ module.exports = function(config) {
         var immutable = Immutable(array);
         var mutable = immutable.asMutable();
 
+        assertIsArray(mutable);
         assertCanBeMutated(mutable);
         assert.isFalse( Immutable.isImmutable(mutable));
         TestUtils.assertIsDeeplyImmutable(mutable[0]);
@@ -28,6 +29,7 @@ module.exports = function(config) {
         var immutable = Immutable(array);
         var mutable = immutable.asMutable({ deep: true });
 
+        assertIsArray(mutable);
         assertCanBeMutated(mutable);
         assert.isFalse( Immutable.isImmutable(mutable));
         assert.isFalse( Immutable.isImmutable(mutable[0]));
@@ -51,5 +53,9 @@ module.exports = function(config) {
     } catch(error) {
       assert.fail("Exception when trying to verify that this array was mutable: " + JSON.stringify(array));
     }
+  }
+
+  function assertIsArray(array) {
+    assert(array instanceof Array, "Expected an Array, but did not get one. Got: " + JSON.stringify(array))
   }
 };
