@@ -1,6 +1,17 @@
 (function(){
   "use strict";
 
+  var NODE_ENV = (function(){
+    try {
+      if (typeof "development" === "undefined") {
+        process.env.NODE_ENV = 'development';
+      }
+      return "development";
+    } catch(e) {
+      return 'development';
+    }
+  })();
+
   function addPropertyTo(target, methodName, value) {
     Object.defineProperty(target, methodName, {
       enumerable: false,
@@ -65,7 +76,7 @@
     // Tag it so we can quickly tell it's immutable later.
     addImmutabilityTag(obj);
 
-    if ("development" === "development") {
+    if (NODE_ENV === "development") {
       // Make all mutating methods throw exceptions.
       for (var index in bannedMethods) {
         if (bannedMethods.hasOwnProperty(index)) {
