@@ -65,7 +65,7 @@
     // Tag it so we can quickly tell it's immutable later.
     addImmutabilityTag(obj);
 
-    if (process.env.NODE_ENV === "development") {
+    if (process.env.NODE_ENV !== "production") {
       // Make all mutating methods throw exceptions.
       for (var index in bannedMethods) {
         if (bannedMethods.hasOwnProperty(index)) {
