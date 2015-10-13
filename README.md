@@ -205,6 +205,9 @@ Returns a mutable copy of the object. For a deeply mutable copy, in which any in
 
 ### Releases
 
+#### 4.0.1
+
+Now when you `require("seamless-immutable")`, you get the development build by default.
 
 #### 4.0.0
 
