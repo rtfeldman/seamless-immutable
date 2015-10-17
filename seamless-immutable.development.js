@@ -308,6 +308,23 @@
     }
   }
 
+  function setIn(path, value) {
+    var ob = value;
+    for (var i = path.length-1; i >= 0; --i) {
+      var o = {};
+      o[path[i]] = ob;
+      ob = o;
+    }
+
+    return this.merge(ob, {deep: true});
+  }
+
+  function set(property, value) {
+    var ob = {};
+    ob[property] = value;
+    return this.merge(ob);
+  }
+
   function asMutableObject(opts) {
     var result = this.instantiateEmptyObject(), key;
 
@@ -343,6 +360,8 @@
     addPropertyTo(obj, "without", without);
     addPropertyTo(obj, "asMutable", asMutableObject);
     addPropertyTo(obj, "instantiateEmptyObject", instantiateEmptyObject);
+    addPropertyTo(obj, "set", set);
+    addPropertyTo(obj, "setIn", setIn);
 
     return makeImmutable(obj, mutatingObjectMethods);
   }
