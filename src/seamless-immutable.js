@@ -248,11 +248,11 @@
       throw new TypeError("Immutable#merge can only be invoked with objects or arrays, not " + JSON.stringify(other));
     }
 
-    var anyChanges    = false,
-        result        = quickCopy(this, this.instantiateEmptyObject()), // A shallow clone of this object.
+    var me            = this,
         receivedArray = (other instanceof Array),
         deep          = config && config.deep,
         merger        = config && config.merger,
+        result,
         key;
 
     // Use the given key to extract a value from the given object, then place
@@ -266,19 +266,25 @@
         return;
       }
 
-      anyChanges = anyChanges ||
-        mergerResult !== undefined ||
+      if ((result !== undefined) ||
+        (mergerResult !== undefined) ||
         (!currentObj.hasOwnProperty(key) ||
         ((immutableValue !== currentObj[key]) &&
           // Avoid false positives due to (NaN !== NaN) evaluating to true
-          (immutableValue === immutableValue)));
+          (immutableValue === immutableValue)))) {
 
-      if (mergerResult) {
-        result[key] = mergerResult;
-      } else if (deep && isMergableObject(currentObj[key]) && isMergableObject(immutableValue)) {
-        result[key] = currentObj[key].merge(immutableValue, config);
-      } else {
-        result[key] = immutableValue;
+        if (result === undefined) {
+          // A shallow clone of this object.
+          result = quickCopy(me, me.instantiateEmptyObject());
+        }
+
+        if (mergerResult) {
+          result[key] = mergerResult;
+        } else if (deep && isMergableObject(currentObj[key]) && isMergableObject(immutableValue)) {
+          result[key] = currentObj[key].merge(immutableValue, config);
+        } else {
+          result[key] = immutableValue;
+        }
       }
     }
 
@@ -303,11 +309,11 @@
       }
     }
 
-    if (anyChanges) {
+    if (result === undefined) {
+      return this;
+    } else {
       return makeImmutableObject(result,
         {instantiateEmptyObject: this.instantiateEmptyObject});
-    } else {
-      return this;
     }
   }
 
