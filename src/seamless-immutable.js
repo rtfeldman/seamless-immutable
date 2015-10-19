@@ -248,12 +248,10 @@
       throw new TypeError("Immutable#merge can only be invoked with objects or arrays, not " + JSON.stringify(other));
     }
 
-    var me            = this,
-        receivedArray = (other instanceof Array),
+    var receivedArray = (other instanceof Array),
         deep          = config && config.deep,
         merger        = config && config.merger,
-        result,
-        key;
+        result;
 
     // Use the given key to extract a value from the given object, then place
     // that value in the result object under the same key. If that resulted
@@ -261,32 +259,39 @@
     function addToResult(currentObj, otherObj, key) {
       var immutableValue = Immutable(otherObj[key]);
       var mergerResult = merger && merger(currentObj[key], immutableValue, config);
-
-      if (mergerResult && mergerResult === currentObj[key]) {
-        return;
-      }
+      var currentValue = currentObj[key];
 
       if ((result !== undefined) ||
         (mergerResult !== undefined) ||
         (!currentObj.hasOwnProperty(key) ||
-        ((immutableValue !== currentObj[key]) &&
+        ((immutableValue !== currentValue) &&
           // Avoid false positives due to (NaN !== NaN) evaluating to true
           (immutableValue === immutableValue)))) {
 
-        if (result === undefined) {
-          // A shallow clone of this object.
-          result = quickCopy(me, me.instantiateEmptyObject());
-        }
+        var newValue;
 
         if (mergerResult) {
-          result[key] = mergerResult;
-        } else if (deep && isMergableObject(currentObj[key]) && isMergableObject(immutableValue)) {
-          result[key] = currentObj[key].merge(immutableValue, config);
+          newValue = mergerResult;
+        } else if (deep && isMergableObject(currentValue) && isMergableObject(immutableValue)) {
+          newValue = currentValue.merge(immutableValue, config);
         } else {
-          result[key] = immutableValue;
+          newValue = immutableValue;
+        }
+
+        // We check (newValue === newValue) because (NaN !== NaN) in JS
+        if (((currentValue !== newValue) && (newValue === newValue))
+            || !currentObj.hasOwnProperty(key)) {
+          if (result === undefined) {
+            // Make a shallow clone of the current object.
+            result = quickCopy(currentObj, currentObj.instantiateEmptyObject());
+          }
+
+          result[key] = newValue;
         }
       }
     }
+
+    var key;
 
     // Achieve prioritization by overriding previous values that get in the way.
     if (!receivedArray) {
