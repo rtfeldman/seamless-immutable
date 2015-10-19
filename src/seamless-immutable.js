@@ -261,7 +261,10 @@
     function addToResult(currentObj, otherObj, key) {
       var immutableValue = Immutable(otherObj[key]);
       var mergerResult = merger && merger(currentObj[key], immutableValue, config);
-      if (mergerResult && mergerResult === currentObj[key]) return;
+
+      if (mergerResult && mergerResult === currentObj[key]) {
+        return;
+      }
 
       anyChanges = anyChanges ||
         mergerResult !== undefined ||
