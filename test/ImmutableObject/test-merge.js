@@ -111,6 +111,23 @@ module.exports = function(config) {
         });
       });
 
+      it("does not reproduce #70", function() {
+        var c = Immutable({a: {b: 1}});
+
+        assert.strictEqual(c, c.merge({a: {b: 1}}, {deep: true}));
+      });
+
+      it("does nothing when merging an identical object", function() {
+        checkMultiple(function(immutable, mutables, runMerge) {
+          _.each(mutables, function(mutable, index) {
+            var identicalImmutable = Immutable(mutable);
+
+            assert.strictEqual(identicalImmutable,
+              identicalImmutable.merge(mutable, {deep: true}));
+          });
+        });
+      });
+
       it("does nothing when passed a merge that will result in no changes", function() {
         checkMultiple(function(immutable, mutables, runMerge) {
           // Make sure all the changes will be no-ops.
