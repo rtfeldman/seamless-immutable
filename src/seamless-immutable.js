@@ -1,5 +1,7 @@
 (function(){
   "use strict";
+  
+  var __DEV__ = process.env.NODE_ENV !== 'production';
 
   function addPropertyTo(target, methodName, value) {
     Object.defineProperty(target, methodName, {
@@ -65,7 +67,7 @@
     // Tag it so we can quickly tell it's immutable later.
     addImmutabilityTag(obj);
 
-    if (process.env.NODE_ENV !== "production") {
+    if (__DEV__) {
       // Make all mutating methods throw exceptions.
       for (var index in bannedMethods) {
         if (bannedMethods.hasOwnProperty(index)) {
