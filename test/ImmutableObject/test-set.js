@@ -21,7 +21,7 @@ module.exports = function(config) {
       check(100, [TestUtils.ComplexObjectSpecifier()], function(ob) {
         var clone = _.cloneDeep(ob),
           prop = getPathComponent(),
-          value = Math.random();
+          value = JSC.any()();
         assert.deepEqual(
           Immutable(ob).set(prop, value),
           _.set(clone, prop, value)
@@ -34,11 +34,11 @@ module.exports = function(config) {
     it("sets a property by path", function () {
       check(100, [TestUtils.ComplexObjectSpecifier()], function(ob) {
         var clone = _.cloneDeep(ob),
-          value = Math.random();
+          value = JSC.any()();
 
         assert.deepEqual(Immutable(ob), clone);
 
-        var path = [], depth = 1 + Math.random() * 5;
+        var path = [], depth = JSC.integer(1, 5)();
         for (var j = 0; j < depth; j++) {
           path.push(getPathComponent());
         }
