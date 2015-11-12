@@ -174,6 +174,29 @@ invocations will be performed using each provided object in turn.
 
 A second argument can be provided to perform a deep merge: `{deep: true}`.
 
+### set
+
+```javascript
+Immutable({type: "parrot", subtype: "Norwegian Blue", status: "alive"}).set("status", "dead")
+// returns Immutable({type: "parrot", subtype: "Norwegian Blue", status: "dead"})
+```
+
+Returns an Immutable Object with a single property set to the provided value.
+Basically a more straightforward way of saying
+```javascript
+Immutable({type: "parrot", subtype: "Norwegian Blue", status: "alive"}).merge({status: "dead"})
+```
+(and more convenient with non-literal keys unless you have ES6 ```[computed_property_names]```).
+
+### setIn
+
+Like [set](#set), but accepts a nested path to the property. 
+
+```javascript
+Immutable({type: {main: "parrot", sub: "Norwegian Blue"}, status: "alive"}).setIn(["type", "sub"], "Norwegian Ridgeback")
+// returns Immutable({type: {main: "parrot", sub: "Norwegian Ridgeback"}, status: "alive"})
+```
+
 ### without
 
 ```javascript
