@@ -25,6 +25,16 @@ var getTestUtils = require("./TestUtils.js");
         });
       });
 
+      it("makes an Immutable Date when passed a mutable Date", function () {
+        TestUtils.check(100, [JSC.literal(new Date())], function (mutable) {
+          var immutable = Immutable(mutable);
+
+          assert.deepEqual(immutable, mutable);
+          assert.isTrue(Immutable.isImmutable(immutable));
+          assert.isFalse(Immutable.isImmutable(mutable));
+        });
+      });
+
       it("makes an Immutable Object when passed a mutable object", function () {
         TestUtils.check(100, [JSC.object()], function (mutable) {
           var immutable = Immutable(mutable);
@@ -44,7 +54,7 @@ var getTestUtils = require("./TestUtils.js");
           assert.isTrue(Immutable.isImmutable(immutable));
           assert.isTrue(Immutable.isImmutable(immutable[1]))
         })
-      })
+      });
 
       it("doesn't fail when a function is defined on Array.prototype", function() {
         Array.prototype.veryEvilFunction = function() {};
