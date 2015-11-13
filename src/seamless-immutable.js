@@ -88,6 +88,30 @@
     });
   }
 
+  function arraySet(idx, value) {
+    if (idx in this) {
+      return this;
+    }
+
+    var mutable = asMutableArray.call(this);
+    mutable[idx] = value;
+    return makeImmutableArray(mutable);
+  }
+
+  function arraySetIn(pth, value) {
+    var head = pth[0];
+
+    if (pth.length === 1) {
+      return arraySet.call(this, head, value);
+    } else {
+      var mutable = asMutableArray.call(this);
+      var tail = pth.slice(1);
+      // this[head] might (validly) be an (immutable) array or object
+      mutable[head] = this[head].setIn(tail, value);
+      return makeImmutableArray(mutable);
+    }
+  }
+
   function makeImmutableArray(array) {
     // Don't change their implementations, but wrap these functions to make sure
     // they always return an immutable value.
@@ -101,6 +125,8 @@
     addPropertyTo(array, "flatMap",  flatMap);
     addPropertyTo(array, "asObject", asObject);
     addPropertyTo(array, "asMutable", asMutableArray);
+    addPropertyTo(array, "set", arraySet);
+    addPropertyTo(array, "setIn", arraySetIn);
 
     for(var i = 0, length = array.length; i < length; i++) {
       array[i] = Immutable(array[i]);
@@ -322,21 +348,33 @@
     }
   }
 
-  function setIn(path, value) {
-    var ob = value;
-    for (var i = path.length-1; i >= 0; --i) {
-      var o = {};
-      o[path[i]] = ob;
-      ob = o;
+  var immutableEmptyObject = Immutable({});
+
+  function objectSetIn(path, value) {
+    var head = path[0];
+    if (path.length === 1) {
+      return objectSet.call(this, head, value);
     }
 
-    return this.merge(ob, {deep: true});
+    var tail = path.slice(1);
+    var mutable = quickCopy(this, this.instantiateEmptyObject());
+    if (mutable.hasOwnProperty(head)) {
+      // Might (validly) be object or array
+      mutable[head] = ob.setIn(tail, value);
+    } else {
+      mutable[head] = objectSetIn.call(immutableEmptyObject, tail, value);
+    }
+    return makeImmutableObject(mutable, this);
   }
 
-  function set(property, value) {
-    var ob = {};
-    ob[property] = value;
-    return this.merge(ob);
+  function objectSet(property, value) {
+    if (this.hasOwnProperty(property) && this[property] === value) {
+      return this;
+    }
+
+    var mutable = quickCopy(this, this.instantiateEmptyObject());
+    mutable[property] = value;
+    return makeImmutableObject(mutable, this);
   }
 
   function asMutableObject(opts) {
@@ -374,8 +412,8 @@
     addPropertyTo(obj, "without", without);
     addPropertyTo(obj, "asMutable", asMutableObject);
     addPropertyTo(obj, "instantiateEmptyObject", instantiateEmptyObject);
-    addPropertyTo(obj, "set", set);
-    addPropertyTo(obj, "setIn", setIn);
+    addPropertyTo(obj, "set", objectSet);
+    addPropertyTo(obj, "setIn", objectSetIn);
 
     return makeImmutable(obj, mutatingObjectMethods);
   }

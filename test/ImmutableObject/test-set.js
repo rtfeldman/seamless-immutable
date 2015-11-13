@@ -19,12 +19,14 @@ module.exports = function(config) {
   describe("#set", function() {
     it("sets a property by name", function () {
       check(100, [TestUtils.ComplexObjectSpecifier()], function(ob) {
-        var clone = _.cloneDeep(ob),
-          prop = getPathComponent(),
-          value = JSC.any()();
+        var immutable = Immutable(ob);
+        var mutable = immutable.asMutable();
+        var prop = getPathComponent();
+        var value = JSC.any()();
+
         assert.deepEqual(
-          Immutable(ob).set(prop, value),
-          _.set(clone, prop, value)
+          immutable.set(prop, value),
+          _.set(mutable, prop, value)
         );
       });
     });
@@ -33,10 +35,11 @@ module.exports = function(config) {
   describe("#setIn", function() {
     it("sets a property by path", function () {
       check(100, [TestUtils.ComplexObjectSpecifier()], function(ob) {
-        var clone = _.cloneDeep(ob),
-          value = JSC.any()();
+        var immutable = Immutable(ob);
+        var mutable = immutable.asMutable();
+        var value = JSC.any()();
 
-        assert.deepEqual(Immutable(ob), clone);
+        assert.deepEqual(immutable, mutable);
 
         var path = [], depth = JSC.integer(1, 5)();
         for (var j = 0; j < depth; j++) {
@@ -44,8 +47,8 @@ module.exports = function(config) {
         }
 
         assert.deepEqual(
-          Immutable(ob).setIn(path, value),
-          _.set(clone, path, value)
+          immutable.setIn(path, value),
+          _.set(mutable, path, value)
         );
       });
     });
