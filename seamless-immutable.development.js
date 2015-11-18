@@ -358,9 +358,9 @@
 
     var tail = path.slice(1);
     var mutable = quickCopy(this, this.instantiateEmptyObject());
-    if (mutable.hasOwnProperty(head)) {
+    if (mutable.hasOwnProperty(head) && mutable[head] !== undefined) {
       // Might (validly) be object or array
-      mutable[head] = ob.setIn(tail, value);
+      mutable[head] = mutable[head].setIn(tail, value);
     } else {
       mutable[head] = objectSetIn.call(immutableEmptyObject, tail, value);
     }
