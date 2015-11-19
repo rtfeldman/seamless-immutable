@@ -94,7 +94,7 @@
     }
 
     var mutable = asMutableArray.call(this);
-    mutable[idx] = value;
+    mutable[idx] = Immutable(value);
     return makeImmutableArray(mutable);
   }
 
@@ -102,12 +102,12 @@
     var head = pth[0];
 
     if (pth.length === 1) {
-      return arraySet.call(this, head, value);
+      return arraySet.call(this, head, Immutable(value));
     } else {
       var mutable = asMutableArray.call(this);
       var tail = pth.slice(1);
       // this[head] might (validly) be an (immutable) array or object
-      mutable[head] = this[head].setIn(tail, value);
+      mutable[head] = this[head].setIn(tail, Immutable(value));
       return makeImmutableArray(mutable);
     }
   }
@@ -360,9 +360,9 @@
     var mutable = quickCopy(this, this.instantiateEmptyObject());
     if (mutable.hasOwnProperty(head) && mutable[head] !== undefined) {
       // Might (validly) be object or array
-      mutable[head] = mutable[head].setIn(tail, value);
+      mutable[head] = mutable[head].setIn(tail, Immutable(value));
     } else {
-      mutable[head] = objectSetIn.call(immutableEmptyObject, tail, value);
+      mutable[head] = objectSetIn.call(immutableEmptyObject, tail, Immutable(value));
     }
     return makeImmutableObject(mutable, this);
   }
@@ -373,7 +373,7 @@
     }
 
     var mutable = quickCopy(this, this.instantiateEmptyObject());
-    mutable[property] = value;
+    mutable[property] = Immutable(value);
     return makeImmutableObject(mutable, this);
   }
 
