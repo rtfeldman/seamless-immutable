@@ -89,7 +89,7 @@
   }
 
   function arraySet(idx, value) {
-    if (idx in this) {
+    if (idx in this && this[idx] === value) {
       return this;
     }
 
@@ -102,12 +102,18 @@
     var head = pth[0];
 
     if (pth.length === 1) {
-      return arraySet.call(this, head, Immutable(value));
+      return arraySet.call(this, head, value);
     } else {
-      var mutable = asMutableArray.call(this);
       var tail = pth.slice(1);
       // this[head] might (validly) be an (immutable) array or object
-      mutable[head] = this[head].setIn(tail, Immutable(value));
+      var newValue = this[head].setIn(tail, value);
+
+      if (head in this && this[head] === newValue) {
+        return this;
+      }
+
+      var mutable = asMutableArray.call(this);
+      mutable[head] = newValue;
       return makeImmutableArray(mutable);
     }
   }
@@ -357,13 +363,20 @@
     }
 
     var tail = path.slice(1);
-    var mutable = quickCopy(this, this.instantiateEmptyObject());
-    if (mutable.hasOwnProperty(head) && mutable[head] !== undefined) {
+    var newValue;
+    if (this.hasOwnProperty(head) && this[head] !== undefined) {
       // Might (validly) be object or array
-      mutable[head] = mutable[head].setIn(tail, Immutable(value));
+      newValue = this[head].setIn(tail, value);
     } else {
-      mutable[head] = objectSetIn.call(immutableEmptyObject, tail, Immutable(value));
+      newValue = objectSetIn.call(immutableEmptyObject, tail, value);
     }
+
+    if (this.hasOwnProperty(head) && this[head] === newValue) {
+      return this;
+    }
+
+    var mutable = quickCopy(this, this.instantiateEmptyObject());
+    mutable[head] = newValue;
     return makeImmutableObject(mutable, this);
   }
 
