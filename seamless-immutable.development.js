@@ -311,8 +311,8 @@
         }
 
         // We check (newValue === newValue) because (NaN !== NaN) in JS
-        if (((currentValue !== newValue) && (newValue === newValue))
-            || !currentObj.hasOwnProperty(key)) {
+        if (((currentValue !== newValue) && (newValue === newValue)) ||
+            !currentObj.hasOwnProperty(key)) {
           if (result === undefined) {
             // Make a shallow clone of the current object.
             result = quickCopy(currentObj, currentObj.instantiateEmptyObject());
