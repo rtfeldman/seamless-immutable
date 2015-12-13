@@ -1,9 +1,7 @@
 sudo: false
 language: node_js
 node_js:
-- '0.10'
-before_install:
-- npm install npm -g
+- '4.3.2'
 before_script:
 - npm install
 script: npm run travis-test
