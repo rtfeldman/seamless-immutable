@@ -228,6 +228,10 @@ Returns a mutable copy of the object. For a deeply mutable copy, in which any in
 
 ### Releases
 
+#### 4.1.0
+
+Adds `set` and `setIn`
+
 #### 4.0.1
 
 Now when you `require("seamless-immutable")`, you get the development build by default.
