@@ -3,7 +3,14 @@ var assert    = require("chai").assert;
 var _         = require("lodash");
 
 function assertJsonEqual(first, second) {
-  assert.equal(JSON.stringify(first), JSON.stringify(second));
+  if (typeof first === "object" && typeof second === "object" && first !== null && second !== null) {
+    assert.deepEqual(_.keys(first).sort(), _.keys(second).sort());
+    _.each(first, function(key, value) {
+      assertJsonEqual(first[key], second[key]);
+    });
+  } else {
+    assert.strictEqual(JSON.stringify(first), JSON.stringify(second));
+  }
 }
 
 function wrapAssertImmutable(Immutable) {
