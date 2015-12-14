@@ -98,6 +98,8 @@
     return makeImmutableArray(mutable);
   }
 
+  var immutableEmptyArray = Immutable([]);
+
   function arraySetIn(pth, value) {
     var head = pth[0];
 
@@ -105,10 +107,17 @@
       return arraySet.call(this, head, value);
     } else {
       var tail = pth.slice(1);
-      // this[head] might (validly) be an (immutable) array or object
-      var newValue = this[head].setIn(tail, value);
+      var thisHead = this[head];
+      var newValue;
 
-      if (head in this && this[head] === newValue) {
+      if (typeof(thisHead) === "object" && thisHead !== null && typeof(thisHead.setIn) === "function") {
+        // Might (validly) be object or array
+        newValue = thisHead.setIn(tail, value);
+      } else {
+        newValue = arraySetIn.call(immutableEmptyArray, tail, value);
+      }
+
+      if (head in this && thisHead === newValue) {
         return this;
       }
 
@@ -364,14 +373,16 @@
 
     var tail = path.slice(1);
     var newValue;
-    if (this.hasOwnProperty(head) && this[head] !== undefined) {
+    var thisHead = this[head];
+
+    if (this.hasOwnProperty(head) && typeof(thisHead) === "object" && thisHead !== null && typeof(thisHead.setIn) === "function") {
       // Might (validly) be object or array
-      newValue = this[head].setIn(tail, value);
+      newValue = thisHead.setIn(tail, value);
     } else {
       newValue = objectSetIn.call(immutableEmptyObject, tail, value);
     }
 
-    if (this.hasOwnProperty(head) && this[head] === newValue) {
+    if (this.hasOwnProperty(head) && thisHead === newValue) {
       return this;
     }
 
