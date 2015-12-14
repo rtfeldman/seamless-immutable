@@ -228,6 +228,10 @@ Returns a mutable copy of the object. For a deeply mutable copy, in which any in
 
 ### Releases
 
+#### 4.1.1
+
+Make `setIn` more null safe.
+
 #### 4.1.0
 
 Adds `set` and `setIn`
