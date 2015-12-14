@@ -364,14 +364,16 @@
 
     var tail = path.slice(1);
     var newValue;
-    if (this.hasOwnProperty(head) && this[head] !== undefined) {
+    var thisHead = this[head];
+
+    if (this.hasOwnProperty(head) && typeof(thisHead) === "object" && thisHead !== null && typeof(thisHead.setIn) === "function") {
       // Might (validly) be object or array
-      newValue = this[head].setIn(tail, value);
+      newValue = thisHead.setIn(tail, value);
     } else {
       newValue = objectSetIn.call(immutableEmptyObject, tail, value);
     }
 
-    if (this.hasOwnProperty(head) && this[head] === newValue) {
+    if (this.hasOwnProperty(head) && thisHead === newValue) {
       return this;
     }
 
