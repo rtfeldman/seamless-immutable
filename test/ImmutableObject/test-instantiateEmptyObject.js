@@ -12,19 +12,19 @@ module.exports = function(config) {
 
       var obj = immutable.instantiateEmptyObject();
       assert.isFalse(Immutable.isImmutable(obj));
-      assert.deepEqual(obj, {});
+      TestUtils.assertJsonEqual(obj, {});
     });
 
     it("return object with prototype if prototype is present", function() {
       function TestClass(o) { _.extend(this, o); };
-      var immutable = Immutable(new TestClass({a: 1, b: 2}), 
+      var immutable = Immutable(new TestClass({a: 1, b: 2}),
         {prototype: TestClass.prototype});
 
       var obj = immutable.instantiateEmptyObject();
       assert.isFalse(Immutable.isImmutable(obj));
-      assert.deepEqual(obj, {});
-      TestUtils.assertHasPrototype(obj, TestClass.prototype); 
+      TestUtils.assertJsonEqual(obj, {});
+      TestUtils.assertHasPrototype(obj, TestClass.prototype);
     });
   });
 };
- 
+

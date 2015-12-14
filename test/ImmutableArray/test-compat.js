@@ -28,14 +28,14 @@ module.exports = function(config) {
       it("supports accessing elements by index via []", function() {
         checkImmutableMutable(function(immutable, mutable, index) {
           assert.typeOf(index, "number");
-          assert.deepEqual(immutable[index], mutable[index]);
+          TestUtils.assertJsonEqual(immutable[index], mutable[index]);
         }, [JSC.integer()]);
       });
 
       it("works with for loops", function() {
         checkImmutableMutable(function(immutable, mutable) {
           for (var index=0; index < immutable.length; index++) {
-            assert.deepEqual(immutable[index], mutable[index]);
+            TestUtils.assertJsonEqual(immutable[index], mutable[index]);
           }
         });
       });
@@ -43,26 +43,26 @@ module.exports = function(config) {
       it("works with for..in loops", function() {
         checkImmutableMutable(function(immutable, mutable) {
           for (var index in immutable) {
-            assert.deepEqual(immutable[index], mutable[index]);
+            TestUtils.assertJsonEqual(immutable[index], mutable[index]);
           }
         });
       });
 
       it("supports concat", function() {
         checkImmutableMutable(function(immutable, mutable, otherArray) {
-          assert.deepEqual(immutable.concat(otherArray), mutable.concat(otherArray));
+          TestUtils.assertJsonEqual(immutable.concat(otherArray), mutable.concat(otherArray));
         }, [JSC.array()]);
       });
 
       it("supports being an argument to a normal immutable's concat", function() {
         checkImmutableMutable(function(immutable, mutable, otherArray) {
-          assert.deepEqual(otherArray.concat(immutable), otherArray.concat(mutable));
+          TestUtils.assertJsonEqual(otherArray.concat(immutable), otherArray.concat(mutable));
         }, [JSC.array()]);
       });
 
       it("can be concatted to itself", function() {
         checkImmutableMutable(function(immutable, mutable) {
-          assert.deepEqual(immutable.concat(immutable), mutable.concat(mutable));
+          TestUtils.assertJsonEqual(immutable.concat(immutable), mutable.concat(mutable));
         });
       });
 
@@ -74,7 +74,7 @@ module.exports = function(config) {
 
       it("supports being passed to JSON.stringify", function() {
         checkImmutableMutable(function(immutable, mutable) {
-          assert.deepEqual(JSON.stringify(immutable), JSON.stringify(mutable));
+          TestUtils.assertJsonEqual(JSON.stringify(immutable), JSON.stringify(mutable));
         });
       });
 
@@ -107,7 +107,7 @@ module.exports = function(config) {
 
             assert.typeOf(randomIndex, "number");
             assert.strictEqual(immutable.length, mutable.length);
-            assert.deepEqual(immutable[randomIndex], mutable[randomIndex]);
+            TestUtils.assertJsonEqual(immutable[randomIndex], mutable[randomIndex]);
           }, [JSC.integer(), JSC.any()]);
         });
       }
@@ -119,7 +119,7 @@ module.exports = function(config) {
           assert.equal(immutableArr[0], 4);
 
           immutableArr.sort();
-          assert.deepEqual(immutableArr, [2, 3, 4]);
+          TestUtils.assertJsonEqual(immutableArr, [2, 3, 4]);
         });
       }
 
@@ -154,7 +154,7 @@ module.exports = function(config) {
           assert.strictEqual(copiedArray.length, immutable.length);
 
           for (var index in copiedArray) {
-            assert.deepEqual(immutable[index], copiedArray[index]);
+            TestUtils.assertJsonEqual(immutable[index], copiedArray[index]);
           }
         }, [JSC.array(), JSC.object()]);
       });

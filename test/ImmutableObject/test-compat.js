@@ -29,21 +29,21 @@ module.exports = function(config) {
         var immutableKeys = Object.keys(immutable).filter(notParseableAsInt);
         var mutableKeys   = Object.keys(mutable).filter(notParseableAsInt);
 
-        assert.deepEqual(immutableKeys, mutableKeys);
+        TestUtils.assertJsonEqual(immutableKeys, mutableKeys);
       });
     });
 
     it("supports accessing elements by index via []", function() {
       checkImmutableMutable(function(immutable, mutable, index) {
         assert.typeOf(index, "number");
-        assert.deepEqual(immutable[index], mutable[index]);
+        TestUtils.assertJsonEqual(immutable[index], mutable[index]);
       }, [JSC.integer()]);
     });
 
     it("works with for loops", function() {
       checkImmutableMutable(function(immutable, mutable) {
         for (var index=0; index < immutable.length; index++) {
-          assert.deepEqual(immutable[index], mutable[index]);
+          TestUtils.assertJsonEqual(immutable[index], mutable[index]);
         }
       });
     });
@@ -51,7 +51,7 @@ module.exports = function(config) {
     it("works with for..in loops", function() {
       checkImmutableMutable(function(immutable, mutable) {
         for (var index in immutable) {
-          assert.deepEqual(immutable[index], mutable[index]);
+          TestUtils.assertJsonEqual(immutable[index], mutable[index]);
         }
       });
     });
@@ -73,7 +73,7 @@ module.exports = function(config) {
         }
 
         var immutable = Immutable(mutable);
-        assert.deepEqual(JSON.stringify(immutable), JSON.stringify(mutable));
+        TestUtils.assertJsonEqual(JSON.stringify(immutable), JSON.stringify(mutable));
       });
     });
 
@@ -106,7 +106,7 @@ module.exports = function(config) {
 
           assert.typeOf(randomIndex, "number");
           assert.strictEqual(immutable.length, mutable.length);
-          assert.deepEqual(immutable[randomIndex], mutable[randomIndex]);
+          TestUtils.assertJsonEqual(immutable[randomIndex], mutable[randomIndex]);
         }, [JSC.integer(), JSC.any()]);
       });
     }
@@ -142,14 +142,14 @@ module.exports = function(config) {
       assert.notEqual(objectWithDate, immutableObjectWithDate);
       assert.equal(objectWithDate.date.getTime(), immutableObjectWithDate.date.getTime());
     });
-                           
+
     it("supports handling dates without using prototype option", function() {
       var date = new Date();
       var immutableDate = Immutable(date, {prototype: Object.prototype});
 
       assert.isTrue(immutableDate instanceof Date);
     });
-                           
+
     it("makes nested content immutable as well", function() {
       checkImmutableMutable(function(immutable, mutable, innerArray, obj) {
         mutable.foo = innerArray; // Make a nested immutable array
@@ -181,7 +181,7 @@ module.exports = function(config) {
         assert.strictEqual(copiedArray.length, immutable.length);
 
         for (var index in copiedArray) {
-          assert.deepEqual(immutable[index], copiedArray[index]);
+          TestUtils.assertJsonEqual(immutable[index], copiedArray[index]);
         }
       }, [JSC.array(), JSC.object()]);
     });

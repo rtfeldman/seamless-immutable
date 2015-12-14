@@ -24,7 +24,7 @@ module.exports = function(config) {
         var prop = getPathComponent();
         var value = JSC.any()();
 
-        assert.deepEqual(
+        TestUtils.assertJsonEqual(
           immutable.set(prop, value),
           _.set(mutable, prop, value)
         );
@@ -39,14 +39,14 @@ module.exports = function(config) {
         var mutable = immutable.asMutable();
         var value = JSC.any()();
 
-        assert.deepEqual(immutable, mutable);
+        TestUtils.assertJsonEqual(immutable, mutable);
 
         var path = [], depth = JSC.integer(1, 5)();
         for (var j = 0; j < depth; j++) {
           path.push(getPathComponent());
         }
 
-        assert.deepEqual(
+        TestUtils.assertJsonEqual(
           immutable.setIn(path, value),
           _.set(mutable, path, value)
         );

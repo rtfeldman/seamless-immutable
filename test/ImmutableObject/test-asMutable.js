@@ -16,7 +16,7 @@ module.exports = function(config) {
         assertNotArray(mutable);
         assertCanBeMutated(mutable);
         assert.isFalse( Immutable.isImmutable(mutable));
-        assert.deepEqual(immutable,mutable);
+        TestUtils.assertJsonEqual(immutable,mutable);
         assert.equal(Object.keys(mutable).length, 0);
     });
 
@@ -30,7 +30,7 @@ module.exports = function(config) {
         assert.isFalse(Immutable.isImmutable(mutable));
         TestUtils.assertIsDeeplyImmutable(mutable.complex);
         TestUtils.assertIsDeeplyImmutable(mutable.deep.complex);
-        assert.deepEqual(immutable,mutable);
+        TestUtils.assertJsonEqual(immutable,mutable);
       })
     })
 
@@ -44,7 +44,7 @@ module.exports = function(config) {
         assert.isFalse(Immutable.isImmutable(mutable));
         assert.isFalse(Immutable.isImmutable(mutable['complex']));
         assert.isFalse(Immutable.isImmutable(mutable['deep']['complex']));
-        assert.deepEqual(immutable,mutable);
+        TestUtils.assertJsonEqual(immutable,mutable);
       });
     });
 
@@ -62,7 +62,7 @@ module.exports = function(config) {
       var immutable = Immutable(data, {prototype: TestClass.prototype});
       var result = immutable.asMutable();
 
-      assert.deepEqual(result, data);
+      TestUtils.assertJsonEqual(result, data);
       TestUtils.assertHasPrototype(result, TestClass.prototype);
     });
 

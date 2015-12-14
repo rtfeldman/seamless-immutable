@@ -14,12 +14,12 @@ var getTestUtils = require("./TestUtils.js");
 
   describe(config.name, function () {
     describe("Immutable", function () {
-      
+
       it("makes an Immutable Array when passed a mutable array", function () {
         TestUtils.check(100, [JSC.array()], function (mutable) {
           var immutable = Immutable(mutable);
 
-          assert.deepEqual(immutable, mutable);
+          TestUtils.assertJsonEqual(immutable, mutable);
           assert.isTrue(Immutable.isImmutable(immutable));
           assert.isFalse(Immutable.isImmutable(mutable));
         });
@@ -40,7 +40,7 @@ var getTestUtils = require("./TestUtils.js");
         TestUtils.check(100, [complexObjFactory], function (mutable) {
           var immutable = Immutable(mutable);
 
-          assert.deepEqual(immutable, mutable);
+          TestUtils.assertJsonEqual(immutable, mutable);
           assert.isTrue(Immutable.isImmutable(immutable));
           assert.isTrue(Immutable.isImmutable(immutable[1]))
         })
@@ -51,17 +51,17 @@ var getTestUtils = require("./TestUtils.js");
         Immutable([]);
         delete Array.prototype.veryEvilFunction;
       });
-                                                                  
+
       it("returns an object with the given optional prototype", function() {
         function TestClass(o) { _.extend(this, o); };
         var data = new TestClass({a: 1, b: 2});
 
         var immutable = Immutable(data, {prototype: TestClass.prototype});
 
-        assert.deepEqual(immutable, data);
+        TestUtils.assertJsonEqual(immutable, data);
         TestUtils.assertHasPrototype(immutable, TestClass.prototype);
       });
-                                                                  
+
       // These are already immutable, and should pass through Immutable() untouched.
       _.each({
         "string": JSC.string(),

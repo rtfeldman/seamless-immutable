@@ -50,11 +50,11 @@ module.exports = function(config) {
           var expectedKeys = _.difference(_.keys(immutable), keys);
           var result = runWithout(keys);
 
-          assert.deepEqual(_.keys(result), expectedKeys);
+          TestUtils.assertJsonEqual(_.keys(result), expectedKeys);
 
           // Make sure the remaining keys still point to the same values
           _.each(_.keys(result), function(key) {
-            assert.deepEqual(immutable[key], result[key]);;
+            TestUtils.assertJsonEqual(immutable[key], result[key]);;
           });
         });
       });
@@ -75,7 +75,7 @@ module.exports = function(config) {
       var expected = Immutable({cat: "meow", dog: "woof"});
       var actual   = Immutable({cat: "meow", dog: "woof", fox: "???"}).without("fox");
 
-      assert.deepEqual(actual, expected);
+      TestUtils.assertJsonEqual(actual, expected);
     });
 
     it("is a no-op when passed nothing", function() {
@@ -83,10 +83,10 @@ module.exports = function(config) {
         var expected = Immutable(obj);
         var actual   = expected.without();
 
-        assert.deepEqual(actual, expected);
+        TestUtils.assertJsonEqual(actual, expected);
       });
     });
- 
+
     it("preserves prototypes after call to without", function() {
       function TestClass(o) { _.extend(this, o); };
       var data = new TestClass({a: 1, b: 2});
@@ -94,7 +94,7 @@ module.exports = function(config) {
       var immutable = Immutable(data, {prototype: TestClass.prototype});
       var result = immutable.without('b');
 
-      assert.deepEqual(result, _.omit(data, 'b'));
+      TestUtils.assertJsonEqual(result, _.omit(data, 'b'));
       TestUtils.assertHasPrototype(result, TestClass.prototype);
     });
 

@@ -16,7 +16,7 @@ module.exports = function(config) {
         assertIsArray(mutable);
         assertCanBeMutated(mutable);
         assert.isFalse( Immutable.isImmutable(mutable));
-        assert.deepEqual(immutable,mutable);
+        TestUtils.assertJsonEqual(immutable,mutable);
     });
 
     it("returns a shallow mutable copy if not provided the deep flag", function() {
@@ -29,7 +29,7 @@ module.exports = function(config) {
         assert.isFalse( Immutable.isImmutable(mutable));
         TestUtils.assertIsDeeplyImmutable(mutable[0]);
         TestUtils.assertIsDeeplyImmutable(mutable[0].deep);
-        assert.deepEqual(immutable,mutable);
+        TestUtils.assertJsonEqual(immutable,mutable);
       });
 
     });
@@ -44,7 +44,7 @@ module.exports = function(config) {
         assert.isFalse( Immutable.isImmutable(mutable));
         assert.isFalse( Immutable.isImmutable(mutable[0]));
         assert.isFalse( Immutable.isImmutable(mutable[0]['deep']));
-        assert.deepEqual(immutable,mutable);
+        TestUtils.assertJsonEqual(immutable,mutable);
       });
     });
   });

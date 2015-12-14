@@ -2,12 +2,16 @@ var JSC       = require("jscheck");
 var assert    = require("chai").assert;
 var _         = require("lodash");
 
+function assertJsonEqual(first, second) {
+  assert.equal(JSON.stringify(first), JSON.stringify(second));
+}
+
 function wrapAssertImmutable(Immutable) {
   return function assertImmutable(methodName, immutableArray, mutableArray, args) {
     var mutableResult = mutableArray[methodName].apply(mutableArray, args);
     var immutableResult = Immutable(immutableArray[methodName].apply(immutableArray, args));
 
-    assert.deepEqual(immutableResult, mutableResult);
+    assertJsonEqual(immutableResult, mutableResult);
   }
 }
 
@@ -114,6 +118,7 @@ function wrapCheckImmutableMutable(Immutable) {
 
 module.exports = function(Immutable) {
   return {
+    assertJsonEqual:         assertJsonEqual,
     assertImmutable:         wrapAssertImmutable(Immutable),
     assertIsDeeplyImmutable: wrapAssertIsDeeplyImmutable(Immutable),
     assertHasPrototype:      assertHasPrototype,

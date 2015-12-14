@@ -27,7 +27,7 @@ module.exports = function(config) {
         immutable = immutable.set(index, newValue);
         mutable[index] = newValue;
 
-        assert.deepEqual(immutable, mutable);
+        TestUtils.assertJsonEqual(immutable, mutable);
       });
     });
   });
@@ -47,13 +47,13 @@ module.exports = function(config) {
         }
 
         var mutable = immutable.asMutable();
-        assert.deepEqual(immutable, mutable);
+        TestUtils.assertJsonEqual(immutable, mutable);
         if (Immutable.isImmutable(mutable[idx])) {
           mutable[idx] = mutable[idx].asMutable();
         }
         mutable[idx][key] = value;
 
-        assert.deepEqual(
+        TestUtils.assertJsonEqual(
           immutable.setIn([idx, key], value),
           mutable
         );

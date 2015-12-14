@@ -16,7 +16,7 @@ module.exports = function(config) {
         return [elem, elem + "2"];
       });
 
-      assert.deepEqual(actual, expected);
+      TestUtils.assertJsonEqual(actual, expected);
     });
 
     it("works the same way as map when the iterator function returns non-arrays", function() {
@@ -26,7 +26,7 @@ module.exports = function(config) {
         var expected = _.map(array, iterator);
         var actual   = Immutable(array).flatMap(iterator);
 
-        assert.deepEqual(actual, expected);
+        TestUtils.assertJsonEqual(actual, expected);
       });
     });
 
@@ -36,7 +36,7 @@ module.exports = function(config) {
         var expected = _.map(array, iterator);
         var actual   = Immutable(array).flatMap(iterator);
 
-        assert.deepEqual(actual, expected);
+        TestUtils.assertJsonEqual(actual, expected);
       });
     });
 
@@ -47,7 +47,7 @@ module.exports = function(config) {
         var expected = _.flatten(_.map(array, iterator));
         var actual   = Immutable(array).flatMap(iterator);
 
-        assert.deepEqual(actual, expected);
+        TestUtils.assertJsonEqual(actual, expected);
       });
     });
 
@@ -56,7 +56,7 @@ module.exports = function(config) {
         var expected = _.flatten(array);
         var actual   = Immutable(array).flatMap();
 
-        assert.deepEqual(actual, expected);
+        TestUtils.assertJsonEqual(actual, expected);
       });
     });
 
@@ -67,7 +67,7 @@ module.exports = function(config) {
       check(100, [JSC.array()], function(array) {
         var actual = Immutable(array).flatMap(iterator);
 
-        assert.deepEqual(actual, expected);
+        TestUtils.assertJsonEqual(actual, expected);
       });
     });
   });

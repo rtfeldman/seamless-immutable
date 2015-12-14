@@ -21,12 +21,12 @@ module.exports = function(config) {
           assert.strictEqual((typeof index), "number");
 
           // Check that the index argument we receive works as expected.
-          assert.deepEqual(value, array[index], "Expected array[" + index + "] to be " + value);
+          TestUtils.assertJsonEqual(value, array[index], "Expected array[" + index + "] to be " + value);
 
           return [keys[index], values[index]]
         });
 
-        assert.deepEqual(result, obj);
+        TestUtils.assertJsonEqual(result, obj);
       });
     });
 
@@ -38,7 +38,7 @@ module.exports = function(config) {
 
         var result = array.asObject();
 
-        assert.deepEqual(result, obj);
+        TestUtils.assertJsonEqual(result, obj);
       });
     });
 
@@ -49,7 +49,7 @@ module.exports = function(config) {
         return [elem.key, elem.value];
       });
 
-      assert.deepEqual(actual, expected);
+      TestUtils.assertJsonEqual(actual, expected);
     });
   });
 };
