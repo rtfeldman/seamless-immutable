@@ -4,6 +4,7 @@ node_js:
 - '5.0'
 before_script:
 - npm install
+- npm install -g grunt-cli
 script: npm run travis-test
 env:
   global:

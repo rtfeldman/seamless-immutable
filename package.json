@@ -20,7 +20,7 @@
     "zuul": "3.2.0"
   },
   "scripts": {
-    "test": "mocha test/*.spec.js",
+    "test": "grunt",
     "test-watch": "mocha --watch test/*.spec.js",
     "jshint": "jshint seamless-immutable.development.js",
     "coverage": "export ISTANBUL_REPORTERS=text-summary,html,lcov && rm -rf tmp/ && rm -rf html-report/ && istanbul instrument test/ -o tmp/ && mocha --reporter mocha-istanbul tmp/*.spec.js && echo Open html-report/index.html to view results as HTML.",
