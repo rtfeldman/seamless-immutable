@@ -228,10 +228,6 @@ Returns a mutable copy of the object. For a deeply mutable copy, in which any in
 
 ### Releases
 
-#### 4.1.2
-
-Don't consider empty objects mergeable.
-
 #### 4.1.1
 
 Make `setIn` more null safe.
