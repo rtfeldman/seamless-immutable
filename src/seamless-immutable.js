@@ -34,7 +34,7 @@
   }
 
   function isMergableObject(target) {
-    return target !== null && typeof target === "object" && Object.keys(target).length > 0 && !(target instanceof Array) && !(target instanceof Date);
+    return target !== null && typeof target === "object" && !(target instanceof Array) && !(target instanceof Date);
   }
 
   var mutatingObjectMethods = [
