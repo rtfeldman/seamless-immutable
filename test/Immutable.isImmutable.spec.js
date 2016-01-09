@@ -22,7 +22,8 @@ var getTestUtils = require("./TestUtils.js");
         "undefined": [true, JSC.literal(undefined)],
         "null": [true, JSC.literal(null)],
         "objects": [false, JSC.object()],
-        "arrays": [false, JSC.array()]
+        "arrays": [false, JSC.array()],
+        "dates": [false, JSC.literal(new Date())]
       }, function (tuple, type) {
         var expectImmutable = tuple[0];
         var specifier = tuple[1];
