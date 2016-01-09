@@ -1,7 +1,7 @@
 {
   "name": "seamless-immutable",
   "main": "src/seamless-immutable.js",
-  "version": "4.0.2",
+  "version": "5.0.0",
   "homepage": "https://github.com/rtfeldman/seamless-immutable",
   "authors": [
     "Richard Feldman <richard.t.feldman@gmail.com>"

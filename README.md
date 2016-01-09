@@ -230,6 +230,10 @@ Returns a mutable copy of the object. For a deeply mutable copy, in which any in
 
 ### Releases
 
+#### 5.0.0
+
+In development build, freeze Dates and ban mutating methods.
+
 #### 4.1.1
 
 Make `setIn` more null safe.
