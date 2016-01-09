@@ -36,6 +36,8 @@ In the development build, objects are [frozen](https://developer.mozilla.org/en-
 
 The production (minified) build does neither of these, which significantly improves performance.
 
+We generally recommend to use the "development" build that enforces immutability (and this is the default in Node.js). Only switch to the production build when you encounter performance problems. (See #50 for how to do that in Node or using a build tool - essentially do explicitely refer to the production build.)
+
 ## API Overview
 
 `Immutable()` returns a backwards-compatible immutable representation of whatever you pass it, so feel free to pass it absolutely anything that can be serialized as JSON. (As is the case with JSON, objects containing circular references are not allowed. Functions are allowed, unlike in JSON, but they will not be touched.)
