@@ -192,7 +192,7 @@ Immutable({type: "parrot", subtype: "Norwegian Blue", status: "alive"}).merge({s
 
 ### setIn
 
-Like [set](#set), but accepts a nested path to the property. 
+Like [set](#set), but accepts a nested path to the property.
 
 ```javascript
 Immutable({type: {main: "parrot", sub: "Norwegian Blue"}, status: "alive"}).setIn(["type", "sub"], "Norwegian Ridgeback")
