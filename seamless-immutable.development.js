@@ -1,4 +1,4 @@
-(function(){
+(function() {
   "use strict";
 
   function addPropertyTo(target, methodName, value) {
@@ -51,6 +51,12 @@
 
   var nonMutatingArrayMethods = nonMutatingObjectMethods.concat([
     "map", "filter", "slice", "concat", "reduce", "reduceRight"
+  ]);
+
+  var mutatingDateMethods = mutatingObjectMethods.concat([
+    "setDate", "setFullYear", "setHours", "setMilliseconds", "setMinutes", "setMonth", "setSeconds",
+    "setTime", "setUTCDate", "setUTCFullYear", "setUTCHours", "setUTCMilliseconds", "setUTCMinutes",
+    "setUTCMonth", "setUTCSeconds", "setYear"
   ]);
 
   function ImmutableError(message) {
@@ -150,6 +156,16 @@
     return makeImmutable(array, mutatingArrayMethods);
   }
 
+  function makeImmutableDate(date) {
+    addPropertyTo(date, "asMutable", asMutableDate);
+
+    return makeImmutable(date, mutatingDateMethods);
+  }
+
+  function asMutableDate() {
+    return new Date(this.getTime());
+  }
+
   /**
    * Effectively performs a map() over the elements in the array, using the
    * provided iterator, except that whenever the iterator returns an array, that
@@ -215,7 +231,7 @@
 
     if(opts && opts.deep) {
       for(i = 0, length = this.length; i < length; i++) {
-        result.push( asDeepMutable(this[i]) );
+        result.push(asDeepMutable(this[i]));
       }
     } else {
       for(i = 0, length = this.length; i < length; i++) {
@@ -448,7 +464,7 @@
     } else if (obj instanceof Array) {
       return makeImmutableArray(obj.slice());
     } else if (obj instanceof Date) {
-      return makeImmutable(new Date(obj.getTime()));
+      return makeImmutableDate(new Date(obj.getTime()));
     } else {
       // Don't freeze the object we were given; make a clone and use that.
       var prototype = options && options.prototype;
