@@ -230,9 +230,14 @@ Returns a mutable copy of the object. For a deeply mutable copy, in which any in
 
 ### Releases
 
+#### 5.0.1
+
+Fix missing dev/prod builds for 5.0.0
+
 #### 5.0.0
 
-In development build, freeze Dates and ban mutating methods.
+In development build, freeze Dates and ban mutating methods. (Note: dev and prod builds were mistakenly
+not generated for this, so to get this functionality in those builds, use 5.0.1)
 
 #### 4.1.1
 
