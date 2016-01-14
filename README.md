@@ -210,9 +210,14 @@ Immutable({the: "forests", will: "echo", with: "laughter"}).without(["will", "wi
 
 Immutable({the: "forests", will: "echo", with: "laughter"}).without("will", "with")
 // returns Immutable({the: "forests"})
+
+
+Immutable({the: "forests", will: "echo", with: "laughter"}).without((value, key) => key === "the" || value === "echo")
+// returns Immutable({with: "laughter"})
 ```
 
-Returns an Immutable Object excluding the given keys from the existing object.
+Returns an Immutable Object excluding the given keys or keys/values satisfying
+the given predicate from the existing object.
 
 Multiple keys can be provided, either in an Array or as extra arguments.
 
@@ -318,6 +323,10 @@ Adds `#asMutable`
 #### 1.0.0
 
 Initial stable release
+
+## Development
+
+Run `npm install -g grunt-cli`, `npm install` and then `grunt` to build and test it.
 
 [1]: https://secure.travis-ci.org/rtfeldman/seamless-immutable.svg
 [2]: https://travis-ci.org/rtfeldman/seamless-immutable
