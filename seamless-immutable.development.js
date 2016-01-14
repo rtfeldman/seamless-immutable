@@ -209,15 +209,21 @@
       return this;
     }
 
-    // If we weren't given an array, use the arguments list.
-    if (!(keysToRemove instanceof Array)) {
-      keysToRemove = Array.prototype.slice.call(arguments);
+    var remove;
+    if (typeof keysToRemove === "function") {
+      // The argument is a predicate.
+      remove = keysToRemove;
+    } else {
+      // If we weren't given an array, use the arguments list.
+      var keysToRemoveArray = (keysToRemove instanceof Array) ?
+         keysToRemove : Array.prototype.slice.call(arguments);
+      remove = function(val, key) { return keysToRemoveArray.indexOf(key) >= 0; }
     }
 
     var result = this.instantiateEmptyObject();
 
     for (var key in this) {
-      if (this.hasOwnProperty(key) && (keysToRemove.indexOf(key) === -1)) {
+      if (this.hasOwnProperty(key) && ! remove(this[key], key)) {
         result[key] = this[key];
       }
     }
