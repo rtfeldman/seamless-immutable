@@ -203,7 +203,7 @@
    *
    * @param {array} keysToRemove - A list of strings representing the keys to exclude in the return value. Instead of providing a single array, this method can also be called by passing multiple strings as separate arguments.
    */
-  function without(keysToRemove) {
+  function without(remove) {
     // Calling .without() with no arguments is a no-op. Don't bother cloning.
     if (arguments.length === 0) {
       return this;
