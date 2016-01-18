@@ -222,7 +222,7 @@
     var result = this.instantiateEmptyObject();
 
     for (var key in this) {
-      if (this.hasOwnProperty(key) && !remove(this[key], key)) {
+      if (this.hasOwnProperty(key) && ! remove(this[key], key)) {
         result[key] = this[key];
       }
     }
