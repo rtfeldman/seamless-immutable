@@ -215,7 +215,7 @@
          remove : Array.prototype.slice.call(arguments);
 
       remove = function(val, key) {
-        return keysToRemoveArray.indexOf(key) !== -1;
+        return keysToRemoveArray.indexOf(key) >= 0;
       };
     }
 
