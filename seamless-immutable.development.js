@@ -205,24 +205,27 @@
    */
   function without(remove) {
     // Calling .without() with no arguments is a no-op. Don't bother cloning.
-    if (typeof remove === "undefined" && arguments.length === 0) {
+    if (arguments.length === 0) {
       return this;
     }
 
-    if (typeof remove !== "function") {
+    var remove;
+    if (typeof keysToRemove === "function") {
+      // The argument is a predicate.
+      remove = keysToRemove;
+    } else {
       // If we weren't given an array, use the arguments list.
-      var keysToRemoveArray = (remove instanceof Array) ?
-         remove : Array.prototype.slice.call(arguments);
-
+      var keysToRemoveArray = (keysToRemove instanceof Array) ?
+         keysToRemove : Array.prototype.slice.call(arguments);
       remove = function(val, key) {
-        return keysToRemoveArray.indexOf(key) !== -1;
+        return keysToRemoveArray.indexOf(key) >= 0;
       };
     }
 
     var result = this.instantiateEmptyObject();
 
     for (var key in this) {
-      if (this.hasOwnProperty(key) && !remove(this[key], key)) {
+      if (this.hasOwnProperty(key) && ! remove(this[key], key)) {
         result[key] = this[key];
       }
     }
