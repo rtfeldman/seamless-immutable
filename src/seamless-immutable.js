@@ -203,26 +203,27 @@
    *
    * @param {array} keysToRemove - A list of strings representing the keys to exclude in the return value. Instead of providing a single array, this method can also be called by passing multiple strings as separate arguments.
    */
-  function without(remove) {
+  function without(keysToRemove) {
     // Calling .without() with no arguments is a no-op. Don't bother cloning.
-    if (typeof remove === "undefined" && arguments.length === 0) {
+    if (arguments.length === 0) {
       return this;
     }
 
-    if (typeof remove !== "function") {
+    var remove;
+    if (typeof keysToRemove === "function") {
+      // The argument is a predicate.
+      remove = keysToRemove;
+    } else {
       // If we weren't given an array, use the arguments list.
-      var keysToRemoveArray = (remove instanceof Array) ?
-         remove : Array.prototype.slice.call(arguments);
-
-      remove = function(val, key) {
-        return keysToRemoveArray.indexOf(key) !== -1;
-      };
+      var keysToRemoveArray = (keysToRemove instanceof Array) ?
+         keysToRemove : Array.prototype.slice.call(arguments);
+      remove = function(val, key) { return keysToRemoveArray.indexOf(key) >= 0; }
     }
 
     var result = this.instantiateEmptyObject();
 
     for (var key in this) {
-      if (this.hasOwnProperty(key) && !remove(this[key], key)) {
+      if (this.hasOwnProperty(key) && ! remove(this[key], key)) {
         result[key] = this[key];
       }
     }

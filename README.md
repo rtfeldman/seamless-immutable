@@ -235,10 +235,6 @@ Returns a mutable copy of the object. For a deeply mutable copy, in which any in
 
 ### Releases
 
-#### 5.1.0
-
-Add predicate support to `without()`
-
 #### 5.0.1
 
 Fix missing dev/prod builds for 5.0.0
