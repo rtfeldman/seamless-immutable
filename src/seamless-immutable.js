@@ -205,7 +205,7 @@
    */
   function without(remove) {
     // Calling .without() with no arguments is a no-op. Don't bother cloning.
-    if (typeof remove === "undefined" && arguments.length === 0) {
+    if (arguments.length === 0) {
       return this;
     }
 
