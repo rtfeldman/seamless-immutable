@@ -217,9 +217,7 @@
       // If we weren't given an array, use the arguments list.
       var keysToRemoveArray = (keysToRemove instanceof Array) ?
          keysToRemove : Array.prototype.slice.call(arguments);
-      remove = function(val, key) {
-        return keysToRemoveArray.indexOf(key) >= 0;
-      };
+      remove = function(val, key) { return keysToRemoveArray.indexOf(key) >= 0; }
     }
 
     var result = this.instantiateEmptyObject();
