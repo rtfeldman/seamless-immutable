@@ -141,15 +141,13 @@ module.exports = function(config) {
           TestUtils.assertIsDeeplyImmutable(result);
         });
 
-        it("drops keys whose values satisfy the predicate", function() {
-          var valuesToDrop = _.chain(immutable).pick(keys).values();
-
-          var expected = _.omit(immutable, function (value) {
-            return _.includes(valuesToDrop, value);
+        it("works the same way as _.omitBy", function() {
+          var expected = _.omitBy(immutable, function (value, key) {
+            return _.includes(keys, key);
           });
 
           var actual = immutable.without(function (value, key) {
-            return _.includes(valuesToDrop, value);
+            return _.includes(keys, key);
           });
 
           TestUtils.assertJsonEqual(expected, actual);
