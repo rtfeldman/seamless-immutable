@@ -127,7 +127,7 @@ module.exports = function(config) {
           var expectedKeys = _.difference(_.keys(immutable), keys);
           var result = immutable.without(dropKeysPredicate(keys));
 
-          assert.deepEqual(_.keys(result), expectedKeys);
+          TestUtils.assertJsonEqual(_.keys(result), expectedKeys);
 
           // Make sure the remaining keys still point to the same values
           _.each(_.keys(result), function(key) {
@@ -154,7 +154,7 @@ module.exports = function(config) {
             return _.includes(valuesToDrop, value);
           });
 
-          assert.deepEqual(_.keys(result), expectedKeys);
+          TestUtils.assertJsonEqual(_.keys(result), expectedKeys);
         });
 
       });
