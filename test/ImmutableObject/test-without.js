@@ -154,7 +154,7 @@ module.exports = function(config) {
             return _.includes(valuesToDrop, value);
           });
 
-          assert.deepEqual(_.keys(result), expectedKeys);
+          TestUtils.assertJsonEqual(_.keys(result), expectedKeys);
         });
 
       });
