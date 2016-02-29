@@ -211,7 +211,6 @@ Immutable({the: "forests", will: "echo", with: "laughter"}).without(["will", "wi
 Immutable({the: "forests", will: "echo", with: "laughter"}).without("will", "with")
 // returns Immutable({the: "forests"})
 
-
 Immutable({the: "forests", will: "echo", with: "laughter"}).without((value, key) => key === "the" || value === "echo")
 // returns Immutable({with: "laughter"})
 ```
