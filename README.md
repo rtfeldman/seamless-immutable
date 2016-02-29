@@ -331,7 +331,7 @@ Initial stable release
 
 Run `npm install -g grunt-cli`, `npm install` and then `grunt` to build and test it.
 
-[1]: https://secure.travis-ci.org/rtfeldman/seamless-immutable.svg
+[1]: https://travis-ci.org/rtfeldman/seamless-immutable.svg?branch=master
 [2]: https://travis-ci.org/rtfeldman/seamless-immutable
 [3]: https://badge.fury.io/js/seamless-immutable.svg
 [4]: https://badge.fury.io/js/seamless-immutable
