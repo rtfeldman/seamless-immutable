@@ -4,8 +4,9 @@ var _         = require("lodash");
 
 function assertJsonEqual(first, second) {
   if (typeof first === "object" && typeof second === "object" && first !== null && second !== null) {
-    assert.deepEqual(_.keys(first).sort(), _.keys(second).sort());
-    _.each(first, function(key, value) {
+    var keys = _.keys(first).sort();
+    assert.deepEqual(keys, _.keys(second).sort());
+    _.each(keys, function(key) {
       assertJsonEqual(first[key], second[key]);
     });
   } else {
