@@ -6,10 +6,6 @@ browsers:
     version: ["9", "10", "latest"]
   - name: firefox
     version: ["36", "latest"]
-  - name: iphone
-    version: ["8.0", "latest"]
-  - name: ipad
-    version: ["8.0", "latest"]
   - name: android
     version: ["4.0", "latest"]
   - name: opera
