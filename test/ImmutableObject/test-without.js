@@ -143,18 +143,16 @@ module.exports = function(config) {
 
         it("drops keys whose values satisfy the predicate", function() {
           var valuesToDrop = _.chain(immutable).pick(keys).values();
-          // We might have dropped more keys as more keys might have the same value
-          var expectedKeys = _.chain(immutable)
-            .omit(function (value) {
-              return _.includes(valuesToDrop, value);
-            })
-            .keys()
-            .value();
-          var result = immutable.without(function (value, key) {
+
+          var expected = _.omit(immutable, function (value) {
             return _.includes(valuesToDrop, value);
           });
 
-          TestUtils.assertJsonEqual(_.keys(result), expectedKeys);
+          var actual = immutable.without(function (value, key) {
+            return _.includes(valuesToDrop, value);
+          });
+
+          TestUtils.assertJsonEqual(expected, actual);
         });
 
       });
