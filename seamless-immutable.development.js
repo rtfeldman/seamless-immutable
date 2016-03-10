@@ -63,7 +63,7 @@
 
   function ImmutableError(message) {
     var err       = new Error(message);
-    // TODO: Consider `Object.setPrototypeOf err, ImmutableError;``
+    // TODO: Consider `Object.setPrototypeOf(err, ImmutableError);`
     err.__proto__ = ImmutableError;
 
     return err;
@@ -206,27 +206,26 @@
    *
    * @param {array} keysToRemove - A list of strings representing the keys to exclude in the return value. Instead of providing a single array, this method can also be called by passing multiple strings as separate arguments.
    */
-  function without(keysToRemove) {
+  function without(remove) {
     // Calling .without() with no arguments is a no-op. Don't bother cloning.
-    if (arguments.length === 0) {
+    if (typeof remove === "undefined" && arguments.length === 0) {
       return this;
     }
 
-    var remove;
-    if (typeof keysToRemove === "function") {
-      // The argument is a predicate.
-      remove = keysToRemove;
-    } else {
+    if (typeof remove !== "function") {
       // If we weren't given an array, use the arguments list.
-      var keysToRemoveArray = (keysToRemove instanceof Array) ?
-         keysToRemove : Array.prototype.slice.call(arguments);
-      remove = function(val, key) { return keysToRemoveArray.indexOf(key) >= 0; };
+      var keysToRemoveArray = (remove instanceof Array) ?
+         remove : Array.prototype.slice.call(arguments);
+
+      remove = function(val, key) {
+        return keysToRemoveArray.indexOf(key) !== -1;
+      };
     }
 
     var result = this.instantiateEmptyObject();
 
     for (var key in this) {
-      if (this.hasOwnProperty(key) && ! remove(this[key], key)) {
+      if (this.hasOwnProperty(key) && remove(this[key], key) === false) {
         result[key] = this[key];
       }
     }

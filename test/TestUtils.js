@@ -4,8 +4,9 @@ var _         = require("lodash");
 
 function assertJsonEqual(first, second) {
   if (typeof first === "object" && typeof second === "object" && first !== null && second !== null) {
-    assert.deepEqual(_.keys(first).sort(), _.keys(second).sort());
-    _.each(first, function(key, value) {
+    var keys = _.keys(first).sort();
+    assert.deepEqual(keys, _.keys(second).sort());
+    _.each(keys, function(key) {
       assertJsonEqual(first[key], second[key]);
     });
   } else {
@@ -39,7 +40,7 @@ function assertHasPrototype(obj, expectedPrototype) {
 }
 
 function withoutItengerKeys(obj) {
-  return _.object(_.map(obj, function(value, key) {
+  return _.fromPairs(_.map(obj, function(value, key) {
     // Don't choose keys that can be parsed as 32-bit unsigned integers,
     // as browsers make no guarantee on key ordering for those,
     // and we rely on ordered keys to simplify several tests.
@@ -54,7 +55,7 @@ function withoutItengerKeys(obj) {
 // Returns an object which may or may not contain nested objects and arrays.
 function ComplexObjectSpecifier() {
   return function() {
-    var obj = _.object(_.map(JSC.array()(), function() {
+    var obj = _.fromPairs(_.map(JSC.array()(), function() {
       var key   = JSC.string()();
       var value = JSC.one_of([JSC.array(), JSC.object(),
         JSC.falsy(), JSC.integer(), JSC.number(), JSC.string(),

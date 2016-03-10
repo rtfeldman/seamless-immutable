@@ -1,23 +1,22 @@
 {
   "name": "seamless-immutable",
-  "version": "5.0.1",
+  "version": "5.1.0",
   "description": "Immutable data structures for JavaScript which are backwards-compatible with normal JS Arrays and Objects.",
   "main": "src/seamless-immutable.js",
   "devDependencies": {
-    "chai": "3.4.1",
-    "coveralls": "2.11.2",
+    "chai": "3.5.0",
+    "coveralls": "2.11.8",
     "envify": "3.4.0",
     "grunt": "0.4.5",
-    "grunt-contrib-uglify": "0.9.1",
+    "grunt-contrib-uglify": "0.11.1",
     "grunt-mocha-test": "0.12.7",
-    "istanbul": "0.3.17",
+    "istanbul": "0.4.2",
     "jscheck": "0.2.0",
-    "jshint": "2.8.0",
-    "lodash": "3.10.1",
-    "mocha": "2.2.5",
+    "lodash": "4.5.1",
+    "mocha": "2.4.5",
     "mocha-istanbul": "0.2.0",
-    "mocha-lcov-reporter": "0.0.2",
-    "zuul": "3.2.0"
+    "mocha-lcov-reporter": "1.2.0",
+    "zuul": "3.9.0"
   },
   "scripts": {
     "test": "grunt",

@@ -211,7 +211,6 @@ Immutable({the: "forests", will: "echo", with: "laughter"}).without(["will", "wi
 Immutable({the: "forests", will: "echo", with: "laughter"}).without("will", "with")
 // returns Immutable({the: "forests"})
 
-
 Immutable({the: "forests", will: "echo", with: "laughter"}).without((value, key) => key === "the" || value === "echo")
 // returns Immutable({with: "laughter"})
 ```
@@ -234,6 +233,10 @@ mutableObject // {when: "the", levee: "breaks", have: "no place to go"}
 Returns a mutable copy of the object. For a deeply mutable copy, in which any instances of `Immutable` contained in nested data structures within the object have been converted back to mutable data structures, call `.asMutable({deep: true})` instead.
 
 ### Releases
+
+#### 5.1.0
+
+Add predicate support to `without()`
 
 #### 5.0.1
 
@@ -328,7 +331,7 @@ Initial stable release
 
 Run `npm install -g grunt-cli`, `npm install` and then `grunt` to build and test it.
 
-[1]: https://secure.travis-ci.org/rtfeldman/seamless-immutable.svg
+[1]: https://travis-ci.org/rtfeldman/seamless-immutable.svg?branch=master
 [2]: https://travis-ci.org/rtfeldman/seamless-immutable
 [3]: https://badge.fury.io/js/seamless-immutable.svg
 [4]: https://badge.fury.io/js/seamless-immutable

@@ -25,8 +25,12 @@ module.exports = function(grunt) {
       }
     },
     uglify: {
-      prodMin: {
+      options: {
+        banner: '/* (c) 2016, Richard Feldman, github.com/rtfeldman/seamless-immutable/blob/master/LICENSE */'
+      },
+      min: {
         files: {
+          "seamless-immutable.development.min.js": ["seamless-immutable.development.js"],
           "seamless-immutable.production.min.js": ["seamless-immutable.production.min.js"]
         }
       }

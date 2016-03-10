@@ -127,7 +127,7 @@ module.exports = function(config) {
           var expectedKeys = _.difference(_.keys(immutable), keys);
           var result = immutable.without(dropKeysPredicate(keys));
 
-          assert.deepEqual(_.keys(result), expectedKeys);
+          TestUtils.assertJsonEqual(_.keys(result), expectedKeys);
 
           // Make sure the remaining keys still point to the same values
           _.each(_.keys(result), function(key) {
@@ -141,20 +141,16 @@ module.exports = function(config) {
           TestUtils.assertIsDeeplyImmutable(result);
         });
 
-        it("drops keys whose values satisfy the predicate", function() {
-          var valuesToDrop = _.chain(immutable).pick(keys).values();
-          // We might have dropped more keys as more keys might have the same value
-          var expectedKeys = _.chain(immutable)
-            .omit(function (value) {
-              return _.includes(valuesToDrop, value);
-            })
-            .keys()
-            .value();
-          var result = immutable.without(function (value, key) {
-            return _.includes(valuesToDrop, value);
+        it("works the same way as _.omitBy", function() {
+          var expected = _.omitBy(immutable, function (value, key) {
+            return _.includes(keys, key);
           });
 
-          assert.deepEqual(_.keys(result), expectedKeys);
+          var actual = immutable.without(function (value, key) {
+            return _.includes(keys, key);
+          });
+
+          TestUtils.assertJsonEqual(expected, actual);
         });
 
       });
