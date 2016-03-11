@@ -25,7 +25,9 @@
 
   function isImmutable(target) {
     if (typeof target === "object") {
-      return target === null || target.hasOwnProperty(immutabilityTag);
+      return target === null || Boolean(
+        Object.getOwnPropertyDescriptor(target, immutabilityTag)
+      );
     } else {
       // In JavaScript, only objects are even potentially mutable.
       // strings, numbers, null, and undefined are all naturally immutable.
@@ -61,6 +63,7 @@
 
   function ImmutableError(message) {
     var err       = new Error(message);
+    // TODO: Consider `Object.setPrototypeOf(err, ImmutableError);`
     err.__proto__ = ImmutableError;
 
     return err;
@@ -277,13 +280,13 @@
   }
 
   function asDeepMutable(obj) {
-    if(!obj || !obj.hasOwnProperty(immutabilityTag) || obj instanceof Date) { return obj; }
+    if(!obj || !Object.getOwnPropertyDescriptor(obj, immutabilityTag) || obj instanceof Date) { return obj; }
     return obj.asMutable({deep: true});
   }
 
   function quickCopy(src, dest) {
     for (var key in src) {
-      if (src.hasOwnProperty(key)) {
+      if (Object.getOwnPropertyDescriptor(src, key)) {
         dest[key] = src[key];
       }
     }
@@ -359,7 +362,7 @@
     if (!receivedArray) {
       // The most common use case: just merge one object into the existing one.
       for (key in other) {
-        if (other.hasOwnProperty(key)) {
+        if (Object.getOwnPropertyDescriptor(other, key)) {
           addToResult(this, other, key);
         }
       }
@@ -479,7 +482,7 @@
       var clone = instantiateEmptyObject();
 
       for (var key in obj) {
-        if (obj.hasOwnProperty(key)) {
+        if (Object.getOwnPropertyDescriptor(obj, key)) {
           clone[key] = Immutable(obj[key]);
         }
       }
