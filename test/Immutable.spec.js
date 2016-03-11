@@ -14,6 +14,15 @@ var getTestUtils = require("./TestUtils.js");
 
   describe(config.name, function () {
     describe("Immutable", function () {
+      it("makes an Immutable for Object.create(null)", function () {
+        var mutable = Object.create(null);
+        var immutable = Immutable(mutable);
+
+        assert.typeOf(immutable, "object");
+        assert.isTrue(Immutable.isImmutable(immutable));
+        assert.isFalse(Immutable.isImmutable(mutable));
+      });
+
 
       it("makes an Immutable Array when passed a mutable array", function () {
         TestUtils.check(100, [JSC.array()], function (mutable) {
