@@ -280,7 +280,12 @@
   }
 
   function asDeepMutable(obj) {
-    if(!obj || !Object.getOwnPropertyDescriptor(obj, immutabilityTag) || obj instanceof Date) { return obj; }
+    if (
+      (!obj) ||
+      (typeof obj !== 'object') ||
+      (!Object.getOwnPropertyDescriptor(obj, immutabilityTag)) ||
+      (obj instanceof Date)
+    ) { return obj; }
     return obj.asMutable({deep: true});
   }
 
