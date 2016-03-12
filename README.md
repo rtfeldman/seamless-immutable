@@ -144,7 +144,7 @@ To construct an Immutable Object with a custom prototype, simply specify the
 prototype in `options` (while useful for preserving prototypes, please note
 that custom mutator methods will not work as the object will be immutable):
 
-```
+```javascript
 function Square(length) { this.length = length };
 Square.prototype.area = function() { return Math.pow(this.length, 2) };
 
