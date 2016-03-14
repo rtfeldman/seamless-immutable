@@ -8,7 +8,5 @@ browsers:
     version: ["36", "latest"]
   - name: android
     version: ["4.0", "latest"]
-  - name: opera
-    version: ["12", "latest"]
   - name: safari
     version: ["6", "latest"]
