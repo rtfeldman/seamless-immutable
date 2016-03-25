@@ -151,6 +151,8 @@
     addPropertyTo(array, "asMutable", asMutableArray);
     addPropertyTo(array, "set", arraySet);
     addPropertyTo(array, "setIn", arraySetIn);
+    addPropertyTo(array, "update", update);
+    addPropertyTo(array, "updateIn", updateIn);
 
     for(var i = 0, length = array.length; i < length; i++) {
       array[i] = Immutable(array[i]);
@@ -430,6 +432,27 @@
     return makeImmutableObject(mutable, this);
   }
 
+  function update(property, updater) {
+    var restArgs = Array.prototype.slice.call(arguments, 2);
+    var initialVal = this[property];
+    return this.set(property, updater.apply(initialVal, [initialVal].concat(restArgs)))
+  }
+
+  function getInPath(obj, path) {
+    for (var i = 0, l = path.length; obj != null && i < l; i++) {
+      obj = obj[path[i]];
+    }
+
+    return (i && i == l) ? obj : undefined;
+  }
+
+  function updateIn(path, updater) {
+    var restArgs = Array.prototype.slice.call(arguments, 2);
+    var initialVal = getInPath(this, path);
+
+    return this.setIn(path, updater.apply(initialVal, [initialVal].concat(restArgs)))
+  }
+
   function asMutableObject(opts) {
     var result = this.instantiateEmptyObject(), key;
 
@@ -467,6 +490,8 @@
     addPropertyTo(obj, "instantiateEmptyObject", instantiateEmptyObject);
     addPropertyTo(obj, "set", objectSet);
     addPropertyTo(obj, "setIn", objectSetIn);
+    addPropertyTo(obj, "update", update);
+    addPropertyTo(obj, "updateIn", updateIn);
 
     return makeImmutable(obj, mutatingObjectMethods);
   }
