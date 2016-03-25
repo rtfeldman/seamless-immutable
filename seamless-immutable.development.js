@@ -435,10 +435,11 @@
   function update(property, updater) {
     var restArgs = Array.prototype.slice.call(arguments, 2);
     var initialVal = this[property];
-    return this.set(property, updater.apply(initialVal, [initialVal].concat(restArgs)))
+    return this.set(property, updater.apply(initialVal, [initialVal].concat(restArgs)));
   }
 
   function getInPath(obj, path) {
+    /*jshint eqnull:true */
     for (var i = 0, l = path.length; obj != null && i < l; i++) {
       obj = obj[path[i]];
     }
@@ -450,7 +451,7 @@
     var restArgs = Array.prototype.slice.call(arguments, 2);
     var initialVal = getInPath(this, path);
 
-    return this.setIn(path, updater.apply(initialVal, [initialVal].concat(restArgs)))
+    return this.setIn(path, updater.apply(initialVal, [initialVal].concat(restArgs)));
   }
 
   function asMutableObject(opts) {
