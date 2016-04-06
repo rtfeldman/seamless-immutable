@@ -513,9 +513,7 @@
       var clone = instantiateEmptyObject();
 
       if (process.env.NODE_ENV !== "production") {
-        if (level === undefined) {
-          level = 0;
-        }
+        level = level || 0;
         if (level >= 64) {
           throw new ImmutableError("Attempt to construct Immutable from a deeply nested object was detected." +
             " Have you tried to wrap an object with circular references (e.g. React Component)?" +
