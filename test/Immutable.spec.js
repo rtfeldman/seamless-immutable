@@ -98,6 +98,17 @@ var getTestUtils = require("./TestUtils.js");
           });
         });
       });
+
+      it("detects cycles", function() {
+        var obj = {};
+        obj.prop = obj;
+
+        if (config.id === 'prod') {
+          assert.throws(function() { Immutable(obj); }, RangeError);
+        } else {
+          assert.throws(function() { Immutable(obj); }, /deeply nested/);
+        }
+      });
     });
   });
 });
