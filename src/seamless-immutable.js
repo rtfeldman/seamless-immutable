@@ -470,9 +470,13 @@
 
     return makeImmutable(obj, mutatingObjectMethods);
   }
+  
+  function isReactElement(obj) {
+    return obj.hasOwnProperty('$$typeof') && typeof Symbol === 'function' && obj.$$typeof === Symbol.for('react.element');
+  }
 
   function Immutable(obj, options) {
-    if (isImmutable(obj)) {
+    if (isImmutable(obj) || isReactElement(obj)) {
       return obj;
     } else if (obj instanceof Array) {
       return makeImmutableArray(obj.slice());
