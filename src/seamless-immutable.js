@@ -471,7 +471,7 @@
     return makeImmutable(obj, mutatingObjectMethods);
   }
 
-  var REACT_ELEMENT_TYPE = typeof Symbol === 'function' && Symbol.for && Symbol.for('react.element')
+  var REACT_ELEMENT_TYPE = typeof Symbol === 'function' && Symbol.for && Symbol.for('react.element');
   var REACT_ELEMENT_TYPE_FALLBACK = 0xeac7;
 
   function isReactElement(obj) {
