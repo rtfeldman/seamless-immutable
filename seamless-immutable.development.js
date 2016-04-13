@@ -471,8 +471,16 @@
     return makeImmutable(obj, mutatingObjectMethods);
   }
 
+  var REACT_ELEMENT_TYPE = (typeof Symbol === 'function' && Symbol.for && Symbol.for('react.element')) || 0xeac7;
+
+  function isReactElement(obj) {
+    return obj.hasOwnProperty &&
+           obj.hasOwnProperty('$$typeof') &&
+           obj.$$typeof === REACT_ELEMENT_TYPE;
+  }
+
   function Immutable(obj, options) {
-    if (isImmutable(obj)) {
+    if (isImmutable(obj) || isReactElement(obj)) {
       return obj;
     } else if (obj instanceof Array) {
       return makeImmutableArray(obj.slice());
