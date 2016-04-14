@@ -155,6 +155,18 @@ Immutable(new Square(2), {prototype: Square.prototype}).area();
 
 Beyond [the usual Object fare](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object#Methods_of_Object_instances), the following methods have been added.
 
+### Stack overflow protection
+
+Currently you can't construct Immutable from an object with circular references. To protect from ugly stack overflows, we provide a simple protection during development. We stop at suspiciously deep stack level and [show an error message][deep].
+
+If your objects are deep, but not circular, you can increase this level from default `64`. For example:
+
+```javascript
+Immutable(deepObject, null, 256);
+```
+
+[deep]: https://github.com/rtfeldman/seamless-immutable/wiki/Deeply-nested-object-was-detected
+
 ### merge
 
 ```javascript
