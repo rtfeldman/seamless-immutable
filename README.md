@@ -25,6 +25,7 @@ JSON.stringify(array) // '["totally","immutable",{"hammer":"Can’t Touch This"}
 This level of backwards compatibility requires [ECMAScript 5](http://kangax.github.io/compat-table/es5/) features like [Object.defineProperty](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty) and [Object.freeze](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze) to exist and work correctly, which limits the browsers that can use this library to the ones shown in the test results below. (tl;dr [IE9+](https://saucelabs.com/u/seamless-immutable))
 
 [![build status][1]][2] [![NPM version][3]][4] [![coverage status][5]][6]
+[![Commitizen friendly][7][8]]
 
 [![Sauce Test Status](https://saucelabs.com/browser-matrix/seamless-immutable.svg)](https://saucelabs.com/u/seamless-immutable)
 
@@ -369,3 +370,5 @@ Run `npm install -g grunt-cli`, `npm install` and then `grunt` to build and test
 [4]: https://badge.fury.io/js/seamless-immutable
 [5]: http://img.shields.io/coveralls/rtfeldman/seamless-immutable.svg
 [6]: https://coveralls.io/r/rtfeldman/seamless-immutable
+[7]: https://img.shields.io/badge/commitizen-friendly-brightgreen.svg
+[8]: http://commitizen.github.io/cz-cli/
