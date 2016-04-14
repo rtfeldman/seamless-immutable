@@ -262,6 +262,10 @@ Returns a mutable copy of the object. For a deeply mutable copy, in which any in
 
 ### Releases
 
+#### 5.2.0
+
+Add `update` and `updateIn`.
+
 #### 5.1.1
 
 `Immutable(Object.create(null))` now works as expected.
