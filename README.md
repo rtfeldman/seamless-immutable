@@ -199,6 +199,34 @@ Immutable({type: {main: "parrot", sub: "Norwegian Blue"}, status: "alive"}).setI
 // returns Immutable({type: {main: "parrot", sub: "Norwegian Ridgeback"}, status: "alive"})
 ```
 
+### update
+
+Returns an Immutable Object with a single property updated using the provided updater function.
+
+```javascript
+function inc (x) { return x + 1 }
+Immutable({foo: 1}).update("foo", inc)
+// returns Immutable({foo: 2})
+```
+
+All additional arguments will be passed to the updater function.
+
+```javascript
+function add (x, y) { return x + y }
+Immutable({foo: 1}).update("foo", add, 10)
+// returns Immutable({foo: 11})
+```
+
+### updateIn
+
+Like [update](#update), but accepts a nested path to the property.
+
+```javascript
+function add (x, y) { return x + y }
+Immutable({foo: {bar: 1}}).updateIn(["foo", "bar"], add, 10)
+// returns Immutable({foo: {bar: 11}})
+```
+
 ### without
 
 ```javascript
