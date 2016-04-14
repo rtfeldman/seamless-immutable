@@ -345,7 +345,7 @@
         if (mergerResult) {
           newValue = mergerResult;
         } else if (deep && isMergableObject(currentValue) && isMergableObject(immutableValue)) {
-          newValue = currentValue.merge(immutableValue, config);
+          newValue = Immutable(currentValue).merge(immutableValue, config);
         } else {
           newValue = immutableValue;
         }
