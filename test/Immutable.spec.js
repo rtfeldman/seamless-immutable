@@ -107,12 +107,12 @@ var getTestUtils = require("./TestUtils.js");
         if (config.id === 'prod') {
           if (typeof navigator === "undefined") {
             expectedError = RangeError;
-          } else if (navigator.appVersion.indexOf("MSIE") !== -1) {
+          } else if (navigator.userAgent.indexOf("MSIE") !== -1) {
             expectedError = /Out of stack space/;
           } else if (navigator.userAgent.indexOf("Firefox") !== -1) {
             expectedError = InternalError;
           } else {
-            expectedError = RangeError;
+            throw new Error("Unexpected browser user agent:", navigator.userAgent);
           }
         } else {
           expectedError = /deeply nested/;
