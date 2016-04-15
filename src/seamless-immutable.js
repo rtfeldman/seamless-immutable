@@ -497,7 +497,7 @@
     return makeImmutable(obj, mutatingObjectMethods);
   }
 
-  function Immutable(obj, options) {
+  function Immutable(obj, options, stackRemaining) {
     if (isImmutable(obj)) {
       return obj;
     } else if (obj instanceof Array) {
@@ -512,9 +512,22 @@
           instantiatePlainObject : (function() { return Object.create(prototype); });
       var clone = instantiateEmptyObject();
 
+      if (process.env.NODE_ENV !== "production") {
+        /*jshint eqnull:true */
+        if (stackRemaining == null) {
+          stackRemaining = 64;
+        }
+        if (stackRemaining <= 0) {
+          throw new ImmutableError("Attempt to construct Immutable from a deeply nested object was detected." +
+            " Have you tried to wrap an object with circular references (e.g. React element)?" +
+            " See https://github.com/rtfeldman/seamless-immutable/wiki/Deeply-nested-object-was-detected for details.");
+        }
+        stackRemaining -= 1;
+      }
+
       for (var key in obj) {
         if (Object.getOwnPropertyDescriptor(obj, key)) {
-          clone[key] = Immutable(obj[key]);
+          clone[key] = Immutable(obj[key], undefined, stackRemaining);
         }
       }
 

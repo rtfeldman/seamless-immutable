@@ -98,6 +98,31 @@ var getTestUtils = require("./TestUtils.js");
           });
         });
       });
+
+      it("detects cycles", function() {
+        var obj = {};
+        obj.prop = obj;
+
+        if (config.id === 'prod') {
+          assert.throws(function() { Immutable(obj); }, RangeError);
+        } else {
+          assert.throws(function() { Immutable(obj); }, /deeply nested/);
+        }
+      });
+
+      it("can configure stackRemaining", function() {
+        var mutable = {bottom: true};
+        _.range(65).forEach(function() {
+          mutable = {prop: mutable};
+        });
+        
+        if (config.id === 'prod') {
+          TestUtils.assertJsonEqual(mutable, Immutable(mutable));
+        } else {
+          assert.throws(function() { Immutable(mutable); }, /deeply nested/);
+          TestUtils.assertJsonEqual(mutable, Immutable(mutable, null, 66));
+        }
+      });
     });
   });
 });
