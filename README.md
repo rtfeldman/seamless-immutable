@@ -276,6 +276,10 @@ Returns a mutable copy of the object. For a deeply mutable copy, in which any in
 
 ### Releases
 
+#### 6.0.0
+
+Add cycle detection.
+
 #### 5.2.0
 
 Add `update` and `updateIn`.
