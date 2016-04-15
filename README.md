@@ -157,13 +157,15 @@ Beyond [the usual Object fare](https://developer.mozilla.org/en-US/docs/Web/Java
 
 ### Stack overflow protection
 
-Currently you can't construct Immutable from an object with circular references. To protect from ugly stack overflows, we provide a simple protection during development. We stop at suspiciously deep stack level and [show an error message][deep].
+Currently you can't construct Immutable from an object with circular references. To protect from ugly stack overflows, we provide a simple protection during development. We stop at a suspiciously deep stack level and [show an error message][deep].
 
 If your objects are deep, but not circular, you can increase this level from default `64`. For example:
 
 ```javascript
 Immutable(deepObject, null, 256);
 ```
+
+This check is not performed in the production build.
 
 [deep]: https://github.com/rtfeldman/seamless-immutable/wiki/Deeply-nested-object-was-detected
 
