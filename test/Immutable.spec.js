@@ -106,13 +106,20 @@ var getTestUtils = require("./TestUtils.js");
 
         if (config.id === 'prod') {
           if (typeof navigator === "undefined") {
+            // Node.js
             expectedError = RangeError;
           } else if (navigator.userAgent.indexOf("MSIE") !== -1) {
+            // IE9-10
+            expectedError = /Out of stack space/;
+          } else if (navigator.userAgent.indexOf("Trident") !== -1) {
+            // IE11
             expectedError = /Out of stack space/;
           } else if (navigator.userAgent.indexOf("Firefox") !== -1) {
+            // Firefox
             expectedError = InternalError;
           } else {
-            throw new Error("Unexpected browser user agent:", navigator.userAgent);
+            // Chrome/Opera
+            expectedError = RangeError;
           }
         } else {
           expectedError = /deeply nested/;
