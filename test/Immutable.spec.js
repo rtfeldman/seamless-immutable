@@ -118,7 +118,7 @@ var getTestUtils = require("./TestUtils.js");
             // Firefox
             expectedError = InternalError;
           } else {
-            // Chrome/Opera
+            // Chrome/Safari/Opera
             expectedError = RangeError;
           }
         } else {
