@@ -102,12 +102,23 @@ var getTestUtils = require("./TestUtils.js");
       it("detects cycles", function() {
         var obj = {};
         obj.prop = obj;
+        var expectedError;
 
         if (config.id === 'prod') {
-          assert.throws(function() { Immutable(obj); }, RangeError);
+          if (typeof window === "undefined") {
+            expectedError = RangeError;
+          } else if (window.navigator.userAgent.indexOf("MSIE") !== -1) {
+            expectedError = Error;
+          } else if (window.navigator.userAgent.indexOf("Firefox") !== -1) {
+            expectedError = InternalError;
+          } else {
+            expectedError = RangeError;
+          }
         } else {
-          assert.throws(function() { Immutable(obj); }, /deeply nested/);
+          expectedError = /deeply nested/;
         }
+
+        assert.throws(function() { Immutable(obj); }, expectedError);
       });
 
       it("can configure stackRemaining", function() {
