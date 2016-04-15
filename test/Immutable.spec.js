@@ -105,11 +105,11 @@ var getTestUtils = require("./TestUtils.js");
         var expectedError;
 
         if (config.id === 'prod') {
-          if (typeof window === "undefined") {
+          if (typeof navigator === "undefined") {
             expectedError = RangeError;
-          } else if (window.navigator.userAgent.indexOf("MSIE") !== -1) {
-            expectedError = Error;
-          } else if (window.navigator.userAgent.indexOf("Firefox") !== -1) {
+          } else if (navigator.appVersion.indexOf("MSIE") !== -1) {
+            expectedError = /Out of stack space/;
+          } else if (navigator.userAgent.indexOf("Firefox") !== -1) {
             expectedError = InternalError;
           } else {
             expectedError = RangeError;
