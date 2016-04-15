@@ -115,7 +115,7 @@ var getTestUtils = require("./TestUtils.js");
         _.range(65).forEach(function() {
           mutable = {prop: mutable};
         });
-        
+
         if (config.id === 'prod') {
           TestUtils.assertJsonEqual(mutable, Immutable(mutable));
         } else {
