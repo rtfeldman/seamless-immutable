@@ -284,6 +284,10 @@ Returns a mutable copy of the object. For a deeply mutable copy, in which any in
 
 ### Releases
 
+#### 6.0.1
+
+React components are now considered immutable.
+
 #### 6.0.0
 
 Add cycle detection.
