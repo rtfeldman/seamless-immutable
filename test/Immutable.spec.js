@@ -124,6 +124,49 @@ var getTestUtils = require("./TestUtils.js");
         assert.isFalse(Immutable.isImmutable(immutableElement), 'React element should not be immutable');
         TestUtils.assertJsonEqual(immutableElement, reactElement);
       });
+
+      it("detects cycles", function() {
+        var obj = {};
+        obj.prop = obj;
+        var expectedError;
+
+        if (config.id === 'prod') {
+          if (typeof navigator === "undefined") {
+            // Node.js
+            expectedError = RangeError;
+          } else if (navigator.userAgent.indexOf("MSIE") !== -1) {
+            // IE9-10
+            expectedError = /Out of stack space/;
+          } else if (navigator.userAgent.indexOf("Trident") !== -1) {
+            // IE11
+            expectedError = /Out of stack space/;
+          } else if (navigator.userAgent.indexOf("Firefox") !== -1) {
+            // Firefox
+            expectedError = InternalError;
+          } else {
+            // Chrome/Safari/Opera
+            expectedError = RangeError;
+          }
+        } else {
+          expectedError = /deeply nested/;
+        }
+
+        assert.throws(function() { Immutable(obj); }, expectedError);
+      });
+
+      it("can configure stackRemaining", function() {
+        var mutable = {bottom: true};
+        _.range(65).forEach(function() {
+          mutable = {prop: mutable};
+        });
+
+        if (config.id === 'prod') {
+          TestUtils.assertJsonEqual(mutable, Immutable(mutable));
+        } else {
+          assert.throws(function() { Immutable(mutable); }, /deeply nested/);
+          TestUtils.assertJsonEqual(mutable, Immutable(mutable, null, 66));
+        }
+      });
     });
   });
 });

@@ -155,6 +155,20 @@ Immutable(new Square(2), {prototype: Square.prototype}).area();
 
 Beyond [the usual Object fare](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object#Methods_of_Object_instances), the following methods have been added.
 
+### Stack overflow protection
+
+Currently you can't construct Immutable from an object with circular references. To protect from ugly stack overflows, we provide a simple protection during development. We stop at a suspiciously deep stack level and [show an error message][deep].
+
+If your objects are deep, but not circular, you can increase this level from default `64`. For example:
+
+```javascript
+Immutable(deepObject, null, 256);
+```
+
+This check is not performed in the production build.
+
+[deep]: https://github.com/rtfeldman/seamless-immutable/wiki/Deeply-nested-object-was-detected
+
 ### merge
 
 ```javascript
@@ -199,6 +213,34 @@ Immutable({type: {main: "parrot", sub: "Norwegian Blue"}, status: "alive"}).setI
 // returns Immutable({type: {main: "parrot", sub: "Norwegian Ridgeback"}, status: "alive"})
 ```
 
+### update
+
+Returns an Immutable Object with a single property updated using the provided updater function.
+
+```javascript
+function inc (x) { return x + 1 }
+Immutable({foo: 1}).update("foo", inc)
+// returns Immutable({foo: 2})
+```
+
+All additional arguments will be passed to the updater function.
+
+```javascript
+function add (x, y) { return x + y }
+Immutable({foo: 1}).update("foo", add, 10)
+// returns Immutable({foo: 11})
+```
+
+### updateIn
+
+Like [update](#update), but accepts a nested path to the property.
+
+```javascript
+function add (x, y) { return x + y }
+Immutable({foo: {bar: 1}}).updateIn(["foo", "bar"], add, 10)
+// returns Immutable({foo: {bar: 11}})
+```
+
 ### without
 
 ```javascript
@@ -233,6 +275,14 @@ mutableObject // {when: "the", levee: "breaks", have: "no place to go"}
 Returns a mutable copy of the object. For a deeply mutable copy, in which any instances of `Immutable` contained in nested data structures within the object have been converted back to mutable data structures, call `.asMutable({deep: true})` instead.
 
 ### Releases
+
+#### 6.0.0
+
+Add cycle detection.
+
+#### 5.2.0
+
+Add `update` and `updateIn`.
 
 #### 5.1.1
 
