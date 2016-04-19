@@ -38,6 +38,14 @@ The production (minified) build does neither of these, which significantly impro
 
 We generally recommend to use the "development" build that enforces immutability (and this is the default in Node.js). Only switch to the production build when you encounter performance problems. (See #50 for how to do that in Node or using a build tool - essentially do explicitely refer to the production build.)
 
+## Intentional Abstraction Leaks
+
+By popular demand, functions, dates, and [React](https://facebook.github.io/react/)
+components are treated as immutable even though technically they can be mutated.
+(It turns out that trying to make these immutable leads to more bad things
+than good.) If you call `Immutable()` on any of these, be forewarned: they will
+not actually be immutable!
+
 ## API Overview
 
 `Immutable()` returns a backwards-compatible immutable representation of whatever you pass it, so feel free to pass it absolutely anything that can be serialized as JSON. (As is the case with JSON, objects containing circular references are not allowed. Functions are allowed, unlike in JSON, but they will not be touched.)

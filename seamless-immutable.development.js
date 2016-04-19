@@ -531,7 +531,7 @@
         }
         if (stackRemaining <= 0) {
           throw new ImmutableError("Attempt to construct Immutable from a deeply nested object was detected." +
-            " Have you tried to wrap an object with circular references?" +
+            " Have you tried to wrap an object with circular references (e.g. React element)?" +
             " See https://github.com/rtfeldman/seamless-immutable/wiki/Deeply-nested-object-was-detected for details.");
         }
         stackRemaining -= 1;
