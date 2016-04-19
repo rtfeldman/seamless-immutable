@@ -1,6 +1,7 @@
 var JSC          = require("jscheck");
 var assert       = require("chai").assert;
 var _            = require("lodash");
+var React        = require("react");
 var devBuild     = require("../seamless-immutable.development.js");
 var prodBuild    = require("../seamless-immutable.production.min.js");
 var getTestUtils = require("./TestUtils.js");
@@ -97,6 +98,33 @@ var getTestUtils = require("./TestUtils.js");
             assert.strictEqual(Immutable(value, {prototype: Object.prototype}), value);
           });
         });
+      });
+
+      it("doesn't modify React classes", function() {
+        var reactClass = React.createClass({
+          render: function() {}
+        });
+        var factory = React.createFactory(reactClass);
+
+        var component = factory();
+        var immutableComponent = Immutable(component);
+
+        assert.typeOf(immutableComponent, 'object');
+        assert.isTrue(React.isValidElement(immutableComponent), 'Immutable component was not a valid react element');
+        assert.isFalse(Immutable.isImmutable(immutableComponent), 'React element should not be immutable');
+        assert.isFalse(Object.isFrozen(immutableComponent), 'Immutable component should not be frozen');
+        TestUtils.assertJsonEqual(immutableComponent, component);
+      });
+
+      it("doesn't modify React elements", function() {
+        var reactElement = React.createElement('div');
+        var immutableElement = Immutable(reactElement);
+
+        assert.typeOf(immutableElement, 'object');
+        assert.isTrue(React.isValidElement(immutableElement), 'Immutable element was not a valid react element');
+        assert.isFalse(Immutable.isImmutable(immutableElement), 'React element should not be immutable');
+        assert.isFalse(Object.isFrozen(immutableElement), 'Immutable component should not be frozen');
+        TestUtils.assertJsonEqual(immutableElement, reactElement);
       });
     });
   });
