@@ -2,7 +2,8 @@
   "use strict";
 
   // https://github.com/facebook/react/blob/v15.0.1/src/isomorphic/classic/element/ReactElement.js#L21
-  var REACT_ELEMENT_TYPE = (typeof Symbol === 'function' && Symbol.for && Symbol.for('react.element')) || 0xeac7;
+  var REACT_ELEMENT_TYPE = typeof Symbol === 'function' && Symbol.for && Symbol.for('react.element');
+  var REACT_ELEMENT_TYPE_FALLBACK = 0xeac7;
 
   function addPropertyTo(target, methodName, value) {
     Object.defineProperty(target, methodName, {
@@ -458,20 +459,8 @@
     return {};
   }
 
-  // Returns true if object is a valid react element
-  // https://github.com/facebook/react/blob/v15.0.1/src/isomorphic/classic/element/ReactElement.js#L326
-  function isReactElement(obj) {
-    return typeof obj === 'object' &&
-           obj !== null &&
-           obj.$$typeof === REACT_ELEMENT_TYPE;
-  }
-
   // Finalizes an object with immutable methods, freezes it, and returns it.
   function makeImmutableObject(obj, options) {
-    if (isReactElement(obj)) {
-      return obj;
-    }
-
     var instantiateEmptyObject =
       (options && options.instantiateEmptyObject) ?
         options.instantiateEmptyObject : instantiatePlainObject;
@@ -486,8 +475,16 @@
     return makeImmutable(obj, mutatingObjectMethods);
   }
 
+  // Returns true if object is a valid react element
+  // https://github.com/facebook/react/blob/v15.0.1/src/isomorphic/classic/element/ReactElement.js#L326
+  function isReactElement(obj) {
+    return typeof obj === 'object' &&
+           obj !== null &&
+           (obj.$$typeof === REACT_ELEMENT_TYPE_FALLBACK || obj.$$typeof === REACT_ELEMENT_TYPE);
+  }
+
   function Immutable(obj, options) {
-    if (isImmutable(obj)) {
+    if (isImmutable(obj) || isReactElement(obj)) {
       return obj;
     } else if (obj instanceof Array) {
       return makeImmutableArray(obj.slice());

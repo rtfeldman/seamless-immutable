@@ -112,7 +112,6 @@ var getTestUtils = require("./TestUtils.js");
         assert.typeOf(immutableComponent, 'object');
         assert.isTrue(React.isValidElement(immutableComponent), 'Immutable component was not a valid react element');
         assert.isFalse(Immutable.isImmutable(immutableComponent), 'React element should not be immutable');
-        assert.isFalse(Object.isFrozen(immutableComponent), 'Immutable component should not be frozen');
         TestUtils.assertJsonEqual(immutableComponent, component);
       });
 
@@ -123,7 +122,6 @@ var getTestUtils = require("./TestUtils.js");
         assert.typeOf(immutableElement, 'object');
         assert.isTrue(React.isValidElement(immutableElement), 'Immutable element was not a valid react element');
         assert.isFalse(Immutable.isImmutable(immutableElement), 'React element should not be immutable');
-        assert.isFalse(Object.isFrozen(immutableElement), 'Immutable component should not be frozen');
         TestUtils.assertJsonEqual(immutableElement, reactElement);
       });
     });
