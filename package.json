@@ -16,6 +16,7 @@
     "mocha": "2.4.5",
     "mocha-istanbul": "0.2.0",
     "mocha-lcov-reporter": "1.2.0",
+    "react": "^15.0.1",
     "zuul": "3.9.0"
   },
   "scripts": {
