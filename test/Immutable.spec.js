@@ -15,6 +15,12 @@ var getTestUtils = require("./TestUtils.js");
 
   describe(config.name, function () {
     describe("Immutable", function () {
+      describe("#from", function() {
+        it("is a reference to Immutable", function() {
+          assert.equal(Immutable, Immutable.from);
+        });
+      });
+
       it("makes an Immutable for Object.create(null)", function () {
         var mutable = Object.create(null);
         var immutable = Immutable(mutable);
