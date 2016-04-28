@@ -549,6 +549,7 @@
   }
 
   // Export the library
+  Immutable.from           = Immutable;
   Immutable.isImmutable    = isImmutable;
   Immutable.ImmutableError = ImmutableError;
 
