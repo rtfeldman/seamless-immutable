@@ -296,6 +296,10 @@ Returns a mutable copy of the object. For a deeply mutable copy, in which any in
 
 ### Releases
 
+#### 6.1.0
+
+Alias `Immutable.from()` to `Immutable()` for linters.
+
 #### 6.0.1
 
 React components are now considered immutable.
