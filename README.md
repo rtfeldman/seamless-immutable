@@ -77,6 +77,18 @@ Immutable({all: "your base", are: {belong: "to them"}}).merge({are: {belong: "to
 // Immutable({all: "your base", are: {belong: "to us"}})
 ```
 
+## Immutable.from
+
+If your linter cringes with the use of `Immutable` without a preceding `new`
+(e.g. ESLint's [new-cap](http://eslint.org/docs/rules/new-cap) rule),
+use `Immutable.from`:
+
+```javascript
+Immutable.from([1, 2, 3]);
+// is functionally the same as calling:
+Immutable([1, 2, 3])
+```
+
 ## Immutable Array
 
 Like a regular Array, but immutable! You can construct these by passing
