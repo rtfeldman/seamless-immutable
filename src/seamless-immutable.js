@@ -6,6 +6,12 @@
   var REACT_ELEMENT_TYPE_FALLBACK = 0xeac7;
 
   function addPropertyTo(target, methodName, value) {
+    if (Boolean(Object.getOwnPropertyDescriptor(target, methodName))) {
+      if (process.env.NODE_ENV !== "production") {
+        console.warn("A property called " + methodName + " is defined on object passed to seamless-immutable. A method of this name won't be defined since this would lead to lose of data. See https://github.com/rtfeldman/seamless-immutable/issues/130");
+      }
+      return;
+    }
     Object.defineProperty(target, methodName, {
       enumerable: false,
       configurable: false,
