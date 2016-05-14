@@ -88,6 +88,16 @@ module.exports = function(config) {
       TestUtils.assertJsonEqual(actual, expected);
     });
 
+    // Check that numeric keys are removed too.
+    it("passes a basic sanity check with numeric keys", function() {
+      var expected = Immutable({cat: "meow", dog: "woof"});
+      var actual   = Immutable({cat: "meow", dog: "woof", 42: "???"}).without(42);
+      TestUtils.assertJsonEqual(actual, expected);
+
+      actual       = Immutable({cat: "meow", dog: "woof", 42: "???", 0.5: "xxx"}).without([42, 0.5]);
+      TestUtils.assertJsonEqual(actual, expected);
+    });
+
     it("is a no-op when passed nothing", function() {
       check(100, [TestUtils.ComplexObjectSpecifier()], function(obj) {
         var expected = Immutable(obj);
