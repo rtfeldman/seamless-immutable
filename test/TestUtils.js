@@ -39,7 +39,7 @@ function assertHasPrototype(obj, expectedPrototype) {
   assert.strictEqual(Object.getPrototypeOf(obj), expectedPrototype);
 }
 
-function withoutItengerKeys(obj) {
+function withoutIntegerKeys(obj) {
   return _.fromPairs(_.map(obj, function(value, key) {
     // Don't choose keys that can be parsed as 32-bit unsigned integers,
     // as browsers make no guarantee on key ordering for those,
@@ -62,13 +62,13 @@ function ComplexObjectSpecifier() {
         true, Infinity, -Infinity])();
 
       if (typeof value === "object") {
-        return [key, withoutItengerKeys(value)];
+        return [key, withoutIntegerKeys(value)];
       }
 
       return [key, value];
     }));
 
-    return withoutItengerKeys(obj);
+    return withoutIntegerKeys(obj);
   }
 }
 
@@ -79,7 +79,7 @@ function TraversableObjectSpecifier() {
                      })();
 
   obj[JSC.string()()] = JSC.any()();
-  return withoutItengerKeys(obj);
+  return withoutIntegerKeys(obj);
 }
 
 function wrapImmutableArraySpecifier(Immutable) {

@@ -221,7 +221,15 @@
     if (typeof remove !== "function") {
       // If we weren't given an array, use the arguments list.
       var keysToRemoveArray = (remove instanceof Array) ?
-         remove : Array.prototype.slice.call(arguments);
+         remove.slice() : Array.prototype.slice.call(arguments);
+
+      // Convert numeric keys to strings since that's how they'll
+      // come from the enumeration of the object.
+      keysToRemoveArray.forEach(function(el, idx, arr) {
+        if(typeof(el) === "number") {
+          arr[idx] = el.toString();
+        }
+      });
 
       remove = function(val, key) {
         return keysToRemoveArray.indexOf(key) !== -1;
