@@ -1,6 +1,6 @@
 {
   "name": "seamless-immutable",
-  "version": "6.1.0",
+  "version": "6.1.1",
   "description": "Immutable data structures for JavaScript which are backwards-compatible with normal JS Arrays and Objects.",
   "main": "src/seamless-immutable.js",
   "devDependencies": {
