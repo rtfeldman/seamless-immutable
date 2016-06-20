@@ -155,7 +155,7 @@
     addPropertyTo(array, "asMutable", asMutableArray);
     addPropertyTo(array, "set", arraySet);
     addPropertyTo(array, "setIn", arraySetIn);
-    addPropertyTo(array, "update", update);
+    addPropertyTo(array, "_update", _update);
     addPropertyTo(array, "updateIn", updateIn);
 
     for(var i = 0, length = array.length; i < length; i++) {
@@ -444,7 +444,7 @@
     return makeImmutableObject(mutable, this);
   }
 
-  function update(property, updater) {
+  function _update(property, updater) {
     var restArgs = Array.prototype.slice.call(arguments, 2);
     var initialVal = this[property];
     return this.set(property, updater.apply(initialVal, [initialVal].concat(restArgs)));
@@ -503,7 +503,7 @@
     addPropertyTo(obj, "instantiateEmptyObject", instantiateEmptyObject);
     addPropertyTo(obj, "set", objectSet);
     addPropertyTo(obj, "setIn", objectSetIn);
-    addPropertyTo(obj, "update", update);
+    addPropertyTo(obj, "_update", _update);
     addPropertyTo(obj, "updateIn", updateIn);
 
     return makeImmutable(obj, mutatingObjectMethods);

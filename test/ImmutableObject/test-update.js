@@ -32,7 +32,7 @@ module.exports = function(config) {
         var prop = 'complex';
 
         TestUtils.assertJsonEqual(
-          immutable.update(prop, dummyUpdater),
+          immutable._update(prop, dummyUpdater),
           _.set(mutable, prop, dummyUpdater(_.get(mutable, prop)))
         );
       });
@@ -45,7 +45,7 @@ module.exports = function(config) {
         var prop = 'complex';
 
         TestUtils.assertJsonEqual(
-          immutable.update(prop, dummyUpdater, "agr1", 42),
+          immutable._update(prop, dummyUpdater, "agr1", 42),
           _.set(mutable, prop, dummyUpdater(_.get(mutable, prop), "agr1", 42))
         );
       });
