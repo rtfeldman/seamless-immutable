@@ -27,7 +27,7 @@ module.exports = function(config) {
         var mutable = immutable.asMutable();
         var index = JSC.integer(0, array.length);
 
-        immutable = immutable.update(index, dummyUpdater);
+        immutable = immutable._update(index, dummyUpdater);
         mutable[index] = dummyUpdater(mutable[index]);
 
         TestUtils.assertJsonEqual(immutable, mutable);
