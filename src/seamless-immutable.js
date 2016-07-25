@@ -248,6 +248,30 @@
       {instantiateEmptyObject: this.instantiateEmptyObject});
   }
 
+  function withoutIn(path, remove) {
+    var head = path[0],
+        tail = path.slice(1);
+
+    var thisHead = this[head],
+        thisHeadValid = (thisHead !== null) && (typeof(thisHead) === "object") && (typeof(thisHead.without) === "function"),
+        newValue;
+
+    if (path.length == 0) {
+      return this.without(remove);
+    }
+    else if (thisHeadValid && path.length === 1) {
+      newValue = thisHead.without(remove);
+    }
+    else if (thisHeadValid) {
+      newValue = thisHead.withoutIn(tail, remove);
+    }
+
+    var mutable = quickCopy(this, this.instantiateEmptyObject());
+        mutable[head] = newValue;
+
+    return makeImmutableObject(mutable, this);
+  }
+
   function asMutableArray(opts) {
     var result = [], i, length;
 
@@ -499,6 +523,7 @@
 
     addPropertyTo(obj, "merge", merge);
     addPropertyTo(obj, "without", without);
+    addPropertyTo(obj, "withoutIn", withoutIn);
     addPropertyTo(obj, "asMutable", asMutableObject);
     addPropertyTo(obj, "instantiateEmptyObject", instantiateEmptyObject);
     addPropertyTo(obj, "set", objectSet);
