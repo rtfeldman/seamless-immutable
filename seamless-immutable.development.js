@@ -392,7 +392,7 @@
 
         for (key in otherFromArray) {
           if (otherFromArray.hasOwnProperty(key)) {
-            addToResult(this, otherFromArray, key);
+            addToResult(result !== undefined ? result : this, otherFromArray, key);
           }
         }
       }
