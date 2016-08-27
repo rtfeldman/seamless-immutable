@@ -235,6 +235,8 @@ Immutable({type: "parrot", subtype: "Norwegian Blue", status: "alive"}).merge({s
 ```
 (and more convenient with non-literal keys unless you have ES6 ```[computed_property_names]```).
 
+A second argument can be provided to perform a deep compare: `{deep: true}`.
+
 ### setIn
 
 Like [set](#set), but accepts a nested path to the property.
@@ -243,6 +245,8 @@ Like [set](#set), but accepts a nested path to the property.
 Immutable({type: {main: "parrot", sub: "Norwegian Blue"}, status: "alive"}).setIn(["type", "sub"], "Norwegian Ridgeback")
 // returns Immutable({type: {main: "parrot", sub: "Norwegian Ridgeback"}, status: "alive"})
 ```
+
+A second argument can be provided to perform a deep compare: `{deep: true}`.
 
 ### update
 

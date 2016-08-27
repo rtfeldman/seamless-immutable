@@ -111,10 +111,23 @@ module.exports = function(config) {
         });
       });
 
-      it("does not reproduce #70", function() {
-        var c = Immutable({a: {b: 1}});
+      it("does not reproduce except when required #70", function() {
+        var c = Immutable({a: {b: 1, c: 1}});
 
+        // Non-deep merge is never equal for deep objects.
+        assert.notStrictEqual(c, Immutable.merge(c, {a: {b: 1}}));
+
+        // Deep merge for only some of the keys is equal, except in replace mode.
         assert.strictEqual(c, Immutable.merge(c, {a: {b: 1}}, {deep: true}));
+        assert.notStrictEqual(c, Immutable.merge(c, {a: {b: 1}}, {deep: true, mode: 'replace'}));
+
+        // Deep merge for all of the keys is always equal.
+        assert.strictEqual(c, Immutable.merge(c, {a: {b: 1, c: 1}}, {deep: true}));
+        assert.strictEqual(c, Immutable.merge(c, {a: {b: 1, c: 1}}, {deep: true, mode: 'replace'}));
+
+        // Deep merge with updated data is never equal.
+        assert.notStrictEqual(c, Immutable.merge(c, {a: {b: 1, c: 2}}, {deep: true}));
+        assert.notStrictEqual(c, Immutable.merge(c, {a: {b: 1, c: 2}}, {deep: true, mode: 'replace'}));
       });
 
       it("does nothing when merging an identical object", function() {
@@ -124,6 +137,8 @@ module.exports = function(config) {
 
             assert.strictEqual(identicalImmutable,
               Immutable.merge(identicalImmutable, mutable, {deep: true}));
+            assert.strictEqual(identicalImmutable,
+              Immutable.merge(identicalImmutable, mutable, {deep: true, mode: 'replace'}));
           });
         });
       });
@@ -296,6 +311,10 @@ module.exports = function(config) {
       generateMergeTestsFor([TestUtils.ComplexObjectSpecifier()], {deep: true});
     });
 
+    describe("when passed a single object with deep set to true and mode set to replace", function() {
+      generateMergeTestsFor([TestUtils.ComplexObjectSpecifier()], {deep: true, mode: 'replace'});
+    });
+
     describe("when passed a single object with a custom merger", function() {
       generateMergeTestsFor([TestUtils.ComplexObjectSpecifier()], {merger: arrayMerger()});
     });
@@ -306,6 +325,10 @@ module.exports = function(config) {
 
     describe("when passed an array of objects with deep set to true", function() {
       generateMergeTestsFor([generateArrayOfObjects], {deep: true});
+    });
+
+    describe("when passed an array of objects with deep set to true and mode set to replace", function() {
+      generateMergeTestsFor([generateArrayOfObjects], {deep: true, mode: 'replace'});
     });
 
     describe("when passed an array of objects with a custom merger", function() {

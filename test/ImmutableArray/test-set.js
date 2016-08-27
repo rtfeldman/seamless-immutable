@@ -20,14 +20,45 @@ module.exports = function(config) {
     it("sets an array element", function () {
       check(100, [ JSC.array([TestUtils.TraversableObjectSpecifier, JSC.any()]) ], function(array) {
         var immutable = Immutable(array);
-        var mutable = immutable.asMutable();
+        var mutable = array.slice();
         var index = JSC.integer(0, array.length);
         var newValue = JSC.any();
 
-        immutable = Immutable.set(immutable, index, newValue);
-        mutable[index] = newValue;
+        var resultImmutable = Immutable.set(immutable, index, newValue);
+        var resultMutable = mutable.slice();
+        resultMutable[index] = newValue;
 
-        TestUtils.assertJsonEqual(immutable, mutable);
+        TestUtils.assertJsonEqual(resultImmutable, resultMutable);
+      });
+    });
+
+    it("sets an array element with deep compare if provided the deep flag", function () {
+      check(100, [ JSC.array([TestUtils.TraversableObjectSpecifier]) ], function(array) {
+        var immutable = Immutable(array);
+        var mutable = array.slice();
+        var index = JSC.integer(0, array.length);
+        
+        var newValue;
+        do {
+          value = JSC.any()();
+        } while (TestUtils.isDeepEqual(value, array[index]));
+
+        var resultImmutable = immutable.set(index, newValue, {deep: true});
+        var resultMutable = mutable.slice();
+        resultMutable[index] = newValue;
+
+        TestUtils.assertJsonEqual(
+          resultImmutable,
+          resultMutable
+        );
+        assert.notEqual(
+          immutable,
+          resultImmutable
+        );
+        assert.equal(
+          resultImmutable.set(index, newValue, {deep: true}),
+          resultImmutable
+        );
       });
     });
   });
@@ -36,6 +67,7 @@ module.exports = function(config) {
     it("sets a property by path", function () {
       check(100, [ JSC.array([TestUtils.TraversableObjectSpecifier]) ], function(array) {
         var immutable = Immutable(array);
+        var mutable = array.slice();
         var value = JSC.any()();
 
         var idx = JSC.integer(0, array.length-1);
@@ -46,16 +78,46 @@ module.exports = function(config) {
           return '[\n\t>'+_.map(arr, util.inspect).join('\n\t>')+'\n]';
         }
 
-        var mutable = immutable.asMutable();
         TestUtils.assertJsonEqual(immutable, mutable);
-        if (Immutable.isImmutable(mutable[idx])) {
-          mutable[idx] = mutable[idx].asMutable();
-        }
-        mutable[idx][key] = value;
+        var resultMutable = mutable.slice();
+        resultMutable[idx][key] = value;
 
         TestUtils.assertJsonEqual(
           Immutable.setIn(immutable, [idx, key], value),
-          mutable
+          resultMutable
+        );
+      });
+    });
+
+    it("sets a property by path with deep compare if provided the deep flag", function () {
+      check(100, [ JSC.array([TestUtils.TraversableObjectSpecifier]) ], function(array) {
+        var immutable = Immutable(array);
+        var mutable = array.slice();
+
+        var idx = JSC.integer(0, array.length-1);
+        var key = JSC.one_of(_.keys(immutable[idx]))();
+        var value;
+        do {
+          value = JSC.any()();
+        } while (TestUtils.isDeepEqual(value, immutable[idx][key]));
+
+        TestUtils.assertJsonEqual(immutable, mutable);
+
+        var resultImmutable = Immutable.setIn(immutable, [idx, key], value, {deep: true});
+        var resultMutable = mutable.slice();
+        resultMutable[idx][key] = value;
+        
+        TestUtils.assertJsonEqual(
+          resultImmutable,
+          resultMutable
+        );
+        assert.notEqual(
+          immutable,
+          resultImmutable
+        );
+        assert.equal(
+          Immutable.setIn(resultImmutable, [idx, key], value, {deep: true}),
+          resultImmutable
         );
       });
     });

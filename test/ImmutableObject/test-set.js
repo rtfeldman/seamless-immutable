@@ -20,7 +20,7 @@ module.exports = function(config) {
     it("sets a property by name", function () {
       check(100, [TestUtils.ComplexObjectSpecifier()], function(ob) {
         var immutable = Immutable(ob);
-        var mutable = immutable.asMutable();
+        var mutable = Object.assign({}, ob);
         var prop = getPathComponent();
         var value = JSC.any()();
 
@@ -30,14 +30,41 @@ module.exports = function(config) {
         );
       });
     });
+
+    it("sets a property by name with deep compare if provided the deep flag", function () {
+      check(100, [TestUtils.ComplexObjectSpecifier()], function(ob) {
+        var immutable = Immutable(ob);
+        var mutable = Object.assign({}, ob);
+        var prop = getPathComponent();
+        var value;
+        do {
+            value = JSC.any()();
+        } while (TestUtils.isDeepEqual(value, immutable[prop]));
+
+        var resultImmutable = Immutable.set(immutable, prop, value, {deep: true});
+        var resultMutable = _.set(mutable, prop, value);
+        TestUtils.assertJsonEqual(
+          resultImmutable,
+          resultMutable
+        );
+        assert.notEqual(
+          immutable,
+          resultImmutable
+        );
+        assert.equal(
+          Immutable.set(resultImmutable, prop, value, {deep: true}),
+          resultImmutable
+        );
+      });
+    });
   });
+
 
   describe("#setIn", function() {
     it("sets a property by path", function () {
       check(100, [TestUtils.ComplexObjectSpecifier()], function(ob) {
         var immutable = Immutable(ob);
-        var mutable = immutable.asMutable();
-        var value = JSC.any()();
+        var mutable = Object.assign({}, ob);
 
         TestUtils.assertJsonEqual(immutable, mutable);
 
@@ -46,12 +73,18 @@ module.exports = function(config) {
           path.push(getPathComponent());
         }
 
+        var value;
+        do {
+            value = JSC.any()();
+        } while (TestUtils.isDeepEqual(value, _.get(immutable, path)));
+
         TestUtils.assertJsonEqual(
           Immutable.setIn(immutable, path, value),
           _.set(mutable, path, value)
         );
       });
     });
+
 
     it("handles setting a new object on existing leaf array correctly", function () {
       var ob = {foo: []};
@@ -62,6 +95,37 @@ module.exports = function(config) {
       var final = Immutable.setIn(immutable, path, val);
 
       assert.deepEqual(final, {foo: [{bar: 'val'}]});
+    });
+
+
+    it("sets a property by path with deep compare if provided the deep flag", function () {
+      check(100, [TestUtils.ComplexObjectSpecifier()], function(ob) {
+        var immutable = Immutable(ob);
+        var mutable = Object.assign({}, ob);
+        var value = JSC.any()();
+
+        TestUtils.assertJsonEqual(immutable, mutable);
+
+        var path = [], depth = JSC.integer(1, 5)();
+        for (var j = 0; j < depth; j++) {
+          path.push(getPathComponent());
+        }
+
+        var resultImmutable = Immutable.setIn(immutable, path, value, {deep: true});
+        var resultMutable = _.set(mutable, path, value);
+        TestUtils.assertJsonEqual(
+          resultImmutable,
+          resultMutable
+        );
+        assert.notEqual(
+          immutable,
+          resultImmutable
+        );
+        assert.equal(
+          Immutable.setIn(resultImmutable, path, value, {deep: true}),
+          resultImmutable
+        );
+      });
     });
   });
 };
