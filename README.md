@@ -221,6 +221,24 @@ invocations will be performed using each provided object in turn.
 
 A second argument can be provided to perform a deep merge: `{deep: true}`.
 
+### replace
+
+```javascript
+var obj1 = Immutable({a: {b: 'test'}, c: 'test'})
+var obj2 = obj1.replace({a: {b: 'test'}}, {deep: true})
+// returns Immutable({a: {b: 'test'}});
+obj1 === obj2
+// returns false
+obj1.b === obj2.b
+// returns true because child .b objects were identical
+```
+
+Returns an Immutable Object containing the properties and values of the
+second object only. With deep merge, all child objects are checked for
+equality and the original immutable object is returned when possible.
+
+A second argument can be provided to perform a deep merge: `{deep: true}`.
+
 ### set
 
 ```javascript

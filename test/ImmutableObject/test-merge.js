@@ -112,22 +112,25 @@ module.exports = function(config) {
       });
 
       it("does not reproduce except when required #70", function() {
-        var c = Immutable({a: {b: 1, c: 1}});
+        var immutable = Immutable({a: {b: 1, c: 1}});
 
         // Non-deep merge is never equal for deep objects.
-        assert.notStrictEqual(c, Immutable.merge(c, {a: {b: 1}}));
+        assert.notStrictEqual(immutable, Immutable.merge(immutable, {a: {b: 1}}));
 
         // Deep merge for only some of the keys is equal, except in replace mode.
-        assert.strictEqual(c, Immutable.merge(c, {a: {b: 1}}, {deep: true}));
-        assert.notStrictEqual(c, Immutable.merge(c, {a: {b: 1}}, {deep: true, mode: 'replace'}));
+        assert.strictEqual(immutable, Immutable.merge(immutable, {a: {b: 1}}, {deep: true}));
+        assert.notStrictEqual(immutable, Immutable.merge(immutable, {a: {b: 1}}, {deep: true, mode: 'replace'}));
+
+        // Identical child objects in deep merge remain equal.
+        assert.strictEqual(immutable.a, Immutable.merge(immutable, {d: {e: 2}}, {deep: true}).a);
 
         // Deep merge for all of the keys is always equal.
-        assert.strictEqual(c, Immutable.merge(c, {a: {b: 1, c: 1}}, {deep: true}));
-        assert.strictEqual(c, Immutable.merge(c, {a: {b: 1, c: 1}}, {deep: true, mode: 'replace'}));
+        assert.strictEqual(immutable, Immutable.merge(immutable, {a: {b: 1, c: 1}}, {deep: true}));
+        assert.strictEqual(immutable, Immutable.merge(immutable, {a: {b: 1, c: 1}}, {deep: true, mode: 'replace'}));
 
         // Deep merge with updated data is never equal.
-        assert.notStrictEqual(c, Immutable.merge(c, {a: {b: 1, c: 2}}, {deep: true}));
-        assert.notStrictEqual(c, Immutable.merge(c, {a: {b: 1, c: 2}}, {deep: true, mode: 'replace'}));
+        assert.notStrictEqual(immutable, Immutable.merge(immutable, {a: {b: 1, c: 2}}, {deep: true}));
+        assert.notStrictEqual(immutable, Immutable.merge(immutable, {a: {b: 1, c: 2}}, {deep: true, mode: 'replace'}));
       });
 
       it("does nothing when merging an identical object", function() {

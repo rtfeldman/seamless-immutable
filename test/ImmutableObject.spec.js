@@ -1,4 +1,5 @@
 var testMerge     = require("./ImmutableObject/test-merge.js");
+var testReplace     = require("./ImmutableObject/test-replace.js");
 var testCompat    = require("./ImmutableObject/test-compat.js");
 var testWithout   = require("./ImmutableObject/test-without.js");
 var testAsMutable = require("./ImmutableObject/test-asMutable.js");
@@ -20,6 +21,7 @@ var getTestUtils  = require("./TestUtils.js");
     describe("ImmutableObject", function () {
       testCompat(config);
       testMerge(config);
+      testReplace(config);
       testWithout(config);
       testAsMutable(config);
       testInstantiateEmptyObject(config);

@@ -436,6 +436,21 @@
     }
   }
 
+  function objectReplace(value, config) {
+    var deep          = config && config.deep;
+
+    // Calling .replace() with no arguments is a no-op. Don't bother cloning.
+    if (arguments.length === 0) {
+      return this;
+    }
+
+    if (value === null || typeof value !== "object") {
+      throw new TypeError("Immutable#replace can only be invoked with objects or arrays, not " + JSON.stringify(value));
+    }
+
+    return this.merge(value, {deep: deep, mode: 'replace'});
+  }
+
   var immutableEmptyObject = Immutable({});
 
   function objectSetIn(path, value, config) {
@@ -535,6 +550,7 @@
         options.instantiateEmptyObject : instantiatePlainObject;
 
     addPropertyTo(obj, "merge", merge);
+    addPropertyTo(obj, "replace", objectReplace);
     addPropertyTo(obj, "without", without);
     addPropertyTo(obj, "asMutable", asMutableObject);
     addPropertyTo(obj, "instantiateEmptyObject", instantiateEmptyObject);
@@ -626,6 +642,7 @@
   Immutable.isImmutable    = isImmutable;
   Immutable.ImmutableError = ImmutableError;
   Immutable.merge          = toStatic(merge);
+  Immutable.replace        = toStatic(objectReplace);
   Immutable.without        = toStatic(without);
   Immutable.asMutable      = toStaticObjectOrArray(asMutableObject, asMutableArray);
   Immutable.set            = toStaticObjectOrArray(objectSet, arraySet);
