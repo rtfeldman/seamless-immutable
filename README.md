@@ -1,6 +1,8 @@
 seamless-immutable
 ==================
 
+*Warning:* This fork is published under @lelandmiller/seamless-immutable. It may not be up to date with the original seamless-immutable package. Please check out the original repository at <https://github.com/rtfeldman/seamless-immutable>.
+
 Immutable JS data structures which are backwards-compatible with normal Arrays and Objects.
 
 Use them in `for` loops, pass them to functions expecting vanilla JavaScript data structures, etc.
