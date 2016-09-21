@@ -52,5 +52,16 @@ module.exports = function(config) {
         );
       });
     });
+
+    it("handles setting a new object on existing leaf array correctly", function () {
+      var ob = {foo: []};
+      var path = ['foo', 0, 'bar'];
+      var val = 'val';
+
+      var immutable = Immutable(ob);
+      var final = immutable.setIn(path, val);
+
+      assert.deepEqual(final, {foo: [{bar: 'val'}]});
+    });
   });
 };

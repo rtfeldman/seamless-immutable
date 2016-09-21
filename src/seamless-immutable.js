@@ -127,7 +127,13 @@
         // Might (validly) be object or array
         newValue = thisHead.setIn(tail, value);
       } else {
-        newValue = arraySetIn.call(immutableEmptyArray, tail, value);
+        var nextHead = tail[0];
+        // If the next path part is a number, then we are setting into an array, else an object.
+        if (!isNaN(parseFloat(nextHead)) && isFinite(nextHead)) {
+          newValue = arraySetIn.call(immutableEmptyArray, tail, value);
+        } else {
+          newValue = objectSetIn.call(immutableEmptyObject, tail, value);
+        }
       }
 
       if (head in this && thisHead === newValue) {
