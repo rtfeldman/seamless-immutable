@@ -40,7 +40,7 @@
   }
 
   function isMergableObject(target) {
-    return target !== null && typeof target === "object" && !(target instanceof Array) && !(target instanceof Date);
+    return target !== null && typeof target === "object" && !(Array.isArray(target)) && !(target instanceof Date);
   }
 
   var mutatingObjectMethods = [
@@ -127,13 +127,7 @@
         // Might (validly) be object or array
         newValue = thisHead.setIn(tail, value);
       } else {
-        var nextHead = tail[0];
-        // If the next path part is a number, then we are setting into an array, else an object.
-        if (nextHead !== '' && isFinite(nextHead)) {
-          newValue = arraySetIn.call(immutableEmptyArray, tail, value);
-        } else {
-          newValue = objectSetIn.call(immutableEmptyObject, tail, value);
-        }
+        newValue = arraySetIn.call(immutableEmptyArray, tail, value);
       }
 
       if (head in this && thisHead === newValue) {
@@ -201,7 +195,7 @@
     for (index = 0; index < length; index++) {
       var iteratorResult = iterator(this[index], index, this);
 
-      if (iteratorResult instanceof Array) {
+      if (Array.isArray(iteratorResult)) {
         // Concatenate Array results into the return value we're building up.
         result.push.apply(result, iteratorResult);
       } else {
@@ -226,7 +220,7 @@
 
     if (typeof remove !== "function") {
       // If we weren't given an array, use the arguments list.
-      var keysToRemoveArray = (remove instanceof Array) ?
+      var keysToRemoveArray = (Array.isArray(remove)) ?
          remove.slice() : Array.prototype.slice.call(arguments);
 
       // Convert numeric keys to strings since that's how they'll
@@ -338,7 +332,7 @@
       throw new TypeError("Immutable#merge can only be invoked with objects or arrays, not " + JSON.stringify(other));
     }
 
-    var receivedArray = (other instanceof Array),
+    var receivedArray = (Array.isArray(other)),
         deep          = config && config.deep,
         merger        = config && config.merger,
         result;
@@ -526,7 +520,7 @@
   function Immutable(obj, options, stackRemaining) {
     if (isImmutable(obj) || isReactElement(obj)) {
       return obj;
-    } else if (obj instanceof Array) {
+    } else if (Array.isArray(obj)) {
       return makeImmutableArray(obj.slice());
     } else if (obj instanceof Date) {
       return makeImmutableDate(new Date(obj.getTime()));
