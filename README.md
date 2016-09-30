@@ -296,6 +296,10 @@ Returns a mutable copy of the object. For a deeply mutable copy, in which any in
 
 ### Releases
 
+#### 6.1.3
+
+Fixes bug with setting a new object on an existing leaf array.
+
 #### 6.1.2
 
 Fixes bug where on some systems arrays are treated as plain objects.
