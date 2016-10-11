@@ -1,6 +1,8 @@
 (function() {
   "use strict";
 
+  var NODE_ENV = typeof process !== 'undefined' ? "development" : 'development';
+
   // https://github.com/facebook/react/blob/v15.0.1/src/isomorphic/classic/element/ReactElement.js#L21
   var REACT_ELEMENT_TYPE = typeof Symbol === 'function' && Symbol.for && Symbol.for('react.element');
   var REACT_ELEMENT_TYPE_FALLBACK = 0xeac7;
@@ -78,7 +80,7 @@
     // Tag it so we can quickly tell it's immutable later.
     addImmutabilityTag(obj);
 
-    if ("development" !== "production") {
+    if (NODE_ENV !== "production") {
       // Make all mutating methods throw exceptions.
       for (var index in bannedMethods) {
         if (bannedMethods.hasOwnProperty(index)) {
@@ -538,7 +540,7 @@
           instantiatePlainObject : (function() { return Object.create(prototype); });
       var clone = instantiateEmptyObject();
 
-      if ("development" !== "production") {
+      if (NODE_ENV !== "production") {
         /*jshint eqnull:true */
         if (stackRemaining == null) {
           stackRemaining = 64;
