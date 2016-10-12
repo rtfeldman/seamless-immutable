@@ -296,6 +296,10 @@ Returns a mutable copy of the object. For a deeply mutable copy, in which any in
 
 ### Releases
 
+#### 6.1.4
+
+Fixes [bug with deep merge() on an array argument](https://github.com/rtfeldman/seamless-immutable/pull/140).
+
 #### 6.1.3
 
 Fixes bug with setting a new object on an existing leaf array.
