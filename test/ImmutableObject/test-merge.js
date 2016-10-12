@@ -211,6 +211,21 @@ module.exports = function(config) {
       TestUtils.assertJsonEqual(actualDeep, expectedDeep);
     });
 
+    it("merges deep when the config tells it to with an array as the first argument", function() {
+      var original = Immutable({test: {a: true}});
+      var toMerge  = [{test: {b: true}}, {test: {c: true}}];
+
+      var expectedShallow = Immutable({test: {c: true}});
+      var actualShallow   = original.merge(toMerge);
+
+      TestUtils.assertJsonEqual(actualShallow, expectedShallow);
+
+      var expectedDeep = Immutable({test: {a: true, b: true, c: true}});
+      var actualDeep   = original.merge(toMerge, {deep: true});
+
+      TestUtils.assertJsonEqual(actualDeep, expectedDeep);
+    });
+
     it("merges deep on only objects", function() {
       var original = Immutable({id: 3, name: "three", valid: true, a: {id: 2}, b: [50], x: [1, 2], sub: {z: [100]}});
       var toMerge = {id: 3, name: "three", valid: false, a: [1000], b: {id: 4}, x: [3, 4], sub: {y: [10, 11], z: [101, 102]}};
