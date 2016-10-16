@@ -150,6 +150,17 @@ mutableArray // ["hello", "world", "!!!"]
 
 Returns a mutable copy of the array. For a deeply mutable copy, in which any instances of `Immutable` contained in nested data structures within the array have been converted back to mutable data structures, call `.asMutable({deep: true})` instead.
 
+### All object and array methods
+
+Every other methods on immutable objects and arrays can also be used as static
+methods of `Immutable`. For instance, the lines below are equivalent:
+
+```
+obj.setIn(['key'], value);
+
+Immutable.setIn(obj, ['key'], value);
+```
+
 ## Immutable Object
 
 Like a regular Object, but immutable! You can construct these by passing an

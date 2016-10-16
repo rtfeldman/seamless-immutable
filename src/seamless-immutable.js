@@ -562,10 +562,47 @@
     }
   }
 
+  // Wrapper to allow the use of object methods as static methods of Immutable.
+  function toStatic(fn) {
+    function staticWrapper() {
+      var args = [].slice.call(arguments);
+      var self = args.shift();
+      return fn.apply(self, args);
+    }
+
+    return staticWrapper;
+  }
+
+  // Wrapper to allow the use of object methods as static methods of Immutable.
+  // with the additional condition of choosing which function to call depending
+  // if argument is an array or an object.
+  function toStaticObjectOrArray(fnObject, fnArray) {
+    function staticWrapper() {
+      var args = [].slice.call(arguments);
+      var self = args.shift();
+      if (Array.isArray(self)) {
+          return fnArray.apply(self, args);
+      } else {
+          return fnObject.apply(self, args);
+      }
+    }
+
+    return staticWrapper;
+  }
+
   // Export the library
   Immutable.from           = Immutable;
   Immutable.isImmutable    = isImmutable;
   Immutable.ImmutableError = ImmutableError;
+  Immutable.merge          = toStatic(merge);
+  Immutable.without        = toStatic(without);
+  Immutable.asMutable      = toStaticObjectOrArray(asMutableObject, asMutableArray);
+  Immutable.set            = toStaticObjectOrArray(objectSet, arraySet);
+  Immutable.setIn          = toStaticObjectOrArray(objectSetIn, arraySetIn);
+  Immutable.update         = toStatic(update);
+  Immutable.updateIn       = toStatic(updateIn);
+  Immutable.flatMap        = toStatic(flatMap);
+  Immutable.asObject       = toStatic(asObject);
 
   Object.freeze(Immutable);
 
