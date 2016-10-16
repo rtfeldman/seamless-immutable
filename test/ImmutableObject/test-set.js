@@ -25,7 +25,7 @@ module.exports = function(config) {
         var value = JSC.any()();
 
         TestUtils.assertJsonEqual(
-          immutable.set(prop, value),
+          Immutable.set(immutable, prop, value),
           _.set(mutable, prop, value)
         );
       });
@@ -47,7 +47,7 @@ module.exports = function(config) {
         }
 
         TestUtils.assertJsonEqual(
-          immutable.setIn(path, value),
+          Immutable.setIn(immutable, path, value),
           _.set(mutable, path, value)
         );
       });
@@ -59,7 +59,7 @@ module.exports = function(config) {
       var val = 'val';
 
       var immutable = Immutable(ob);
-      var final = immutable.setIn(path, val);
+      var final = Immutable.setIn(immutable, path, val);
 
       assert.deepEqual(final, {foo: [{bar: 'val'}]});
     });

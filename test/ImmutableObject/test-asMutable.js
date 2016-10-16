@@ -11,7 +11,7 @@ module.exports = function(config) {
   describe("#asMutable", function() {
     it("returns an empty mutable oject from an empty immutable array", function() {
         var immutable = Immutable({});
-        var mutable = immutable.asMutable();
+        var mutable = Immutable.asMutable(immutable);
 
         assertNotArray(mutable);
         assertCanBeMutated(mutable);
@@ -23,7 +23,7 @@ module.exports = function(config) {
     it("returns a shallow mutable copy if not provided the deep flag", function() {
       check(100, [ TestUtils.TraversableObjectSpecifier ], function(obj) {
         var immutable = Immutable(obj);
-        var mutable = immutable.asMutable();
+        var mutable = Immutable.asMutable(immutable);
 
         assertNotArray(mutable);
         assertCanBeMutated(mutable);
@@ -60,7 +60,7 @@ module.exports = function(config) {
       var data = new TestClass({a: 1, b: 2});
 
       var immutable = Immutable(data, {prototype: TestClass.prototype});
-      var result = immutable.asMutable();
+      var result = Immutable.asMutable(immutable);
 
       TestUtils.assertJsonEqual(result, data);
       TestUtils.assertHasPrototype(result, TestClass.prototype);
