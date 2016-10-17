@@ -307,6 +307,10 @@ Returns a mutable copy of the object. For a deeply mutable copy, in which any in
 
 ### Releases
 
+#### 6.2.0
+
+Adds static alternatives to methods, e.g. `Immutable.setIn`
+
 #### 6.1.4
 
 Fixes [bug with deep merge() on an array argument](https://github.com/rtfeldman/seamless-immutable/pull/140).
