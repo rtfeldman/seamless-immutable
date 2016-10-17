@@ -140,6 +140,30 @@ module.exports = function(config) {
         });
       });
 
+      it("adds instance methods only when config tells it to", function() {
+        var I = Immutable.init({
+          use_static: true
+        });
+        var immutable = I({});
+        assert.equal(typeof immutable.merge, 'undefined');
+        assert.equal(typeof immutable.replace, 'undefined');
+        assert.equal(typeof immutable.without, 'undefined');
+        assert.equal(typeof immutable.asMutable, 'undefined');
+        assert.equal(typeof immutable.set, 'undefined');
+        assert.equal(typeof immutable.setIn, 'undefined');
+        assert.equal(typeof immutable.update, 'undefined');
+        assert.equal(typeof immutable.updateIn, 'undefined');
+        var immutable = Immutable({});
+        assert.equal(typeof immutable.merge, 'function');
+        assert.equal(typeof immutable.replace, 'function');
+        assert.equal(typeof immutable.without, 'function');
+        assert.equal(typeof immutable.asMutable, 'function');
+        assert.equal(typeof immutable.set, 'function');
+        assert.equal(typeof immutable.setIn, 'function');
+        assert.equal(typeof immutable.update, 'function');
+        assert.equal(typeof immutable.updateIn, 'function');
+      });
+
       // TODO this never fails under Node, even after removing Immutable.Array's
       // call to toImmutable(). Need to verify that it can fail in browsers.
       it("reuses existing immutables during construction", function() {

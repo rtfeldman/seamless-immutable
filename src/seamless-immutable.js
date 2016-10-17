@@ -1,9 +1,28 @@
 (function() {
   "use strict";
 
+function immutableInit(config) {
+
   // https://github.com/facebook/react/blob/v15.0.1/src/isomorphic/classic/element/ReactElement.js#L21
   var REACT_ELEMENT_TYPE = typeof Symbol === 'function' && Symbol.for && Symbol.for('react.element');
   var REACT_ELEMENT_TYPE_FALLBACK = 0xeac7;
+
+  var globalConfig = {
+    use_static: false
+  };
+  if (isObject(config)) {
+      if (config.use_static !== undefined) {
+          globalConfig.use_static = Boolean(config.use_static);
+      }
+  }
+
+  function isObject(data) {
+    return (
+      typeof data === 'object' &&
+      !Array.isArray(data) &&
+      data !== null
+    );
+  }
 
   function addPropertyTo(target, methodName, value) {
     Object.defineProperty(target, methodName, {
@@ -168,13 +187,15 @@
       }
     }
 
-    addPropertyTo(array, "flatMap",  flatMap);
-    addPropertyTo(array, "asObject", asObject);
-    addPropertyTo(array, "asMutable", asMutableArray);
-    addPropertyTo(array, "set", arraySet);
-    addPropertyTo(array, "setIn", arraySetIn);
-    addPropertyTo(array, "update", update);
-    addPropertyTo(array, "updateIn", updateIn);
+    if (!globalConfig.use_static) {
+      addPropertyTo(array, "flatMap",  flatMap);
+      addPropertyTo(array, "asObject", asObject);
+      addPropertyTo(array, "asMutable", asMutableArray);
+      addPropertyTo(array, "set", arraySet);
+      addPropertyTo(array, "setIn", arraySetIn);
+      addPropertyTo(array, "update", update);
+      addPropertyTo(array, "updateIn", updateIn);
+    }
 
     for(var i = 0, length = array.length; i < length; i++) {
       array[i] = Immutable(array[i]);
@@ -184,7 +205,9 @@
   }
 
   function makeImmutableDate(date) {
-    addPropertyTo(date, "asMutable", asMutableDate);
+    if (!globalConfig.use_static) {
+      addPropertyTo(date, "asMutable", asMutableDate);
+    }
 
     return makeImmutable(date, mutatingDateMethods);
   }
@@ -553,15 +576,17 @@
       (options && options.instantiateEmptyObject) ?
         options.instantiateEmptyObject : instantiatePlainObject;
 
-    addPropertyTo(obj, "merge", merge);
-    addPropertyTo(obj, "replace", objectReplace);
-    addPropertyTo(obj, "without", without);
-    addPropertyTo(obj, "asMutable", asMutableObject);
-    addPropertyTo(obj, "instantiateEmptyObject", instantiateEmptyObject);
-    addPropertyTo(obj, "set", objectSet);
-    addPropertyTo(obj, "setIn", objectSetIn);
-    addPropertyTo(obj, "update", update);
-    addPropertyTo(obj, "updateIn", updateIn);
+    if (!globalConfig.use_static) {
+      addPropertyTo(obj, "merge", merge);
+      addPropertyTo(obj, "replace", objectReplace);
+      addPropertyTo(obj, "without", without);
+      addPropertyTo(obj, "asMutable", asMutableObject);
+      addPropertyTo(obj, "instantiateEmptyObject", instantiateEmptyObject);
+      addPropertyTo(obj, "set", objectSet);
+      addPropertyTo(obj, "setIn", objectSetIn);
+      addPropertyTo(obj, "update", update);
+      addPropertyTo(obj, "updateIn", updateIn);
+    }
 
     return makeImmutable(obj, mutatingObjectMethods);
   }
@@ -650,6 +675,7 @@
   Immutable.from           = Immutable;
   Immutable.isImmutable    = isImmutable;
   Immutable.ImmutableError = ImmutableError;
+  Immutable.init           = immutableInit;
   Immutable.merge          = toStatic(merge);
   Immutable.replace        = toStatic(objectReplace);
   Immutable.without        = toStatic(without);
@@ -663,6 +689,10 @@
 
   Object.freeze(Immutable);
 
+  return Immutable;
+}
+
+  var Immutable = immutableInit();
   /* istanbul ignore if */
   if (typeof define === 'function' && define.amd) {
     define(function() {

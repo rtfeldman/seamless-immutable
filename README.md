@@ -77,6 +77,28 @@ Immutable({all: "your base", are: {belong: "to them"}}).merge({are: {belong: "to
 // Immutable({all: "your base", are: {belong: "to us"}})
 ```
 
+## Static or instance syntax
+
+Seamless-immutable supports both static and instance syntaxes:
+
+```
+var Immutable = require("seamless-immutable").init({
+    use_static: true
+});
+
+Immutable.setIn(obj, 'key', data)
+```
+
+```
+var Immutable = require("seamless-immutable");
+
+obj.setIn('key', data)
+```
+
+Although the later is shorter and is the current default, it can lead to
+collisions and some users may dislike polluting object properties when it comes
+to debugging. As such the first syntax is recommended, but both are supported.
+
 ## Immutable.from
 
 If your linter cringes with the use of `Immutable` without a preceding `new`

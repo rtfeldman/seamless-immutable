@@ -121,6 +121,26 @@ module.exports = function(config) {
       TestUtils.assertHasPrototype(result, TestClass.prototype);
     });
 
+    it("static method continues to work after overriding the instance method", function() {
+      var I = Immutable.init({
+          use_static: true
+      });
+
+      var immutable;
+
+      immutable = I({without: 'string'});
+      TestUtils.assertJsonEqual(immutable, {without: 'string'});
+
+      immutable = I({});
+      immutable = I.set(immutable, 'without', 'string');
+      TestUtils.assertJsonEqual(immutable, {without: 'string'});
+      immutable = I.set(immutable, 'some_key', 'string');
+      immutable = I.without(immutable, 'some_key');
+      TestUtils.assertJsonEqual(immutable, {without: 'string'});
+      immutable = I.without(immutable, 'without');
+      TestUtils.assertJsonEqual(immutable, {});
+    });
+
     describe("when passed a single key", function() {
       generateWithoutTestsFor(JSC.string());
     });
