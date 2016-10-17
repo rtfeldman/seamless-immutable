@@ -672,6 +672,25 @@ function immutableInit(config) {
     return staticWrapper;
   }
 
+  // Wrapper to allow the use of object methods as static methods of Immutable.
+  // with the additional condition of choosing which function to call depending
+  // if argument is an array or an object or a date.
+  function toStaticObjectOrDateOrArray(fnObject, fnArray, fnDate) {
+    function staticWrapper() {
+      var args = [].slice.call(arguments);
+      var self = args.shift();
+      if (Array.isArray(self)) {
+          return fnArray.apply(self, args);
+      } else if (self instanceof Date) {
+          return fnDate.apply(self, args);
+      } else {
+          return fnObject.apply(self, args);
+      }
+    }
+
+    return staticWrapper;
+  }
+
   // Export the library
   Immutable.from           = Immutable;
   Immutable.isImmutable    = isImmutable;
@@ -680,7 +699,7 @@ function immutableInit(config) {
   Immutable.merge          = toStatic(merge);
   Immutable.replace        = toStatic(objectReplace);
   Immutable.without        = toStatic(without);
-  Immutable.asMutable      = toStaticObjectOrArray(asMutableObject, asMutableArray);
+  Immutable.asMutable      = toStaticObjectOrDateOrArray(asMutableObject, asMutableArray, asMutableDate);
   Immutable.set            = toStaticObjectOrArray(objectSet, arraySet);
   Immutable.setIn          = toStaticObjectOrArray(objectSetIn, arraySetIn);
   Immutable.update         = toStatic(update);

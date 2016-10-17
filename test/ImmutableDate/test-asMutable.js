@@ -10,7 +10,7 @@ module.exports = function(config) {
   describe("#asMutable", function() {
     it("returns mutable Date from an immutable Date", function() {
       var immutable = Immutable(new Date());
-      var mutable = immutable.asMutable();
+      var mutable = Immutable.asMutable(immutable);
 
       assertNotArray(mutable);
       assertCanBeMutated(mutable);
@@ -21,7 +21,7 @@ module.exports = function(config) {
 
     it("returns mutable Date from an immutable Date when using the deep flag", function() {
       var immutable = Immutable(new Date());
-      var mutable = immutable.asMutable({deep: true});
+      var mutable = Immutable.asMutable(immutable, {deep: true});
 
       assertNotArray(mutable);
       assertCanBeMutated(mutable);
@@ -34,7 +34,7 @@ module.exports = function(config) {
       var data = new Date();
 
       var immutable = Immutable(data, {prototype: Date.prototype});
-      var result = immutable.asMutable();
+      var result = Immutable.asMutable(immutable);
 
       assert.deepEqual(result, data);
       TestUtils.assertHasPrototype(result, Date.prototype);
