@@ -24,6 +24,15 @@ function immutableInit(config) {
     );
   }
 
+  function instantiateEmptyObject(obj) {
+      var prototype = Object.getPrototypeOf(obj);
+      if (!prototype) {
+          return {};
+      } else {
+          return Object.create(prototype);
+      }
+  }
+
   function addPropertyTo(target, methodName, value) {
     Object.defineProperty(target, methodName, {
       enumerable: false,
@@ -277,7 +286,7 @@ function immutableInit(config) {
       };
     }
 
-    var result = this.instantiateEmptyObject();
+    var result = instantiateEmptyObject(this);
 
     for (var key in this) {
       if (this.hasOwnProperty(key) && remove(this[key], key) === false) {
@@ -285,8 +294,7 @@ function immutableInit(config) {
       }
     }
 
-    return makeImmutableObject(result,
-      {instantiateEmptyObject: this.instantiateEmptyObject});
+    return makeImmutableObject(result);
   }
 
   function asMutableArray(opts) {
@@ -405,7 +413,7 @@ function immutableInit(config) {
         if (!isEqual(currentValue, newValue) || !currentObj.hasOwnProperty(key)) {
           if (result === undefined) {
             // Make a shallow clone of the current object.
-            result = quickCopy(currentObj, currentObj.instantiateEmptyObject());
+            result = quickCopy(currentObj, instantiateEmptyObject(currentObj));
           }
 
           result[key] = newValue;
@@ -418,7 +426,7 @@ function immutableInit(config) {
         if (!otherObj.hasOwnProperty(key)) {
           if (result === undefined) {
             // Make a shallow clone of the current object.
-            result = quickCopy(currentObj, currentObj.instantiateEmptyObject());
+            result = quickCopy(currentObj, instantiateEmptyObject(currentObj));
           }
           delete result[key];
         }
@@ -454,8 +462,7 @@ function immutableInit(config) {
     if (result === undefined) {
       return this;
     } else {
-      return makeImmutableObject(result,
-        {instantiateEmptyObject: this.instantiateEmptyObject});
+      return makeImmutableObject(result);
     }
   }
 
@@ -501,9 +508,9 @@ function immutableInit(config) {
       return this;
     }
 
-    var mutable = quickCopy(this, this.instantiateEmptyObject());
+    var mutable = quickCopy(this, instantiateEmptyObject(this));
     mutable[head] = newValue;
-    return makeImmutableObject(mutable, this);
+    return makeImmutableObject(mutable);
   }
 
   function objectSet(property, value, config) {
@@ -518,9 +525,9 @@ function immutableInit(config) {
       }
     }
 
-    var mutable = quickCopy(this, this.instantiateEmptyObject());
+    var mutable = quickCopy(this, instantiateEmptyObject(this));
     mutable[property] = Immutable(value);
-    return makeImmutableObject(mutable, this);
+    return makeImmutableObject(mutable);
   }
 
   function update(property, updater) {
@@ -546,7 +553,7 @@ function immutableInit(config) {
   }
 
   function asMutableObject(opts) {
-    var result = this.instantiateEmptyObject(), key;
+    var result = instantiateEmptyObject(this), key;
 
     if(opts && opts.deep) {
       for (key in this) {
@@ -571,17 +578,12 @@ function immutableInit(config) {
   }
 
   // Finalizes an object with immutable methods, freezes it, and returns it.
-  function makeImmutableObject(obj, options) {
-    var instantiateEmptyObject =
-      (options && options.instantiateEmptyObject) ?
-        options.instantiateEmptyObject : instantiatePlainObject;
-
+  function makeImmutableObject(obj) {
     if (!globalConfig.use_static) {
       addPropertyTo(obj, "merge", merge);
       addPropertyTo(obj, "replace", objectReplace);
       addPropertyTo(obj, "without", without);
       addPropertyTo(obj, "asMutable", asMutableObject);
-      addPropertyTo(obj, "instantiateEmptyObject", instantiateEmptyObject);
       addPropertyTo(obj, "set", objectSet);
       addPropertyTo(obj, "setIn", objectSetIn);
       addPropertyTo(obj, "update", update);
@@ -638,8 +640,7 @@ function immutableInit(config) {
         }
       }
 
-      return makeImmutableObject(clone,
-        {instantiateEmptyObject: instantiateEmptyObject});
+      return makeImmutableObject(clone);
     }
   }
 
