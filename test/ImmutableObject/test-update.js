@@ -32,7 +32,7 @@ module.exports = function(config) {
         var prop = 'complex';
 
         TestUtils.assertJsonEqual(
-          immutable.update(prop, dummyUpdater),
+          Immutable.update(immutable, prop, dummyUpdater),
           _.set(mutable, prop, dummyUpdater(_.get(mutable, prop)))
         );
       });
@@ -45,7 +45,7 @@ module.exports = function(config) {
         var prop = 'complex';
 
         TestUtils.assertJsonEqual(
-          immutable.update(prop, dummyUpdater, "agr1", 42),
+          Immutable.update(immutable, prop, dummyUpdater, "agr1", 42),
           _.set(mutable, prop, dummyUpdater(_.get(mutable, prop), "agr1", 42))
         );
       });
@@ -63,7 +63,7 @@ module.exports = function(config) {
         var path = ['deep', 'complex'];
 
         TestUtils.assertJsonEqual(
-          immutable.updateIn(path, dummyUpdater),
+          Immutable.updateIn(immutable, path, dummyUpdater),
           _.set(mutable, path, dummyUpdater(_.get(mutable, path)))
         );
       });
@@ -79,7 +79,7 @@ module.exports = function(config) {
         var path = ['deep', 'complex'];
 
         TestUtils.assertJsonEqual(
-          immutable.updateIn(path, dummyUpdater, "agr1", 42),
+          Immutable.updateIn(immutable, path, dummyUpdater, "agr1", 42),
           _.set(mutable, path, dummyUpdater(_.get(mutable, path), "agr1", 42))
         );
       });

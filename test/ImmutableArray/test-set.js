@@ -24,7 +24,7 @@ module.exports = function(config) {
         var index = JSC.integer(0, array.length);
         var newValue = JSC.any();
 
-        immutable = immutable.set(index, newValue);
+        immutable = Immutable.set(immutable, index, newValue);
         mutable[index] = newValue;
 
         TestUtils.assertJsonEqual(immutable, mutable);
@@ -54,7 +54,7 @@ module.exports = function(config) {
         mutable[idx][key] = value;
 
         TestUtils.assertJsonEqual(
-          immutable.setIn([idx, key], value),
+          Immutable.setIn(immutable, [idx, key], value),
           mutable
         );
       });
