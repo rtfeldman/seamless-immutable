@@ -24,7 +24,7 @@ module.exports = function(config) {
     it("updates an array element using updater function", function () {
       check(100, [ JSC.array([TestUtils.TraversableObjectSpecifier, JSC.any()]) ], function(array) {
         var immutable = Immutable(array);
-        var mutable = immutable.asMutable();
+        var mutable = Immutable.asMutable(immutable);
         var index = JSC.integer(0, array.length);
 
         immutable = Immutable.update(immutable, index, dummyUpdater);
@@ -32,6 +32,15 @@ module.exports = function(config) {
 
         TestUtils.assertJsonEqual(immutable, mutable);
       });
+    });
+
+    it("supports non-static syntax", function() {
+        function dummyUpdater(data) {
+          return data + '_updated';
+        }
+        var obj = Immutable(['test']);
+        obj = obj.update('0', dummyUpdater);
+        TestUtils.assertJsonEqual(obj, ['test_updated']);
     });
   });
 
@@ -49,10 +58,10 @@ module.exports = function(config) {
           return '[\n\t>'+_.map(arr, util.inspect).join('\n\t>')+'\n]';
         }
 
-        var mutable = immutable.asMutable();
+        var mutable = Immutable.asMutable(immutable);
         TestUtils.assertJsonEqual(immutable, mutable);
         if (Immutable.isImmutable(mutable[idx])) {
-          mutable[idx] = mutable[idx].asMutable();
+          mutable[idx] = Immutable.asMutable(mutable[idx]);
         }
         mutable[idx][key] = dummyUpdater(mutable[idx][key]);
 
@@ -61,6 +70,15 @@ module.exports = function(config) {
           mutable
         );
       });
+    });
+
+    it("supports non-static syntax", function() {
+        function dummyUpdater(data) {
+          return data + '_updated';
+        }
+        var obj = Immutable(['test']);
+        obj = obj.updateIn(['0'], dummyUpdater);
+        TestUtils.assertJsonEqual(obj, ['test_updated']);
     });
   });
 };

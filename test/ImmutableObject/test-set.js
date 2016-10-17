@@ -74,6 +74,12 @@ module.exports = function(config) {
       immutable = I.set(immutable, 'new_key', 'new_data');
       TestUtils.assertJsonEqual(immutable, {set: 'string', new_key: 'new_data'});
     });
+
+    it("supports non-static syntax", function() {
+        var obj = Immutable({});
+        obj = obj.set('test', 'test');
+        TestUtils.assertJsonEqual(obj, {test: 'test'});
+    });
   });
 
 
@@ -160,6 +166,12 @@ module.exports = function(config) {
       TestUtils.assertJsonEqual(immutable, {setIn: 'string'});
       immutable = I.setIn(immutable, ['new_key'], 'new_data');
       TestUtils.assertJsonEqual(immutable, {setIn: 'string', new_key: 'new_data'});
+    });
+
+    it("supports non-static syntax", function() {
+        var obj = Immutable({});
+        obj = obj.setIn(['test'], 'test');
+        TestUtils.assertJsonEqual(obj, {test: 'test'});
     });
   });
 };

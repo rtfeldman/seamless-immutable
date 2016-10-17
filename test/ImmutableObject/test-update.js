@@ -24,7 +24,7 @@ module.exports = function(config) {
     it("updates a property using updater function", function () {
       check(100, [TestUtils.TraversableObjectSpecifier], function(ob) {
         var immutable = Immutable(ob);
-        var mutable = immutable.asMutable({deep: true});
+        var mutable = Immutable.asMutable(immutable, {deep: true});
         var prop = 'complex';
 
         TestUtils.assertJsonEqual(
@@ -37,7 +37,7 @@ module.exports = function(config) {
     it("allows passing additional parameters to updater function", function () {
       check(100, [TestUtils.TraversableObjectSpecifier], function(ob) {
         var immutable = Immutable(ob);
-        var mutable = immutable.asMutable({deep: true});
+        var mutable = Immutable.asMutable(immutable, {deep: true});
         var prop = 'complex';
 
         TestUtils.assertJsonEqual(
@@ -68,13 +68,22 @@ module.exports = function(config) {
       TestUtils.assertJsonEqual(immutable, {update: 'string_updated'});
 
     });
+
+    it("supports non-static syntax", function() {
+        function dummyUpdater(data) {
+          return data + '_updated';
+        }
+        var obj = Immutable({test: 'test'});
+        obj = obj.update('test', dummyUpdater);
+        TestUtils.assertJsonEqual(obj, {test: 'test_updated'});
+    });
   });
 
   describe("#updateIn", function() {
     it("updates a property in path using updater function", function () {
       check(100, [TestUtils.TraversableObjectSpecifier], function(ob) {
         var immutable = Immutable(ob);
-        var mutable = immutable.asMutable({deep: true});
+        var mutable = Immutable.asMutable(immutable, {deep: true});
 
         TestUtils.assertJsonEqual(immutable, mutable);
 
@@ -90,7 +99,7 @@ module.exports = function(config) {
     it("allows passing additional parameters to updater function", function () {
       check(100, [TestUtils.TraversableObjectSpecifier], function(ob) {
         var immutable = Immutable(ob);
-        var mutable = immutable.asMutable({deep: true});
+        var mutable = Immutable.asMutable(immutable, {deep: true});
 
         TestUtils.assertJsonEqual(immutable, mutable);
 
@@ -122,6 +131,15 @@ module.exports = function(config) {
       TestUtils.assertJsonEqual(immutable, {updateIn: 'string'});
       immutable = I.updateIn(immutable, ['updateIn'], dummyUpdater);
       TestUtils.assertJsonEqual(immutable, {updateIn: 'string_updated'});
+    });
+
+    it("supports non-static syntax", function() {
+        function dummyUpdater(data) {
+          return data + '_updated';
+        }
+        var obj = Immutable({test: 'test'});
+        obj = obj.updateIn(['test'], dummyUpdater);
+        TestUtils.assertJsonEqual(obj, {test: 'test_updated'});
     });
   });
 };

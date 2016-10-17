@@ -40,6 +40,14 @@ module.exports = function(config) {
       TestUtils.assertHasPrototype(result, Date.prototype);
     });
 
+
+    it("supports non-static syntax", function() {
+        var mutable = new Date();
+        var obj = Immutable(mutable);
+        obj = obj.asMutable();
+        TestUtils.assertJsonEqual(obj.getTime(), mutable.getTime());
+        assertCanBeMutated(obj);
+    });
   });
 
   function assertCanBeMutated(obj) {

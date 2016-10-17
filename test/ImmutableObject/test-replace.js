@@ -245,5 +245,11 @@ module.exports = function(config) {
     describe("when passed a single object with deep set to true", function() {
       generateReplaceTestsFor([TestUtils.ComplexObjectSpecifier()], {deep: true});
     });
+
+    it("supports non-static syntax", function() {
+        var obj = Immutable({});
+        obj = obj.replace({test: 'test'});
+        TestUtils.assertJsonEqual(obj, {test: 'test'});
+    });
   });
 };

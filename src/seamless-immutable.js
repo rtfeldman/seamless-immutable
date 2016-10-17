@@ -139,7 +139,7 @@ function immutableInit(config) {
 
     if (idx in this) {
       if (deep && this[idx] !== value && isMergableObject(value) && isMergableObject(this[idx])) {
-        value = this[idx].merge(value, {deep: true, mode: 'replace'});
+        value = Immutable.merge(this[idx], value, {deep: true, mode: 'replace'});
       }
       if (isEqual(this[idx], value)) {
         return this;
@@ -163,9 +163,9 @@ function immutableInit(config) {
       var thisHead = this[head];
       var newValue;
 
-      if (typeof(thisHead) === "object" && thisHead !== null && typeof(thisHead.setIn) === "function") {
+      if (typeof(thisHead) === "object" && thisHead !== null) {
         // Might (validly) be object or array
-        newValue = thisHead.setIn(tail, value);
+        newValue = Immutable.setIn(thisHead, tail, value);
       } else {
         var nextHead = tail[0];
         // If the next path part is a number, then we are setting into an array, else an object.
@@ -349,7 +349,7 @@ function immutableInit(config) {
       (!Object.getOwnPropertyDescriptor(obj, immutabilityTag)) ||
       (obj instanceof Date)
     ) { return obj; }
-    return obj.asMutable({deep: true});
+    return Immutable.asMutable(obj, {deep: true});
   }
 
   function quickCopy(src, dest) {
@@ -405,7 +405,7 @@ function immutableInit(config) {
         if (mergerResult) {
           newValue = mergerResult;
         } else if (deep && isMergableObject(currentValue) && isMergableObject(immutableValue)) {
-          newValue = currentValue.merge(immutableValue, config);
+          newValue = Immutable.merge(currentValue, immutableValue, config);
         } else {
           newValue = immutableValue;
         }
@@ -478,7 +478,7 @@ function immutableInit(config) {
       throw new TypeError("Immutable#replace can only be invoked with objects or arrays, not " + JSON.stringify(value));
     }
 
-    return this.merge(value, {deep: deep, mode: 'replace'});
+    return Immutable.merge(this, value, {deep: deep, mode: 'replace'});
   }
 
   var immutableEmptyObject = Immutable({});
@@ -497,9 +497,9 @@ function immutableInit(config) {
     var newValue;
     var thisHead = this[head];
 
-    if (this.hasOwnProperty(head) && typeof(thisHead) === "object" && thisHead !== null && typeof(thisHead.setIn) === "function") {
+    if (this.hasOwnProperty(head) && typeof(thisHead) === "object" && thisHead !== null) {
       // Might (validly) be object or array
-      newValue = thisHead.setIn(tail, value);
+      newValue = Immutable.setIn(thisHead, tail, value);
     } else {
       newValue = objectSetIn.call(immutableEmptyObject, tail, value);
     }
@@ -518,7 +518,7 @@ function immutableInit(config) {
 
     if (this.hasOwnProperty(property)) {
       if (deep && this[property] !== value && isMergableObject(value) && isMergableObject(this[property])) {
-        value = this[property].merge(value, {deep: true, mode: 'replace'});
+        value = Immutable.merge(this[property], value, {deep: true, mode: 'replace'});
       }
       if (isEqual(this[property], value)) {
         return this;
@@ -533,7 +533,7 @@ function immutableInit(config) {
   function update(property, updater) {
     var restArgs = Array.prototype.slice.call(arguments, 2);
     var initialVal = this[property];
-    return this.set(property, updater.apply(initialVal, [initialVal].concat(restArgs)));
+    return Immutable.set(this, property, updater.apply(initialVal, [initialVal].concat(restArgs)));
   }
 
   function getInPath(obj, path) {
@@ -549,7 +549,7 @@ function immutableInit(config) {
     var restArgs = Array.prototype.slice.call(arguments, 2);
     var initialVal = getInPath(this, path);
 
-    return this.setIn(path, updater.apply(initialVal, [initialVal].concat(restArgs)));
+    return Immutable.setIn(this, path, updater.apply(initialVal, [initialVal].concat(restArgs)));
   }
 
   function asMutableObject(opts) {

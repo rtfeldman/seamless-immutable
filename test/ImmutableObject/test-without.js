@@ -45,9 +45,10 @@ module.exports = function(config) {
           assert.notStrictEqual(keys.length, 0, "Can't usefully check without() with no objects");
 
           // Make an object that at LEAST contains the specified keys.
-          var immutable = Immutable(keys).asObject(function(key) {
+          var immutable = Immutable.asObject(Immutable(keys), function(key) {
             return [key, JSC.any()()];
-          }).merge(TestUtils.ComplexObjectSpecifier()());
+          });
+          immutable = Immutable.merge(immutable, TestUtils.ComplexObjectSpecifier()());
 
           callback(immutable, keys, useVarArgs);
         })
@@ -188,6 +189,12 @@ module.exports = function(config) {
 
       });
 
+    });
+
+    it("supports non-static syntax", function() {
+        var obj = Immutable({test: 'test'});
+        obj = obj.without('test');
+        TestUtils.assertJsonEqual(obj, {});
     });
   });
 };

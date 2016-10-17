@@ -196,7 +196,7 @@ module.exports = function(config) {
     it("is a no-op when passed nothing", function() {
       check(100, [TestUtils.ComplexObjectSpecifier()], function(obj) {
         var expected = Immutable(obj);
-        var actual   = expected.merge();
+        var actual   = Immutable.merge(expected);
 
         TestUtils.assertJsonEqual(actual, expected);
       });
@@ -356,6 +356,12 @@ module.exports = function(config) {
 
     describe("when passed an array of objects with a custom merger", function() {
       generateMergeTestsFor([generateArrayOfObjects], {merger: arrayMerger()});
+    });
+
+    it("supports non-static syntax", function() {
+        var obj = Immutable({});
+        obj = obj.merge({test: 'test'});
+        TestUtils.assertJsonEqual(obj, {test: 'test'});
     });
   });
 };

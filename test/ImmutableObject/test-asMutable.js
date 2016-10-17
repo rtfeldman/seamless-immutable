@@ -86,6 +86,12 @@ module.exports = function(config) {
       assertCanBeMutated(mutable);
     });
 
+    it("supports non-static syntax", function() {
+        var obj = Immutable({test: 'test'});
+        obj = obj.asMutable();
+        TestUtils.assertJsonEqual(obj, {test: 'test'});
+        assertCanBeMutated(obj);
+    });
   });
 
   function assertCanBeMutated(obj) {
