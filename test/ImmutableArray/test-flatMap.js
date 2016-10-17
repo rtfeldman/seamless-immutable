@@ -12,7 +12,7 @@ module.exports = function(config) {
     // Sanity check to make sure our QuickCheck logic isn't off the rails.
     it("passes a basic sanity check on canned input", function() {
       var expected = Immutable(["foo", "foo2", "bar", "bar2", "baz", "baz2"]);
-      var actual   = Immutable(["foo", "bar", "baz"]).flatMap(function(elem) {
+      var actual   = Immutable.flatMap(Immutable(["foo", "bar", "baz"]), function(elem) {
         return [elem, elem + "2"];
       });
 
@@ -24,7 +24,7 @@ module.exports = function(config) {
         var returnValues = array.map(function() { return JSC.any()(); });
         var iterator = function(value, index) { return returnValues[index]; };
         var expected = _.map(array, iterator);
-        var actual   = Immutable(array).flatMap(iterator);
+        var actual   = Immutable.flatMap(Immutable(array), iterator);
 
         TestUtils.assertJsonEqual(actual, expected);
       });
@@ -34,7 +34,7 @@ module.exports = function(config) {
       check(100, [JSC.array()], function(array) {
         var iterator = function(value, index) { return index; };
         var expected = _.map(array, iterator);
-        var actual   = Immutable(array).flatMap(iterator);
+        var actual   = Immutable.flatMap(Immutable(array), iterator);
 
         TestUtils.assertJsonEqual(actual, expected);
       });
@@ -45,7 +45,7 @@ module.exports = function(config) {
         var returnValues = array.map(function() { return [JSC.any()()]; });
         var iterator = function(value, index) { return returnValues[index]; };
         var expected = _.flatten(_.map(array, iterator));
-        var actual   = Immutable(array).flatMap(iterator);
+        var actual   = Immutable.flatMap(Immutable(array), iterator);
 
         TestUtils.assertJsonEqual(actual, expected);
       });
@@ -54,7 +54,7 @@ module.exports = function(config) {
     it("works the same way as flatten when called with no arguments", function() {
       check(100, [JSC.array()], function(array) {
         var expected = _.flatten(array);
-        var actual   = Immutable(array).flatMap();
+        var actual   = Immutable.flatMap(Immutable(array));
 
         TestUtils.assertJsonEqual(actual, expected);
       });
@@ -65,7 +65,7 @@ module.exports = function(config) {
       var iterator = function() { return [] };
 
       check(100, [JSC.array()], function(array) {
-        var actual = Immutable(array).flatMap(iterator);
+        var actual = Immutable.flatMap(array, iterator);
 
         TestUtils.assertJsonEqual(actual, expected);
       });
