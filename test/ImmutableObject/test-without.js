@@ -64,16 +64,16 @@ module.exports = function(config) {
       checkImmutableWithKeys(keysSpecifier, function(immutable, keys, useVarArgs) {
 
         it("returns the same result as a corresponding without(predicate)", function() {
-          var expected = immutable.without(dropKeysPredicate(keys));
+          var expected = Immutable.without(immutable, dropKeysPredicate(keys));
           var actual   = useVarArgs ?
-            immutable.without.apply(immutable, keys) :
-            immutable.without(keys);
+            Immutable.without.apply(Immutable, [immutable].concat(keys)) :
+            Immutable.without(immutable, keys); 
           TestUtils.assertJsonEqual(actual, expected);
         });
 
         it("drops the keys", function() {
           var expectedKeys = _.difference(_.keys(immutable), keys);
-          var result = immutable.without(keys);
+          var result = Immutable.without(immutable, keys);
 
           TestUtils.assertJsonEqual(_.keys(result), expectedKeys);
         });
@@ -83,7 +83,8 @@ module.exports = function(config) {
     // Sanity check to make sure our QuickCheck logic isn't off the rails.
     it("passes a basic sanity check on canned input", function() {
       var expected = Immutable({cat: "meow", dog: "woof"});
-      var actual   = Immutable({cat: "meow", dog: "woof", fox: "???"}).without("fox");
+      var actual   = Immutable({cat: "meow", dog: "woof", fox: "???"});
+      actual = Immutable.without(actual, "fox");
 
       TestUtils.assertJsonEqual(actual, expected);
     });
@@ -91,17 +92,19 @@ module.exports = function(config) {
     // Check that numeric keys are removed too.
     it("passes a basic sanity check with numeric keys", function() {
       var expected = Immutable({cat: "meow", dog: "woof"});
-      var actual   = Immutable({cat: "meow", dog: "woof", 42: "???"}).without(42);
+      var actual   = Immutable({cat: "meow", dog: "woof", 42: "???"});
+      actual = Immutable.without(actual, 42);
       TestUtils.assertJsonEqual(actual, expected);
 
-      actual       = Immutable({cat: "meow", dog: "woof", 42: "???", 0.5: "xxx"}).without([42, 0.5]);
+      actual       = Immutable({cat: "meow", dog: "woof", 42: "???", 0.5: "xxx"});
+      actual = Immutable.without(actual, [42, 0.5]);
       TestUtils.assertJsonEqual(actual, expected);
     });
 
     it("is a no-op when passed nothing", function() {
       check(100, [TestUtils.ComplexObjectSpecifier()], function(obj) {
         var expected = Immutable(obj);
-        var actual   = expected.without();
+        var actual   = Immutable.without(expected);
 
         TestUtils.assertJsonEqual(actual, expected);
       });
@@ -112,7 +115,7 @@ module.exports = function(config) {
       var data = new TestClass({a: 1, b: 2});
 
       var immutable = Immutable(data, {prototype: TestClass.prototype});
-      var result = immutable.without('b');
+      var result = Immutable.without(immutable, 'b');
 
       TestUtils.assertJsonEqual(result, _.omit(data, 'b'));
       TestUtils.assertHasPrototype(result, TestClass.prototype);
@@ -135,7 +138,7 @@ module.exports = function(config) {
 
         it("drops the keys satisfying the predicate", function() {
           var expectedKeys = _.difference(_.keys(immutable), keys);
-          var result = immutable.without(dropKeysPredicate(keys));
+          var result = Immutable.without(immutable, dropKeysPredicate(keys));
 
           TestUtils.assertJsonEqual(_.keys(result), expectedKeys);
 
@@ -146,7 +149,7 @@ module.exports = function(config) {
         });
 
         it("returns an Immutable Object", function() {
-          var result = immutable.without(dropKeysPredicate(keys));
+          var result = Immutable.without(immutable, dropKeysPredicate(keys));
           assert.instanceOf(result, Object);
           TestUtils.assertIsDeeplyImmutable(result);
         });
@@ -156,7 +159,7 @@ module.exports = function(config) {
             return _.includes(keys, key);
           });
 
-          var actual = immutable.without(function (value, key) {
+          var actual = Immutable.without(immutable, function (value, key) {
             return _.includes(keys, key);
           });
 

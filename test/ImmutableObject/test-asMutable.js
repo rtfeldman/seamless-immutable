@@ -37,7 +37,7 @@ module.exports = function(config) {
     it("returns a deep mutable copy if provided the deep flag", function() {
       check(100, [ TestUtils.TraversableObjectSpecifier ], function(obj) {
         var immutable = Immutable(obj);
-        var mutable = immutable.asMutable({ deep: true });
+        var mutable = Immutable.asMutable(immutable, { deep: true });
 
         assertNotArray(mutable);
         assertCanBeMutated(mutable);
@@ -51,7 +51,7 @@ module.exports = function(config) {
     it("does not throw an error when asMutable deep = true is called on an Immutable with a nested date", function() {
       check(100, [ TestUtils.TraversableObjectSpecifier ], function(obj) {
         var test = Immutable({ testDate: new Date()});
-        test.asMutable({deep: true});
+        Immutable.asMutable(test, {deep: true});
       });
     });
 
