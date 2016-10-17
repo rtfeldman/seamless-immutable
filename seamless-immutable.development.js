@@ -39,6 +39,11 @@
     }
   }
 
+  function isEqual(a, b) {
+    // Avoid false positives due to (NaN !== NaN) evaluating to true
+    return (a === b || (a !== a && b !== b));
+  }
+
   function isMergableObject(target) {
     return target !== null && typeof target === "object" && !(Array.isArray(target)) && !(target instanceof Date);
   }
@@ -101,9 +106,16 @@
     });
   }
 
-  function arraySet(idx, value) {
-    if (idx in this && this[idx] === value) {
-      return this;
+  function arraySet(idx, value, config) {
+    var deep          = config && config.deep;
+
+    if (idx in this) {
+      if (deep && this[idx] !== value && isMergableObject(value) && isMergableObject(this[idx])) {
+        value = this[idx].merge(value, {deep: true, mode: 'replace'});
+      }
+      if (isEqual(this[idx], value)) {
+        return this;
+      }
     }
 
     var mutable = asMutableArray.call(this);
@@ -113,11 +125,11 @@
 
   var immutableEmptyArray = Immutable([]);
 
-  function arraySetIn(pth, value) {
+  function arraySetIn(pth, value, config) {
     var head = pth[0];
 
     if (pth.length === 1) {
-      return arraySet.call(this, head, value);
+      return arraySet.call(this, head, value, config);
     } else {
       var tail = pth.slice(1);
       var thisHead = this[head];
@@ -340,6 +352,7 @@
 
     var receivedArray = (Array.isArray(other)),
         deep          = config && config.deep,
+        mode          = config && config.mode || 'merge',
         merger        = config && config.merger,
         result;
 
@@ -353,10 +366,8 @@
 
       if ((result !== undefined) ||
         (mergerResult !== undefined) ||
-        (!currentObj.hasOwnProperty(key) ||
-        ((immutableValue !== currentValue) &&
-          // Avoid false positives due to (NaN !== NaN) evaluating to true
-          (immutableValue === immutableValue)))) {
+        (!currentObj.hasOwnProperty(key)) ||
+        !isEqual(immutableValue, currentValue)) {
 
         var newValue;
 
@@ -368,15 +379,25 @@
           newValue = immutableValue;
         }
 
-        // We check (newValue === newValue) because (NaN !== NaN) in JS
-        if (((currentValue !== newValue) && (newValue === newValue)) ||
-            !currentObj.hasOwnProperty(key)) {
+        if (!isEqual(currentValue, newValue) || !currentObj.hasOwnProperty(key)) {
           if (result === undefined) {
             // Make a shallow clone of the current object.
             result = quickCopy(currentObj, currentObj.instantiateEmptyObject());
           }
 
           result[key] = newValue;
+        }
+      }
+    }
+
+    function clearDroppedKeys(currentObj, otherObj) {
+      for (var key in currentObj) {
+        if (!otherObj.hasOwnProperty(key)) {
+          if (result === undefined) {
+            // Make a shallow clone of the current object.
+            result = quickCopy(currentObj, currentObj.instantiateEmptyObject());
+          }
+          delete result[key];
         }
       }
     }
@@ -391,9 +412,12 @@
           addToResult(this, other, key);
         }
       }
+      if (mode === 'replace') {
+        clearDroppedKeys(this, other);
+      }
     } else {
       // We also accept an Array
-      for (var index=0; index < other.length; index++) {
+      for (var index = 0, length = other.length; index < length; index++) {
         var otherFromArray = other[index];
 
         for (key in otherFromArray) {
@@ -412,12 +436,27 @@
     }
   }
 
+  function objectReplace(value, config) {
+    var deep          = config && config.deep;
+
+    // Calling .replace() with no arguments is a no-op. Don't bother cloning.
+    if (arguments.length === 0) {
+      return this;
+    }
+
+    if (value === null || typeof value !== "object") {
+      throw new TypeError("Immutable#replace can only be invoked with objects or arrays, not " + JSON.stringify(value));
+    }
+
+    return this.merge(value, {deep: deep, mode: 'replace'});
+  }
+
   var immutableEmptyObject = Immutable({});
 
-  function objectSetIn(path, value) {
+  function objectSetIn(path, value, config) {
     var head = path[0];
     if (path.length === 1) {
-      return objectSet.call(this, head, value);
+      return objectSet.call(this, head, value, config);
     }
 
     var tail = path.slice(1);
@@ -440,9 +479,16 @@
     return makeImmutableObject(mutable, this);
   }
 
-  function objectSet(property, value) {
-    if (this.hasOwnProperty(property) && this[property] === value) {
-      return this;
+  function objectSet(property, value, config) {
+    var deep          = config && config.deep;
+
+    if (this.hasOwnProperty(property)) {
+      if (deep && this[property] !== value && isMergableObject(value) && isMergableObject(this[property])) {
+        value = this[property].merge(value, {deep: true, mode: 'replace'});
+      }
+      if (isEqual(this[property], value)) {
+        return this;
+      }
     }
 
     var mutable = quickCopy(this, this.instantiateEmptyObject());
@@ -504,6 +550,7 @@
         options.instantiateEmptyObject : instantiatePlainObject;
 
     addPropertyTo(obj, "merge", merge);
+    addPropertyTo(obj, "replace", objectReplace);
     addPropertyTo(obj, "without", without);
     addPropertyTo(obj, "asMutable", asMutableObject);
     addPropertyTo(obj, "instantiateEmptyObject", instantiateEmptyObject);
@@ -595,6 +642,7 @@
   Immutable.isImmutable    = isImmutable;
   Immutable.ImmutableError = ImmutableError;
   Immutable.merge          = toStatic(merge);
+  Immutable.replace        = toStatic(objectReplace);
   Immutable.without        = toStatic(without);
   Immutable.asMutable      = toStaticObjectOrArray(asMutableObject, asMutableArray);
   Immutable.set            = toStaticObjectOrArray(objectSet, arraySet);

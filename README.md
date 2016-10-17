@@ -329,6 +329,10 @@ Returns a mutable copy of the object. For a deeply mutable copy, in which any in
 
 ### Releases
 
+#### 6.3.0
+
+Adds optional deep compare for `.set`, `.setIn` and `.replace`
+
 #### 6.2.0
 
 Adds static alternatives to methods, e.g. `Immutable.setIn`
