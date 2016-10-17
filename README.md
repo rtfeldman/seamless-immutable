@@ -72,8 +72,9 @@ Immutable([1, 2, 3]).concat([10, 9, 8]).sort()
 // [1, 2, 3, 4, 5, 6], because a vanilla array's concat() method has
 // no knowledge of Immutable.
 
-Immutable({all: "your base", are: {belong: "to them"}}).merge({are: {belong: "to us"}})
-// This handy new method will return the following:
+var obj = Immutable({all: "your base", are: {belong: "to them"}});
+Immutable.merge(obj, {are: {belong: "to us"}})
+// This will return the following:
 // Immutable({all: "your base", are: {belong: "to us"}})
 ```
 
@@ -126,12 +127,14 @@ Beyond [the usual Array fare](https://developer.mozilla.org/en-US/docs/Web/JavaS
 ### flatMap
 
 ```javascript
-Immutable(["here", "we", "go"]).flatMap(function(str) {
+var array = Immutable(["here", "we", "go"]);
+Immutable.flatMap(array, function(str) {
   return [str, str, str];
 });
 // returns Immutable(["here", "here", "here", "we", "we", "we", "go", "go", "go"])
 
-Immutable(["drop the numbers!", 3, 2, 1, 0, null, undefined]).flatMap(function(value) {
+var array = Immutable(["drop the numbers!", 3, 2, 1, 0, null, undefined]);
+Immutable.flatMap(array, function(value) {
   if (typeof value === "number") {
     return [];
   } else {
@@ -147,7 +150,8 @@ iterator function returns an Array, that Array's elements are each added to the 
 ### asObject
 
 ```javascript
-Immutable(["hey", "you"]).asObject(function(str) {
+var array = Immutable(["hey", "you"]);
+Immutable.asObject(array, function(str) {
   return [str, str.toUpperCase()];
 });
 // returns Immutable({hey: "HEY", you: "YOU"})
@@ -163,25 +167,15 @@ is already organized as desired.
 ### asMutable
 
 ```javascript
-var mutableArray = Immutable(["hello", "world"]).asMutable();
+var array = Immutable(["hello", "world"]);
+var mutableArray = Immutable.asMutable(array);
 
 mutableArray.push("!!!");
 
 mutableArray // ["hello", "world", "!!!"]
 ```
 
-Returns a mutable copy of the array. For a deeply mutable copy, in which any instances of `Immutable` contained in nested data structures within the array have been converted back to mutable data structures, call `.asMutable({deep: true})` instead.
-
-### All object and array methods
-
-Every other methods on immutable objects and arrays can also be used as static
-methods of `Immutable`. For instance, the lines below are equivalent:
-
-```
-obj.setIn(['key'], value);
-
-Immutable.setIn(obj, ['key'], value);
-```
+Returns a mutable copy of the array. For a deeply mutable copy, in which any instances of `Immutable` contained in nested data structures within the array have been converted back to mutable data structures, call `Immutable.asMutable(obj, {deep: true})` instead.
 
 ## Immutable Object
 
@@ -225,11 +219,13 @@ This check is not performed in the production build.
 ### merge
 
 ```javascript
-Immutable({status: "good", hypothesis: "plausible", errors: 0}).merge({status: "funky", hypothesis: "confirmed"})
+var obj = Immutable({status: "good", hypothesis: "plausible", errors: 0});
+Immutable.merge(obj, {status: "funky", hypothesis: "confirmed"});
 // returns Immutable({status: "funky", hypothesis: "confirmed", errors: 0})
 
-Immutable({status: "bad", errors: 37}).merge([
-  {status: "funky", errors: 1}, {status: "groovy", errors: 2}, {status: "sweet"}])
+var obj = Immutable({status: "bad", errors: 37});
+Immutable.merge(obj, [
+  {status: "funky", errors: 1}, {status: "groovy", errors: 2}, {status: "sweet"}]);
 // returns Immutable({status: "sweet", errors: 2})
 // because passing an Array (or just multiple arguments) is shorthand for
 // invoking a separate merge for each object in turn.
@@ -246,8 +242,8 @@ A second argument can be provided to perform a deep merge: `{deep: true}`.
 ### replace
 
 ```javascript
-var obj1 = Immutable({a: {b: 'test'}, c: 'test'})
-var obj2 = obj1.replace({a: {b: 'test'}}, {deep: true})
+var obj1 = Immutable({a: {b: 'test'}, c: 'test'});
+var obj2 = Immutable.replace(obj1, {a: {b: 'test'}}, {deep: true});
 // returns Immutable({a: {b: 'test'}});
 obj1 === obj2
 // returns false
@@ -264,14 +260,16 @@ A second argument can be provided to perform a deep merge: `{deep: true}`.
 ### set
 
 ```javascript
-Immutable({type: "parrot", subtype: "Norwegian Blue", status: "alive"}).set("status", "dead")
+var obj = Immutable({type: "parrot", subtype: "Norwegian Blue", status: "alive"});
+Immutable.set(obj, "status", "dead");
 // returns Immutable({type: "parrot", subtype: "Norwegian Blue", status: "dead"})
 ```
 
 Returns an Immutable Object with a single property set to the provided value.
 Basically a more straightforward way of saying
 ```javascript
-Immutable({type: "parrot", subtype: "Norwegian Blue", status: "alive"}).merge({status: "dead"})
+var obj = Immutable({type: "parrot", subtype: "Norwegian Blue", status: "alive"});
+Immutable.merge(obj, {status: "dead"});
 ```
 (and more convenient with non-literal keys unless you have ES6 ```[computed_property_names]```).
 
@@ -282,7 +280,8 @@ A second argument can be provided to perform a deep compare: `{deep: true}`.
 Like [set](#set), but accepts a nested path to the property.
 
 ```javascript
-Immutable({type: {main: "parrot", sub: "Norwegian Blue"}, status: "alive"}).setIn(["type", "sub"], "Norwegian Ridgeback")
+var obj = Immutable({type: {main: "parrot", sub: "Norwegian Blue"}, status: "alive"});
+Immutable.setIn(obj, ["type", "sub"], "Norwegian Ridgeback");
 // returns Immutable({type: {main: "parrot", sub: "Norwegian Ridgeback"}, status: "alive"})
 ```
 
@@ -294,7 +293,8 @@ Returns an Immutable Object with a single property updated using the provided up
 
 ```javascript
 function inc (x) { return x + 1 }
-Immutable({foo: 1}).update("foo", inc)
+var obj = Immutable({foo: 1});
+Immutable.update(obj, "foo", inc);
 // returns Immutable({foo: 2})
 ```
 
@@ -302,7 +302,8 @@ All additional arguments will be passed to the updater function.
 
 ```javascript
 function add (x, y) { return x + y }
-Immutable({foo: 1}).update("foo", add, 10)
+var obj = Immutable({foo: 1});
+Immutable.update(obj, "foo", add, 10);
 // returns Immutable({foo: 11})
 ```
 
@@ -312,23 +313,28 @@ Like [update](#update), but accepts a nested path to the property.
 
 ```javascript
 function add (x, y) { return x + y }
-Immutable({foo: {bar: 1}}).updateIn(["foo", "bar"], add, 10)
+var obj = Immutable({foo: {bar: 1}});
+Immutable.updateIn(obj, ["foo", "bar"], add, 10);
 // returns Immutable({foo: {bar: 11}})
 ```
 
 ### without
 
 ```javascript
-Immutable({the: "forests", will: "echo", with: "laughter"}).without("with")
+var obj = Immutable({the: "forests", will: "echo", with: "laughter"});
+Immutable.without(obj, "with");
 // returns Immutable({the: "forests", will: "echo"})
 
-Immutable({the: "forests", will: "echo", with: "laughter"}).without(["will", "with"])
+var obj = Immutable({the: "forests", will: "echo", with: "laughter"});
+Immutable.without(obj, ["will", "with"]);
 // returns Immutable({the: "forests"})
 
-Immutable({the: "forests", will: "echo", with: "laughter"}).without("will", "with")
+var obj = Immutable({the: "forests", will: "echo", with: "laughter"});
+Immutable.without(obj, "will", "with");
 // returns Immutable({the: "forests"})
 
-Immutable({the: "forests", will: "echo", with: "laughter"}).without((value, key) => key === "the" || value === "echo")
+var obj = Immutable({the: "forests", will: "echo", with: "laughter"});
+Immutable.without(obj, (value, key) => key === "the" || value === "echo");
 // returns Immutable({with: "laughter"})
 ```
 
@@ -340,14 +346,15 @@ Multiple keys can be provided, either in an Array or as extra arguments.
 ### asMutable
 
 ```javascript
-var mutableObject = Immutable({when: "the", levee: "breaks"}).asMutable();
+var obj = Immutable({when: "the", levee: "breaks"});
+var mutable = Immutable.asMutable(obj);
 
 mutableObject.have = "no place to go";
 
 mutableObject // {when: "the", levee: "breaks", have: "no place to go"}
 ```
 
-Returns a mutable copy of the object. For a deeply mutable copy, in which any instances of `Immutable` contained in nested data structures within the object have been converted back to mutable data structures, call `.asMutable({deep: true})` instead.
+Returns a mutable copy of the object. For a deeply mutable copy, in which any instances of `Immutable` contained in nested data structures within the object have been converted back to mutable data structures, call `Immutable.asMutable(obj, {deep: true})` instead.
 
 ### Releases
 
