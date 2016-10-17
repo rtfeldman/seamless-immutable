@@ -1,6 +1,7 @@
 var JSC       = require("jscheck");
 var assert    = require("chai").assert;
 var _         = require("lodash");
+var deepEqual    = require("deep-equal");
 
 function assertJsonEqual(first, second) {
   if (typeof first === "object" && typeof second === "object" && first !== null && second !== null) {
@@ -124,6 +125,11 @@ function wrapCheckImmutableMutable(Immutable) {
   }
 }
 
+function isDeepEqual(a, b) {
+  // Avoid false positives due to (NaN !== NaN) evaluating to true
+  return (deepEqual(a, b) || (a !== a && b !== b));
+}
+
 module.exports = function(Immutable) {
   return {
     assertJsonEqual:         assertJsonEqual,
@@ -134,6 +140,7 @@ module.exports = function(Immutable) {
     ComplexObjectSpecifier:  ComplexObjectSpecifier,
     TraversableObjectSpecifier: TraversableObjectSpecifier,
     check:                   check,
-    checkImmutableMutable:   wrapCheckImmutableMutable(Immutable)
+    checkImmutableMutable:   wrapCheckImmutableMutable(Immutable),
+    isDeepEqual:             isDeepEqual
   }
 };

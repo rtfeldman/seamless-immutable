@@ -221,6 +221,24 @@ invocations will be performed using each provided object in turn.
 
 A second argument can be provided to perform a deep merge: `{deep: true}`.
 
+### replace
+
+```javascript
+var obj1 = Immutable({a: {b: 'test'}, c: 'test'})
+var obj2 = obj1.replace({a: {b: 'test'}}, {deep: true})
+// returns Immutable({a: {b: 'test'}});
+obj1 === obj2
+// returns false
+obj1.b === obj2.b
+// returns true because child .b objects were identical
+```
+
+Returns an Immutable Object containing the properties and values of the
+second object only. With deep merge, all child objects are checked for
+equality and the original immutable object is returned when possible.
+
+A second argument can be provided to perform a deep merge: `{deep: true}`.
+
 ### set
 
 ```javascript
@@ -235,6 +253,8 @@ Immutable({type: "parrot", subtype: "Norwegian Blue", status: "alive"}).merge({s
 ```
 (and more convenient with non-literal keys unless you have ES6 ```[computed_property_names]```).
 
+A second argument can be provided to perform a deep compare: `{deep: true}`.
+
 ### setIn
 
 Like [set](#set), but accepts a nested path to the property.
@@ -243,6 +263,8 @@ Like [set](#set), but accepts a nested path to the property.
 Immutable({type: {main: "parrot", sub: "Norwegian Blue"}, status: "alive"}).setIn(["type", "sub"], "Norwegian Ridgeback")
 // returns Immutable({type: {main: "parrot", sub: "Norwegian Ridgeback"}, status: "alive"})
 ```
+
+A second argument can be provided to perform a deep compare: `{deep: true}`.
 
 ### update
 
