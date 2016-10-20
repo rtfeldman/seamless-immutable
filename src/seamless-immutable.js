@@ -655,7 +655,11 @@
   Object.freeze(Immutable);
 
   /* istanbul ignore if */
-  if (typeof module === "object") {
+  if (typeof define === 'function' && define.amd) {
+    define(function() {
+      return Immutable;
+    });
+  } else if (typeof module === "object") {
     module.exports = Immutable;
   } else if (typeof exports === "object") {
     exports.Immutable = Immutable;
