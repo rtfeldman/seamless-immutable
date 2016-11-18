@@ -229,8 +229,8 @@ var obj2 = obj1.replace({a: {b: 'test'}}, {deep: true})
 // returns Immutable({a: {b: 'test'}});
 obj1 === obj2
 // returns false
-obj1.b === obj2.b
-// returns true because child .b objects were identical
+obj1.a === obj2.a
+// returns true because child .a objects were identical
 ```
 
 Returns an Immutable Object containing the properties and values of the
