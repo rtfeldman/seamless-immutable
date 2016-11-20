@@ -46,6 +46,15 @@ components are treated as immutable even though technically they can be mutated.
 than good.) If you call `Immutable()` on any of these, be forewarned: they will
 not actually be immutable!
 
+## Add-ons
+
+seamless-immutable is tightly focused on the mechanics of turning existing JavaScript data structurs into immutable variants.
+Additional packages are available to build on this capability and enable additional programming models:
+
+|Library|Description|
+|--------|------------|
+|[Cursor](https://github.com/MartinSnyder/seamless-immutable-cursor)|Compact Cursor Library built on top of the excellent seamless-immutable. Cursors can be used to manage transitions and manipulations of immutable structures in an application.|
+
 ## API Overview
 
 `Immutable()` returns a backwards-compatible immutable representation of whatever you pass it, so feel free to pass it absolutely anything that can be serialized as JSON. (As is the case with JSON, objects containing circular references are not allowed. Functions are allowed, unlike in JSON, but they will not be touched.)
