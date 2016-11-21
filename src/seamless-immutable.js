@@ -570,8 +570,13 @@
            (obj.$$typeof === REACT_ELEMENT_TYPE_FALLBACK || obj.$$typeof === REACT_ELEMENT_TYPE);
   }
 
+  function isFileObject(obj) {
+    return typeof File !== 'undefined' &&
+           obj instanceof File;
+  }
+
   function Immutable(obj, options, stackRemaining) {
-    if (isImmutable(obj) || isReactElement(obj)) {
+    if (isImmutable(obj) || isReactElement(obj) || isFileObject(obj)) {
       return obj;
     } else if (Array.isArray(obj)) {
       return makeImmutableArray(obj.slice());

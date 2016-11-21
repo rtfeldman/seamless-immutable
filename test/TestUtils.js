@@ -130,6 +130,14 @@ function isDeepEqual(a, b) {
   return (deepEqual(a, b) || (a !== a && b !== b));
 }
 
+// window.File mock
+function File(parts, filename) {
+  this.name = 'ok';
+  this.size = 4;
+  this.lastModifiedDate = new Date();
+  this.lastModified = this.lastModifiedDate.getTime();
+}
+
 module.exports = function(Immutable) {
   return {
     assertJsonEqual:         assertJsonEqual,
@@ -141,6 +149,7 @@ module.exports = function(Immutable) {
     TraversableObjectSpecifier: TraversableObjectSpecifier,
     check:                   check,
     checkImmutableMutable:   wrapCheckImmutableMutable(Immutable),
-    isDeepEqual:             isDeepEqual
+    isDeepEqual:             isDeepEqual,
+    FileMock:                File,
   }
 };
