@@ -131,6 +131,19 @@ var getTestUtils = require("./TestUtils.js");
         TestUtils.assertJsonEqual(immutableElement, reactElement);
       });
 
+      it("doesn't modify File objects", function() {
+        global.File = TestUtils.FileMock;
+
+        var file = new File(['part'], 'filename.jpg');
+        var immutableFile = Immutable(file);
+
+        assert.typeOf(immutableFile, 'object');
+        assert.isTrue(immutableFile instanceof File);
+        TestUtils.assertJsonEqual(immutableFile, file);
+
+        delete global.File;
+      });
+
       it("detects cycles", function() {
         var obj = {};
         obj.prop = obj;
