@@ -485,7 +485,7 @@ function immutableInit(config) {
 
   function objectSetIn(path, value, config) {
     if (!(path instanceof Array) || path.length === 0) {
-      throw new TypeError("The first argument to Immutable#setIn must be an array containing at least one \"key\" string.")
+      throw new TypeError("The first argument to Immutable#setIn must be an array containing at least one \"key\" string.");
     }
 
     var head = path[0];
@@ -708,7 +708,7 @@ function immutableInit(config) {
   if (!globalConfig.use_static) {
       Immutable.static = immutableInit({
           use_static: true
-      })
+      });
   }
 
   Object.freeze(Immutable);
