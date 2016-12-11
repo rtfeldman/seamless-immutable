@@ -14,7 +14,7 @@
     "grunt-mocha-test": "0.12.7",
     "istanbul": "0.4.2",
     "jscheck": "0.2.0",
-    "lodash": "4.15.0",
+    "lodash": "3.10.1",
     "mocha": "2.4.5",
     "mocha-istanbul": "0.2.0",
     "mocha-lcov-reporter": "1.2.0",
