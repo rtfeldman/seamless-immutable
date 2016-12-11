@@ -37,7 +37,8 @@ module.exports = function(config) {
         var immutable = Immutable(array);
         var mutable = array.slice();
         var index = JSC.integer(0, array.length);
-        
+        var value;
+
         var newValue;
         do {
           value = JSC.any()();
