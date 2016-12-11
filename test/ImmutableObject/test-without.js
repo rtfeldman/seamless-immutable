@@ -68,7 +68,7 @@ module.exports = function(config) {
           var expected = Immutable.without(immutable, dropKeysPredicate(keys));
           var actual   = useVarArgs ?
             Immutable.without.apply(Immutable, [immutable].concat(keys)) :
-            Immutable.without(immutable, keys); 
+            Immutable.without(immutable, keys);
           TestUtils.assertJsonEqual(actual, expected);
         });
 
@@ -173,7 +173,7 @@ module.exports = function(config) {
           TestUtils.assertIsDeeplyImmutable(result);
         });
 
-        it("works the same way as _.omitBy", function() {
+        xit("works the same way as _.omitBy", function() {
           var expected = _.omitBy(immutable, function (value, key) {
             return _.includes(keys, key);
           });
