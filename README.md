@@ -365,6 +365,10 @@ Returns a mutable copy of the object. For a deeply mutable copy, in which any in
 
 ### Releases
 
+#### 7.0.0
+
+Add `Immutable.static` as the preferred API. Default to development build in webpack.
+
 #### 6.3.0
 
 Adds optional deep compare for `.set`, `.setIn` and `.replace`
