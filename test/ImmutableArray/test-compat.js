@@ -141,9 +141,7 @@ module.exports = function(config) {
       });
 
       it("adds instance methods only when config tells it to", function() {
-        var I = Immutable.init({
-          use_static: true
-        });
+        var I = Immutable.static;
         var immutable = I({});
         assert.equal(typeof immutable.merge, 'undefined');
         assert.equal(typeof immutable.replace, 'undefined');

@@ -59,9 +59,7 @@ module.exports = function(config) {
     });
 
     it("static method continues to work after overriding the instance method", function() {
-      var I = Immutable.init({
-          use_static: true
-      });
+      var I = Immutable.static;
 
       var immutable;
 
@@ -152,9 +150,7 @@ module.exports = function(config) {
     });
 
     it("static method continues to work after overriding the instance method", function() {
-      var I = Immutable.init({
-          use_static: true
-      });
+      var I = Immutable.static;
 
       var immutable;
 

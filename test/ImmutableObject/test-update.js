@@ -52,9 +52,7 @@ module.exports = function(config) {
           return data + '_updated';
       }
 
-      var I = Immutable.init({
-          use_static: true
-      });
+      var I = Immutable.static;
 
       var immutable;
 
@@ -117,9 +115,7 @@ module.exports = function(config) {
           return data + '_updated';
       }
 
-      var I = Immutable.init({
-          use_static: true
-      });
+      var I = Immutable.static;
 
       var immutable;
 

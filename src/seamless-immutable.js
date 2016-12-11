@@ -695,7 +695,6 @@ function immutableInit(config) {
   Immutable.from           = Immutable;
   Immutable.isImmutable    = isImmutable;
   Immutable.ImmutableError = ImmutableError;
-  Immutable.init           = immutableInit;
   Immutable.merge          = toStatic(merge);
   Immutable.replace        = toStatic(objectReplace);
   Immutable.without        = toStatic(without);
@@ -706,6 +705,11 @@ function immutableInit(config) {
   Immutable.updateIn       = toStatic(updateIn);
   Immutable.flatMap        = toStatic(flatMap);
   Immutable.asObject       = toStatic(asObject);
+  if (!globalConfig.use_static) {
+      Immutable.static = immutableInit({
+          use_static: true
+      })
+  }
 
   Object.freeze(Immutable);
 

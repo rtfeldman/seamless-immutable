@@ -83,9 +83,7 @@ Immutable.merge(obj, {are: {belong: "to us"}})
 Seamless-immutable supports both static and instance syntaxes:
 
 ```
-var Immutable = require("seamless-immutable").init({
-    use_static: true
-});
+var Immutable = require("seamless-immutable").static;
 
 Immutable.setIn(obj, 'key', data)
 ```
