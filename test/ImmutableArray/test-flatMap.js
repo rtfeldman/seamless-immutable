@@ -70,5 +70,14 @@ module.exports = function(config) {
         TestUtils.assertJsonEqual(actual, expected);
       });
     });
+
+    it("supports non-static syntax", function() {
+        function dummyUpdater(data) {
+          return data + '_updated';
+        }
+        var obj = Immutable(['test']);
+        obj = obj.flatMap(dummyUpdater);
+        TestUtils.assertJsonEqual(obj, ['test_updated']);
+    });
   });
 };

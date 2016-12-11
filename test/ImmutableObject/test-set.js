@@ -57,6 +57,27 @@ module.exports = function(config) {
         );
       });
     });
+
+    it("static method continues to work after overriding the instance method", function() {
+      var I = Immutable.static;
+
+      var immutable;
+
+      immutable = I({set: 'string'});
+      TestUtils.assertJsonEqual(immutable, {set: 'string'});
+
+      immutable = I({});
+      immutable = I.set(immutable, 'set', 'string');
+      TestUtils.assertJsonEqual(immutable, {set: 'string'});
+      immutable = I.set(immutable, 'new_key', 'new_data');
+      TestUtils.assertJsonEqual(immutable, {set: 'string', new_key: 'new_data'});
+    });
+
+    it("supports non-static syntax", function() {
+        var obj = Immutable({});
+        obj = obj.set('test', 'test');
+        TestUtils.assertJsonEqual(obj, {test: 'test'});
+    });
   });
 
 
@@ -126,6 +147,27 @@ module.exports = function(config) {
           resultImmutable
         );
       });
+    });
+
+    it("static method continues to work after overriding the instance method", function() {
+      var I = Immutable.static;
+
+      var immutable;
+
+      immutable = I({setIn: 'string'});
+      TestUtils.assertJsonEqual(immutable, {setIn: 'string'});
+
+      immutable = I({});
+      immutable = I.setIn(immutable, ['setIn'], 'string');
+      TestUtils.assertJsonEqual(immutable, {setIn: 'string'});
+      immutable = I.setIn(immutable, ['new_key'], 'new_data');
+      TestUtils.assertJsonEqual(immutable, {setIn: 'string', new_key: 'new_data'});
+    });
+
+    it("supports non-static syntax", function() {
+        var obj = Immutable({});
+        obj = obj.setIn(['test'], 'test');
+        TestUtils.assertJsonEqual(obj, {test: 'test'});
     });
   });
 };

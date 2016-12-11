@@ -196,7 +196,7 @@ module.exports = function(config) {
     it("is a no-op when passed nothing", function() {
       check(100, [TestUtils.ComplexObjectSpecifier()], function(obj) {
         var expected = Immutable(obj);
-        var actual   = expected.merge();
+        var actual   = Immutable.merge(expected);
 
         TestUtils.assertJsonEqual(actual, expected);
       });
@@ -306,6 +306,24 @@ module.exports = function(config) {
       TestUtils.assertHasPrototype(result, TestClass.prototype);
     });
 
+    it("static method continues to work after overriding the instance method", function() {
+      var I = Immutable.static;
+
+      var immutable;
+
+      immutable = I({merge: 'string'});
+      TestUtils.assertJsonEqual(immutable, {merge: 'string'});
+
+      immutable = I({});
+      immutable = I.setIn(immutable, ['merge'], 'string');
+      TestUtils.assertJsonEqual(immutable, {merge: 'string'});
+
+      immutable = I({});
+      immutable = I.merge(immutable, {merge: 'string'});
+      immutable = I.merge(immutable, {new_key: 'new_data'});
+      TestUtils.assertJsonEqual(immutable, {merge: 'string', new_key: 'new_data'});
+    });
+
     describe("when passed a single object", function() {
       generateMergeTestsFor([TestUtils.ComplexObjectSpecifier()]);
     });
@@ -336,6 +354,12 @@ module.exports = function(config) {
 
     describe("when passed an array of objects with a custom merger", function() {
       generateMergeTestsFor([generateArrayOfObjects], {merger: arrayMerger()});
+    });
+
+    it("supports non-static syntax", function() {
+        var obj = Immutable({});
+        obj = obj.merge({test: 'test'});
+        TestUtils.assertJsonEqual(obj, {test: 'test'});
     });
   });
 };

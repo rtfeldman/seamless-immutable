@@ -45,9 +45,10 @@ module.exports = function(config) {
           assert.notStrictEqual(keys.length, 0, "Can't usefully check without() with no objects");
 
           // Make an object that at LEAST contains the specified keys.
-          var immutable = Immutable(keys).asObject(function(key) {
+          var immutable = Immutable.asObject(Immutable(keys), function(key) {
             return [key, JSC.any()()];
-          }).merge(TestUtils.ComplexObjectSpecifier()());
+          });
+          immutable = Immutable.merge(immutable, TestUtils.ComplexObjectSpecifier()());
 
           callback(immutable, keys, useVarArgs);
         })
@@ -121,6 +122,24 @@ module.exports = function(config) {
       TestUtils.assertHasPrototype(result, TestClass.prototype);
     });
 
+    it("static method continues to work after overriding the instance method", function() {
+      var I = Immutable.static;
+
+      var immutable;
+
+      immutable = I({without: 'string'});
+      TestUtils.assertJsonEqual(immutable, {without: 'string'});
+
+      immutable = I({});
+      immutable = I.set(immutable, 'without', 'string');
+      TestUtils.assertJsonEqual(immutable, {without: 'string'});
+      immutable = I.set(immutable, 'some_key', 'string');
+      immutable = I.without(immutable, 'some_key');
+      TestUtils.assertJsonEqual(immutable, {without: 'string'});
+      immutable = I.without(immutable, 'without');
+      TestUtils.assertJsonEqual(immutable, {});
+    });
+
     describe("when passed a single key", function() {
       generateWithoutTestsFor(JSC.string());
     });
@@ -168,6 +187,12 @@ module.exports = function(config) {
 
       });
 
+    });
+
+    it("supports non-static syntax", function() {
+        var obj = Immutable({test: 'test'});
+        obj = obj.without('test');
+        TestUtils.assertJsonEqual(obj, {});
     });
   });
 };

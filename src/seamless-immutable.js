@@ -1,9 +1,37 @@
 (function() {
   "use strict";
 
+function immutableInit(config) {
+
   // https://github.com/facebook/react/blob/v15.0.1/src/isomorphic/classic/element/ReactElement.js#L21
   var REACT_ELEMENT_TYPE = typeof Symbol === 'function' && Symbol.for && Symbol.for('react.element');
   var REACT_ELEMENT_TYPE_FALLBACK = 0xeac7;
+
+  var globalConfig = {
+    use_static: false
+  };
+  if (isObject(config)) {
+      if (config.use_static !== undefined) {
+          globalConfig.use_static = Boolean(config.use_static);
+      }
+  }
+
+  function isObject(data) {
+    return (
+      typeof data === 'object' &&
+      !Array.isArray(data) &&
+      data !== null
+    );
+  }
+
+  function instantiateEmptyObject(obj) {
+      var prototype = Object.getPrototypeOf(obj);
+      if (!prototype) {
+          return {};
+      } else {
+          return Object.create(prototype);
+      }
+  }
 
   function addPropertyTo(target, methodName, value) {
     Object.defineProperty(target, methodName, {
@@ -111,7 +139,7 @@
 
     if (idx in this) {
       if (deep && this[idx] !== value && isMergableObject(value) && isMergableObject(this[idx])) {
-        value = this[idx].merge(value, {deep: true, mode: 'replace'});
+        value = Immutable.merge(this[idx], value, {deep: true, mode: 'replace'});
       }
       if (isEqual(this[idx], value)) {
         return this;
@@ -135,9 +163,9 @@
       var thisHead = this[head];
       var newValue;
 
-      if (typeof(thisHead) === "object" && thisHead !== null && typeof(thisHead.setIn) === "function") {
+      if (typeof(thisHead) === "object" && thisHead !== null) {
         // Might (validly) be object or array
-        newValue = thisHead.setIn(tail, value);
+        newValue = Immutable.setIn(thisHead, tail, value);
       } else {
         var nextHead = tail[0];
         // If the next path part is a number, then we are setting into an array, else an object.
@@ -168,13 +196,15 @@
       }
     }
 
-    addPropertyTo(array, "flatMap",  flatMap);
-    addPropertyTo(array, "asObject", asObject);
-    addPropertyTo(array, "asMutable", asMutableArray);
-    addPropertyTo(array, "set", arraySet);
-    addPropertyTo(array, "setIn", arraySetIn);
-    addPropertyTo(array, "update", update);
-    addPropertyTo(array, "updateIn", updateIn);
+    if (!globalConfig.use_static) {
+      addPropertyTo(array, "flatMap",  flatMap);
+      addPropertyTo(array, "asObject", asObject);
+      addPropertyTo(array, "asMutable", asMutableArray);
+      addPropertyTo(array, "set", arraySet);
+      addPropertyTo(array, "setIn", arraySetIn);
+      addPropertyTo(array, "update", update);
+      addPropertyTo(array, "updateIn", updateIn);
+    }
 
     for(var i = 0, length = array.length; i < length; i++) {
       array[i] = Immutable(array[i]);
@@ -184,7 +214,9 @@
   }
 
   function makeImmutableDate(date) {
-    addPropertyTo(date, "asMutable", asMutableDate);
+    if (!globalConfig.use_static) {
+      addPropertyTo(date, "asMutable", asMutableDate);
+    }
 
     return makeImmutable(date, mutatingDateMethods);
   }
@@ -254,7 +286,7 @@
       };
     }
 
-    var result = this.instantiateEmptyObject();
+    var result = instantiateEmptyObject(this);
 
     for (var key in this) {
       if (this.hasOwnProperty(key) && remove(this[key], key) === false) {
@@ -262,8 +294,7 @@
       }
     }
 
-    return makeImmutableObject(result,
-      {instantiateEmptyObject: this.instantiateEmptyObject});
+    return makeImmutableObject(result);
   }
 
   function asMutableArray(opts) {
@@ -318,7 +349,7 @@
       (!Object.getOwnPropertyDescriptor(obj, immutabilityTag)) ||
       (obj instanceof Date)
     ) { return obj; }
-    return obj.asMutable({deep: true});
+    return Immutable.asMutable(obj, {deep: true});
   }
 
   function quickCopy(src, dest) {
@@ -374,7 +405,7 @@
         if (mergerResult) {
           newValue = mergerResult;
         } else if (deep && isMergableObject(currentValue) && isMergableObject(immutableValue)) {
-          newValue = currentValue.merge(immutableValue, config);
+          newValue = Immutable.merge(currentValue, immutableValue, config);
         } else {
           newValue = immutableValue;
         }
@@ -382,7 +413,7 @@
         if (!isEqual(currentValue, newValue) || !currentObj.hasOwnProperty(key)) {
           if (result === undefined) {
             // Make a shallow clone of the current object.
-            result = quickCopy(currentObj, currentObj.instantiateEmptyObject());
+            result = quickCopy(currentObj, instantiateEmptyObject(currentObj));
           }
 
           result[key] = newValue;
@@ -395,7 +426,7 @@
         if (!otherObj.hasOwnProperty(key)) {
           if (result === undefined) {
             // Make a shallow clone of the current object.
-            result = quickCopy(currentObj, currentObj.instantiateEmptyObject());
+            result = quickCopy(currentObj, instantiateEmptyObject(currentObj));
           }
           delete result[key];
         }
@@ -431,8 +462,7 @@
     if (result === undefined) {
       return this;
     } else {
-      return makeImmutableObject(result,
-        {instantiateEmptyObject: this.instantiateEmptyObject});
+      return makeImmutableObject(result);
     }
   }
 
@@ -448,7 +478,7 @@
       throw new TypeError("Immutable#replace can only be invoked with objects or arrays, not " + JSON.stringify(value));
     }
 
-    return this.merge(value, {deep: deep, mode: 'replace'});
+    return Immutable.merge(this, value, {deep: deep, mode: 'replace'});
   }
 
   var immutableEmptyObject = Immutable({});
@@ -467,9 +497,9 @@
     var newValue;
     var thisHead = this[head];
 
-    if (this.hasOwnProperty(head) && typeof(thisHead) === "object" && thisHead !== null && typeof(thisHead.setIn) === "function") {
+    if (this.hasOwnProperty(head) && typeof(thisHead) === "object" && thisHead !== null) {
       // Might (validly) be object or array
-      newValue = thisHead.setIn(tail, value);
+      newValue = Immutable.setIn(thisHead, tail, value);
     } else {
       newValue = objectSetIn.call(immutableEmptyObject, tail, value);
     }
@@ -478,9 +508,9 @@
       return this;
     }
 
-    var mutable = quickCopy(this, this.instantiateEmptyObject());
+    var mutable = quickCopy(this, instantiateEmptyObject(this));
     mutable[head] = newValue;
-    return makeImmutableObject(mutable, this);
+    return makeImmutableObject(mutable);
   }
 
   function objectSet(property, value, config) {
@@ -488,22 +518,22 @@
 
     if (this.hasOwnProperty(property)) {
       if (deep && this[property] !== value && isMergableObject(value) && isMergableObject(this[property])) {
-        value = this[property].merge(value, {deep: true, mode: 'replace'});
+        value = Immutable.merge(this[property], value, {deep: true, mode: 'replace'});
       }
       if (isEqual(this[property], value)) {
         return this;
       }
     }
 
-    var mutable = quickCopy(this, this.instantiateEmptyObject());
+    var mutable = quickCopy(this, instantiateEmptyObject(this));
     mutable[property] = Immutable(value);
-    return makeImmutableObject(mutable, this);
+    return makeImmutableObject(mutable);
   }
 
   function update(property, updater) {
     var restArgs = Array.prototype.slice.call(arguments, 2);
     var initialVal = this[property];
-    return this.set(property, updater.apply(initialVal, [initialVal].concat(restArgs)));
+    return Immutable.set(this, property, updater.apply(initialVal, [initialVal].concat(restArgs)));
   }
 
   function getInPath(obj, path) {
@@ -519,11 +549,11 @@
     var restArgs = Array.prototype.slice.call(arguments, 2);
     var initialVal = getInPath(this, path);
 
-    return this.setIn(path, updater.apply(initialVal, [initialVal].concat(restArgs)));
+    return Immutable.setIn(this, path, updater.apply(initialVal, [initialVal].concat(restArgs)));
   }
 
   function asMutableObject(opts) {
-    var result = this.instantiateEmptyObject(), key;
+    var result = instantiateEmptyObject(this), key;
 
     if(opts && opts.deep) {
       for (key in this) {
@@ -548,20 +578,17 @@
   }
 
   // Finalizes an object with immutable methods, freezes it, and returns it.
-  function makeImmutableObject(obj, options) {
-    var instantiateEmptyObject =
-      (options && options.instantiateEmptyObject) ?
-        options.instantiateEmptyObject : instantiatePlainObject;
-
-    addPropertyTo(obj, "merge", merge);
-    addPropertyTo(obj, "replace", objectReplace);
-    addPropertyTo(obj, "without", without);
-    addPropertyTo(obj, "asMutable", asMutableObject);
-    addPropertyTo(obj, "instantiateEmptyObject", instantiateEmptyObject);
-    addPropertyTo(obj, "set", objectSet);
-    addPropertyTo(obj, "setIn", objectSetIn);
-    addPropertyTo(obj, "update", update);
-    addPropertyTo(obj, "updateIn", updateIn);
+  function makeImmutableObject(obj) {
+    if (!globalConfig.use_static) {
+      addPropertyTo(obj, "merge", merge);
+      addPropertyTo(obj, "replace", objectReplace);
+      addPropertyTo(obj, "without", without);
+      addPropertyTo(obj, "asMutable", asMutableObject);
+      addPropertyTo(obj, "set", objectSet);
+      addPropertyTo(obj, "setIn", objectSetIn);
+      addPropertyTo(obj, "update", update);
+      addPropertyTo(obj, "updateIn", updateIn);
+    }
 
     return makeImmutable(obj, mutatingObjectMethods);
   }
@@ -613,8 +640,7 @@
         }
       }
 
-      return makeImmutableObject(clone,
-        {instantiateEmptyObject: instantiateEmptyObject});
+      return makeImmutableObject(clone);
     }
   }
 
@@ -646,6 +672,25 @@
     return staticWrapper;
   }
 
+  // Wrapper to allow the use of object methods as static methods of Immutable.
+  // with the additional condition of choosing which function to call depending
+  // if argument is an array or an object or a date.
+  function toStaticObjectOrDateOrArray(fnObject, fnArray, fnDate) {
+    function staticWrapper() {
+      var args = [].slice.call(arguments);
+      var self = args.shift();
+      if (Array.isArray(self)) {
+          return fnArray.apply(self, args);
+      } else if (self instanceof Date) {
+          return fnDate.apply(self, args);
+      } else {
+          return fnObject.apply(self, args);
+      }
+    }
+
+    return staticWrapper;
+  }
+
   // Export the library
   Immutable.from           = Immutable;
   Immutable.isImmutable    = isImmutable;
@@ -653,16 +698,25 @@
   Immutable.merge          = toStatic(merge);
   Immutable.replace        = toStatic(objectReplace);
   Immutable.without        = toStatic(without);
-  Immutable.asMutable      = toStaticObjectOrArray(asMutableObject, asMutableArray);
+  Immutable.asMutable      = toStaticObjectOrDateOrArray(asMutableObject, asMutableArray, asMutableDate);
   Immutable.set            = toStaticObjectOrArray(objectSet, arraySet);
   Immutable.setIn          = toStaticObjectOrArray(objectSetIn, arraySetIn);
   Immutable.update         = toStatic(update);
   Immutable.updateIn       = toStatic(updateIn);
   Immutable.flatMap        = toStatic(flatMap);
   Immutable.asObject       = toStatic(asObject);
+  if (!globalConfig.use_static) {
+      Immutable.static = immutableInit({
+          use_static: true
+      })
+  }
 
   Object.freeze(Immutable);
 
+  return Immutable;
+}
+
+  var Immutable = immutableInit();
   /* istanbul ignore if */
   if (typeof define === 'function' && define.amd) {
     define(function() {

@@ -43,7 +43,7 @@ module.exports = function(config) {
           value = JSC.any()();
         } while (TestUtils.isDeepEqual(value, array[index]));
 
-        var resultImmutable = immutable.set(index, newValue, {deep: true});
+        var resultImmutable = Immutable.set(immutable, index, newValue, {deep: true});
         var resultMutable = mutable.slice();
         resultMutable[index] = newValue;
 
@@ -56,10 +56,16 @@ module.exports = function(config) {
           resultImmutable
         );
         assert.equal(
-          resultImmutable.set(index, newValue, {deep: true}),
+          Immutable.set(resultImmutable, index, newValue, {deep: true}),
           resultImmutable
         );
       });
+    });
+
+    it("supports non-static syntax", function() {
+        var obj = Immutable(['test']);
+        obj = obj.set('0', 'new_data');
+        TestUtils.assertJsonEqual(obj, ['new_data']);
     });
   });
 
@@ -120,6 +126,12 @@ module.exports = function(config) {
           resultImmutable
         );
       });
+    });
+
+    it("supports non-static syntax", function() {
+        var obj = Immutable(['test']);
+        obj = obj.setIn(['0'], 'new_data');
+        TestUtils.assertJsonEqual(obj, ['new_data']);
     });
   });
 };
