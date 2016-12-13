@@ -21,7 +21,7 @@ module.exports = function(config) {
   }
 
   describe("#update", function() {
-    xit("updates a property using updater function", function () {
+    it("updates a property using updater function", function () {
       check(100, [TestUtils.TraversableObjectSpecifier], function(ob) {
         var immutable = Immutable(ob);
         var mutable = Immutable.asMutable(immutable, {deep: true});
@@ -34,7 +34,7 @@ module.exports = function(config) {
       });
     });
 
-    xit("allows passing additional parameters to updater function", function () {
+    it("allows passing additional parameters to updater function", function () {
       check(100, [TestUtils.TraversableObjectSpecifier], function(ob) {
         var immutable = Immutable(ob);
         var mutable = Immutable.asMutable(immutable, {deep: true});
@@ -78,7 +78,7 @@ module.exports = function(config) {
   });
 
   describe("#updateIn", function() {
-    xit("updates a property in path using updater function", function () {
+    it("updates a property in path using updater function", function () {
       check(100, [TestUtils.TraversableObjectSpecifier], function(ob) {
         var immutable = Immutable(ob);
         var mutable = Immutable.asMutable(immutable, {deep: true});
@@ -94,7 +94,7 @@ module.exports = function(config) {
       });
     });
 
-    xit("allows passing additional parameters to updater function", function () {
+    it("allows passing additional parameters to updater function", function () {
       check(100, [TestUtils.TraversableObjectSpecifier], function(ob) {
         var immutable = Immutable(ob);
         var mutable = Immutable.asMutable(immutable, {deep: true});

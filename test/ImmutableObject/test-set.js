@@ -17,7 +17,7 @@ module.exports = function(config) {
   }
 
   describe("#set", function() {
-    xit("sets a property by name", function () {
+    it("sets a property by name", function () {
       check(100, [TestUtils.ComplexObjectSpecifier()], function(ob) {
         var immutable = Immutable(ob);
         var mutable = _.assign({}, ob);
@@ -31,7 +31,7 @@ module.exports = function(config) {
       });
     });
 
-    xit("sets a property by name with deep compare if provided the deep flag", function () {
+    it("sets a property by name with deep compare if provided the deep flag", function () {
       check(100, [TestUtils.ComplexObjectSpecifier()], function(ob) {
         var immutable = Immutable(ob);
         var mutable = _.assign({}, ob);
@@ -82,7 +82,7 @@ module.exports = function(config) {
 
 
   describe("#setIn", function() {
-    xit("sets a property by path", function () {
+    it("sets a property by path", function () {
       check(100, [TestUtils.ComplexObjectSpecifier()], function(ob) {
         var immutable = Immutable(ob);
         var mutable = _.assign({}, ob);
@@ -119,7 +119,7 @@ module.exports = function(config) {
     });
 
 
-    xit("sets a property by path with deep compare if provided the deep flag", function () {
+    it("sets a property by path with deep compare if provided the deep flag", function () {
       check(100, [TestUtils.ComplexObjectSpecifier()], function(ob) {
         var immutable = Immutable(ob);
         var mutable = _.assign({}, ob);
