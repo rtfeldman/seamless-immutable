@@ -1,14 +1,20 @@
 sudo: false
+
 language: node_js
+
 node_js:
 - '5.0'
+
 before_script:
 - npm install
 - npm install -g grunt-cli jshint
+
 script: npm run travis-test
+
 env:
-  global:
-  - secure: lX2VAep7Dh8HBAde9bR7ctrlBgW1lK3rW/K21/6EB3nkuSnpdb8yG0VKMBOLYGh+/cSMWvhJFXDOEd3FN4GN06500oFo8VOl9P1NSeJevyUyz80Q2B8PkyHp/HOzF0AVKX4wpYXyF4OorZN/ta7SvBTCmuP2k2Sqz2RYwtuQ17Q=
-  - secure: UYANkiH0v8RuYNa6qYXBDlFdFSfrGCkBAFBvGQDxPsSShebyZqkbtLqURI54mvXDT+vCB9dIHj6neHHyJs0Ako6kzVQqJRhq7rq5c5J9ApgFGJvyWBrDeal9hw2Q+U6CEKRCbTPY3kRw3wCN5WqEFw4b0oyJrO36a/bLCaPdfb8=
-  - secure: bR5u3oQ1JA+RVM32/+ukp6tNyxst6WIMpQn+sz0a55fvnNJdiNKn6Wdwmwu9ca+A+ngNuUuyAv3D9QH1RCwbtgYyOx5mM3380mPvulv5Aklh6kZ1hiJRbkaNgKiavOag8xIxaSIGvdpGTAxfYec86j5up9b8WVtEZWdLqNmkz2o=
-  - secure: G4egEaqI5/DG41e4kpXNmO7m3iZ2Xtgvoohew3DPHCX+16cpzz5fzgNiZb73vlhLK8JJjoXofQbEO+xD+E+CHWCtHEhLRdYHYLfg+0c9DGZP6ZfsaGuP4jl/LM/KDfR/exSH4ox51TlaPOx4WoHmtCoOrAMGOZPa+pTPygnpYwA=
+  - SAUCE_USERNAME=seamless-immutable
+
+addons:
+  sauce_connect: true
+  jwt:
+    secure: Ie6IHRQ1KPcnlhEKPR99NhVnMArpuSeMphc9Lr/513FpNSg8rVfWlLqYBVrjP5E1pliXMu47ojT1el4BvFdOYFiwKwYAZq8RnFoSAwV0z65F/BbsqVFhCP8DLOMB6Oy/I4Mu2IMf1uC1Q2FyPygSPI90mQ2jcAZkYuE7e4yYsDU=
