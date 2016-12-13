@@ -2,6 +2,7 @@ var JSC          = require("jscheck");
 var assert       = require("chai").assert;
 var _            = require("lodash");
 var getTestUtils = require("../TestUtils.js");
+var omitBy       = require('lodash.omitby');
 
 function generateArrayOfStrings() {
   return JSC.array()().map(function() { return JSC.string()(); });
@@ -173,8 +174,8 @@ module.exports = function(config) {
           TestUtils.assertIsDeeplyImmutable(result);
         });
 
-        xit("works the same way as _.omitBy", function() {
-          var expected = _.omitBy(immutable, function (value, key) {
+        it("works the same way as _.omitBy", function() {
+          var expected = omitBy(immutable, function (value, key) {
             return _.includes(keys, key);
           });
 
