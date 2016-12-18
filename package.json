@@ -4,6 +4,7 @@
   "description": "Immutable data structures for JavaScript which are backwards-compatible with normal JS Arrays and Objects.",
   "main": "src/seamless-immutable.js",
   "browser": "seamless-immutable.development.js",
+  "react-native": "src/seamless-immutable.js",
   "devDependencies": {
     "chai": "3.5.0",
     "coveralls": "2.11.8",
