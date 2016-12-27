@@ -23,6 +23,17 @@ module.exports = function(config) {
       });
     });
 
+    it("returns the default value if the resolved value is undefined", function () {
+      check(100, [TestUtils.ComplexObjectSpecifier()], function(ob) {
+        var immutable = Immutable([0,1,2]);
+
+        TestUtils.assertJsonEqual(
+          Immutable.getIn(immutable, [3], 'default'),
+          'default'
+        );
+      });
+    });
+
     it("supports non-static syntax", function() {
       var obj = Immutable(['test']);
       obj = obj.getIn([0]);

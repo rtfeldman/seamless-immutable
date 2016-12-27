@@ -33,6 +33,17 @@ module.exports = function(config) {
       });
     });
 
+    it("returns the default value if the resolved value is undefined", function () {
+      check(100, [TestUtils.ComplexObjectSpecifier()], function(ob) {
+        var immutable = Immutable({ test: 'test'});
+
+        TestUtils.assertJsonEqual(
+          Immutable.getIn(immutable, ['notFound'], 'default'),
+          'default'
+        );
+      });
+    });
+
     it("static method continues to work after overriding the instance method", function() {
       var I = Immutable.static;
 

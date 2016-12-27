@@ -553,8 +553,9 @@ function immutableInit(config) {
     return Immutable.setIn(this, path, updater.apply(initialVal, [initialVal].concat(restArgs)));
   }
 
-  function getIn(path) {
-    return getInPath(this, path);
+  function getIn(path, defaultValue) {
+    var value = getInPath(this, path);
+    return value === undefined ? defaultValue : value;
   }
 
   function asMutableObject(opts) {
@@ -709,7 +710,7 @@ function immutableInit(config) {
   Immutable.setIn          = toStaticObjectOrArray(objectSetIn, arraySetIn);
   Immutable.update         = toStatic(update);
   Immutable.updateIn       = toStatic(updateIn);
-  Immutable.getIn          = getInPath;
+  Immutable.getIn          = toStatic(getIn);
   Immutable.flatMap        = toStatic(flatMap);
   Immutable.asObject       = toStatic(asObject);
   if (!globalConfig.use_static) {
