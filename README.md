@@ -294,6 +294,18 @@ Immutable.setIn(obj, ["type", "sub"], "Norwegian Ridgeback");
 
 A second argument can be provided to perform a deep compare: `{deep: true}`.
 
+### getIn
+
+Returns the value at the given path. A default value can be provided as a second argument.
+
+```javascript
+var obj = Immutable({type: {main: "parrot", subtype: "Norwegian Blue"}, status: "alive"});
+Immutable.getIn(obj, ["type", "subtype"]);
+// returns "Norwegian Blue"
+Immutable.getIn(obj, ["type", "class"], "Aves");
+// returns "Aves"
+```
+
 ### update
 
 Returns an Immutable Object with a single property updated using the provided updater function.
