@@ -48,7 +48,7 @@ not actually be immutable!
 
 ## Add-ons
 
-seamless-immutable is tightly focused on the mechanics of turning existing JavaScript data structurs into immutable variants.
+seamless-immutable is tightly focused on the mechanics of turning existing JavaScript data structures into immutable variants.
 Additional packages are available to build on this capability and enable additional programming models:
 
 |Library|Description|
