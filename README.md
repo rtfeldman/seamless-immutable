@@ -184,6 +184,20 @@ mutableArray // ["hello", "world", "!!!"]
 
 Returns a mutable copy of the array. For a deeply mutable copy, in which any instances of `Immutable` contained in nested data structures within the array have been converted back to mutable data structures, call `Immutable.asMutable(obj, {deep: true})` instead.
 
+### isImmutable
+```javascript
+var array = Immutable(["hello", "world"]);
+var mutableArray = ["hello", "world"];
+
+Immutable.isImmutable(array)
+// returns true
+
+Immutable.isImmutable(mutableArray)
+// returns false
+```
+
+Returns whether an object is immutable or not.
+
 ## Immutable Object
 
 Like a regular Object, but immutable! You can construct these by passing an
