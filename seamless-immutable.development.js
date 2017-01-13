@@ -606,9 +606,16 @@ function immutableInit(config) {
            obj instanceof File;
   }
 
+  function isPromise(obj) {
+    return typeof obj === 'object' &&
+           typeof obj.then === 'function';
+  }
+
   function Immutable(obj, options, stackRemaining) {
     if (isImmutable(obj) || isReactElement(obj) || isFileObject(obj)) {
       return obj;
+    } else if (isPromise(obj)) {
+      return obj.then(Immutable);
     } else if (Array.isArray(obj)) {
       return makeImmutableArray(obj.slice());
     } else if (obj instanceof Date) {

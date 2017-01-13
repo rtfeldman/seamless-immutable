@@ -72,6 +72,16 @@ var getTestUtils = require("./TestUtils.js");
         })
       });
 
+      it("makes the promise fulfillment value immutable, but not the promise itself", function() {
+        var promise = Promise.resolve([1,2,3]);
+        var wrappedPromise = Immutable(promise);
+
+        wrappedPromise.then(result => {
+          assert.isTrue(Immutable.isImmutable(result), 'The promise fulfillment value should be immutable');
+          assert.isFalse(Immutable.isImmutable(wrappedPromise), 'The promise itself should not be immutable');
+        });
+      });
+
       it("doesn't fail when a function is defined on Array.prototype", function() {
         Array.prototype.veryEvilFunction = function() {};
         Immutable([]);
