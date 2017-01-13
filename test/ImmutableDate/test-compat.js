@@ -86,7 +86,9 @@ module.exports = function(config) {
         assert.throw(function() {
           date[methodName].apply(date, methodArgs);
         });
-      }, Immutable.ImmutableError);
+      }, function() {
+        return new Immutable.ImmutableError();
+      });
     });
   });
 };
