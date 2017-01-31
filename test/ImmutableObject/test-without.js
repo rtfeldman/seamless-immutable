@@ -173,8 +173,8 @@ module.exports = function(config) {
           TestUtils.assertIsDeeplyImmutable(result);
         });
 
-        xit("works the same way as _.omitBy", function() {
-          var expected = _.omitBy(immutable, function (value, key) {
+        it("works the same way as _.omit", function() {
+          var expected = _.omit(immutable, function (value, key) {
             return _.includes(keys, key);
           });
 
