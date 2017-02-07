@@ -54,5 +54,6 @@ module.exports = function(grunt) {
 
   grunt.registerTask("test", "mochaTest");
   grunt.registerTask("build", ["envify", "uglify"]);
+  grunt.registerTask("map", ["envify"]);
   grunt.registerTask("default", ["build", "test"]);
 };

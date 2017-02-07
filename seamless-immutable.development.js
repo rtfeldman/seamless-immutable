@@ -26,11 +26,12 @@ function immutableInit(config) {
 
   function instantiateEmptyObject(obj) {
       var prototype = Object.getPrototypeOf(obj);
-      if (!prototype) {
+      if (!prototype)
           return {};
-      } else {
+      else if (prototype === Map.prototype) return new Map()
+      else if (prototype === Array.prototype) return []
           return Object.create(prototype);
-      }
+
   }
 
   function addPropertyTo(target, methodName, value) {
@@ -74,14 +75,16 @@ function immutableInit(config) {
 
   function isMergableObject(target) {
     return target !== null && typeof target === "object" && !(Array.isArray(target)) && !(target instanceof Date);
-  }
 
-  var mutatingObjectMethods = [
-    "setPrototypeOf"
-  ];
+  }
 
   var nonMutatingObjectMethods = [
     "keys"
+  ];
+
+  // Objects
+  var mutatingObjectMethods = [
+    "setPrototypeOf"
   ];
 
   var mutatingArrayMethods = mutatingObjectMethods.concat([
@@ -98,6 +101,35 @@ function immutableInit(config) {
     "setUTCMonth", "setUTCSeconds", "setYear"
   ]);
 
+  // WeakMap
+  var mutatingWeakMapMethods = mutatingObjectMethods.concat([
+    'delete',
+    'set',
+  ]);
+
+
+  // Map
+  var mutatingMapMethods = [
+    'clear',
+    'delete',
+    'set',
+  ];
+
+  var nonMutatingWeakMapMethods = [
+    'get',
+    'has',
+  ];
+
+  var nonMutatingMapMethods = mutatingObjectMethods.concat([
+    'size',
+    'entries',
+    'forEach',
+    'get',
+    'has',
+    'keys',
+    'values',
+  ]);
+
   function ImmutableError(message) {
     var err       = new Error(message);
     // TODO: Consider `Object.setPrototypeOf(err, ImmutableError);`
@@ -105,6 +137,7 @@ function immutableInit(config) {
 
     return err;
   }
+
   ImmutableError.prototype = Error.prototype;
 
   function makeImmutable(obj, bannedMethods) {
@@ -213,6 +246,37 @@ function immutableInit(config) {
     return makeImmutable(array, mutatingArrayMethods);
   }
 
+  function makeImmutableMap(map) {
+    // process nonMutatingMapMethods
+    // ensure each key and value in map is Immutable
+    // return immutable map
+    // Don't change their implementations, but wrap these functions to make sure
+    // they always return an immutable value.
+    for (var index in nonMutatingMapMethods) {
+      if (nonMutatingMapMethods.hasOwnProperty(index)) {
+        var methodName = nonMutatingMapMethods[index];
+        makeMethodReturnImmutable(map, methodName);
+      }
+    }
+
+    if (!globalConfig.use_static) {
+      // addPropertyTo(array, "flatMap",  flatMap);
+      addPropertyTo(map, "asObject", asObject);
+      addPropertyTo(map, "asMutable", asMutableArray);
+      //addPropertyTo(array, "set", arraySet);
+      //addPropertyTo(array, "setIn", arraySetIn);
+      //addPropertyTo(array, "update", update);
+      //addPropertyTo(array, "updateIn", updateIn);
+    }
+
+    map.forEach(function(value, key) {
+      map.set(key, Immutable(value));
+    })
+
+    return makeImmutable(map, mutatingMapMethods);
+
+  }
+
   function makeImmutableDate(date) {
     if (!globalConfig.use_static) {
       addPropertyTo(date, "asMutable", asMutableDate);
@@ -263,6 +327,7 @@ function immutableInit(config) {
    * @param {array} keysToRemove - A list of strings representing the keys to exclude in the return value. Instead of providing a single array, this method can also be called by passing multiple strings as separate arguments.
    */
   function without(remove) {
+
     // Calling .without() with no arguments is a no-op. Don't bother cloning.
     if (typeof remove === "undefined" && arguments.length === 0) {
       return this;
@@ -328,16 +393,21 @@ function immutableInit(config) {
     }
 
     var result = {},
-        length = this.length,
+        length = this.length || this.size || 0,
         index;
 
-    for (index = 0; index < length; index++) {
-      var pair  = iterator(this[index], index, this),
-          key   = pair[0],
-          value = pair[1];
+    if (this.forEach && !iterator)
+      this.forEach(function(value, key) {
+        result[String(key)] = value;
+      })
+    else
+      for (index = 0; index < length; index++) {
+        var pair  = iterator(this[index], index, this),
+            key   = pair[0],
+            value = pair[1];
 
-      result[key] = value;
-    }
+        result[key] = value;
+      }
 
     return makeImmutableObject(result);
   }
@@ -353,8 +423,15 @@ function immutableInit(config) {
   }
 
   function quickCopy(src, dest) {
-    for (var key in src) {
+
+    if (src.forEach)
+      src.forEach(function(value, key) {
+        if (dest instanceof Map) dest.set(key, value);
+        else dest[key] = value;
+      })
+    else for (var key in src) {
       if (Object.getOwnPropertyDescriptor(src, key)) {
+
         dest[key] = src[key];
       }
     }
@@ -372,6 +449,7 @@ function immutableInit(config) {
    *                          that takes a property from both objects. If anything is returned it overrides the normal merge behaviour.
    */
   function merge(other, config) {
+
     // Calling .merge() with no arguments is a no-op. Don't bother cloning.
     if (arguments.length === 0) {
       return this;
@@ -391,7 +469,13 @@ function immutableInit(config) {
     // that value in the result object under the same key. If that resulted
     // in a change from this object's value at that key, set anyChanges = true.
     function addToResult(currentObj, otherObj, key) {
-      var immutableValue = Immutable(otherObj[key]);
+      var val = otherObj[key] === false ?
+      otherObj[key] :
+      otherObj[key] || (otherObj.get && otherObj.get(key));
+      var immutableValue = !val ?
+      Immutable(val) :
+      val || otherObj;
+
       var mergerResult = merger && merger(currentObj[key], immutableValue, config);
       var currentValue = currentObj[key];
 
@@ -399,7 +483,6 @@ function immutableInit(config) {
         (mergerResult !== undefined) ||
         (!currentObj.hasOwnProperty(key)) ||
         !isEqual(immutableValue, currentValue)) {
-
         var newValue;
 
         if (mergerResult) {
@@ -414,9 +497,11 @@ function immutableInit(config) {
           if (result === undefined) {
             // Make a shallow clone of the current object.
             result = quickCopy(currentObj, instantiateEmptyObject(currentObj));
+
           }
 
-          result[key] = newValue;
+          if (result instanceof Map) result.set(key, newValue);
+          else result[key] = newValue;
         }
       }
     }
@@ -436,27 +521,36 @@ function immutableInit(config) {
     var key;
 
     // Achieve prioritization by overriding previous values that get in the way.
-    if (!receivedArray) {
+    if (!receivedArray && other instanceof Map === false) {
       // The most common use case: just merge one object into the existing one.
       for (key in other) {
         if (Object.getOwnPropertyDescriptor(other, key)) {
           addToResult(this, other, key);
         }
       }
-      if (mode === 'replace') {
+      if (mode === 'replace' && this === Object(this)) {
         clearDroppedKeys(this, other);
       }
-    } else {
+    } else if (receivedArray) {
       // We also accept an Array
       for (var index = 0, length = other.length; index < length; index++) {
+
         var otherFromArray = other[index];
 
-        for (key in otherFromArray) {
-          if (otherFromArray.hasOwnProperty(key)) {
-            addToResult(result !== undefined ? result : this, otherFromArray, key);
+        if(!Array.isArray(otherFromArray) && otherFromArray !== Object(otherFromArray)) {
+          addToResult(result !== undefined ? result : this, otherFromArray, index);
+        }
+        else for (key in otherFromArray) {
+            if (otherFromArray.hasOwnProperty(key)) {
+              addToResult(result !== undefined ? result : this, otherFromArray, key);
+            }
           }
         }
-      }
+    } else {
+      var that = this
+      other.forEach(function(value, key) {
+          addToResult(that, other, key);
+      })
     }
 
     if (result === undefined) {
@@ -562,11 +656,17 @@ function immutableInit(config) {
         }
       }
     } else {
-      for (key in this) {
-        if (this.hasOwnProperty(key)) {
-          result[key] = this[key];
+      if (this.forEach)
+        this.forEach(function(value, key){
+            if (this && this.has && this.has(key))
+              result[key] = value;
+        });
+      else
+        for (key in this) {
+          if (this.hasOwnProperty(key)) {
+            result[key] = this[key];
+          }
         }
-      }
     }
 
     return result;
@@ -613,6 +713,8 @@ function immutableInit(config) {
       return makeImmutableArray(obj.slice());
     } else if (obj instanceof Date) {
       return makeImmutableDate(new Date(obj.getTime()));
+    } else if (obj.constructor === Map) {
+      return makeImmutableMap(new Map(obj));
     } else {
       // Don't freeze the object we were given; make a clone and use that.
       var prototype = options && options.prototype;
