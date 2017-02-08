@@ -29,8 +29,7 @@ function immutableInit(config) {
       if (!prototype)
           return {};
       else if (prototype === Map.prototype) return new Map()
-      else if (prototype === Array.prototype) return []
-          return Object.create(prototype);
+      return Object.create(prototype);
 
   }
 
@@ -396,7 +395,7 @@ function immutableInit(config) {
         length = this.length || this.size || 0,
         index;
 
-    if (this.forEach && !iterator)
+    if (this instanceof Map)
       this.forEach(function(value, key) {
         result[String(key)] = value;
       })
@@ -404,7 +403,7 @@ function immutableInit(config) {
       for (index = 0; index < length; index++) {
         var pair  = iterator(this[index], index, this),
             key   = pair[0],
-            value = pair[1];
+            value = typeof pair[1] !== undefined ? pair[1] : key;
 
         result[key] = value;
       }
@@ -424,7 +423,7 @@ function immutableInit(config) {
 
   function quickCopy(src, dest) {
 
-    if (src.forEach)
+    if (src instanceof Map)
       src.forEach(function(value, key) {
         if (dest instanceof Map) dest.set(key, value);
         else dest[key] = value;
@@ -469,12 +468,10 @@ function immutableInit(config) {
     // that value in the result object under the same key. If that resulted
     // in a change from this object's value at that key, set anyChanges = true.
     function addToResult(currentObj, otherObj, key) {
-      var val = otherObj[key] === false ?
-      otherObj[key] :
-      otherObj[key] || (otherObj.get && otherObj.get(key));
-      var immutableValue = !val ?
-      Immutable(val) :
-      val || otherObj;
+      var val = otherObj.get ?
+      otherObj.get(key):
+      otherObj[key];
+      var immutableValue =  Immutable(val);
 
       var mergerResult = merger && merger(currentObj[key], immutableValue, config);
       var currentValue = currentObj[key];
@@ -499,7 +496,7 @@ function immutableInit(config) {
             result = quickCopy(currentObj, instantiateEmptyObject(currentObj));
 
           }
-
+          newValue = typeof newValue !== 'undefined' ? newValue : key;
           if (result instanceof Map) result.set(key, newValue);
           else result[key] = newValue;
         }
