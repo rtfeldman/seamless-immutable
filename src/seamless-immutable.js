@@ -203,6 +203,7 @@ function immutableInit(config) {
       addPropertyTo(array, "setIn", arraySetIn);
       addPropertyTo(array, "update", update);
       addPropertyTo(array, "updateIn", updateIn);
+      addPropertyTo(array, "getIn", getIn);
     }
 
     for(var i = 0, length = array.length; i < length; i++) {
@@ -551,6 +552,11 @@ function immutableInit(config) {
     return Immutable.setIn(this, path, updater.apply(initialVal, [initialVal].concat(restArgs)));
   }
 
+  function getIn(path, defaultValue) {
+    var value = getInPath(this, path);
+    return value === undefined ? defaultValue : value;
+  }
+
   function asMutableObject(opts) {
     var result = instantiateEmptyObject(this), key;
 
@@ -587,6 +593,7 @@ function immutableInit(config) {
       addPropertyTo(obj, "setIn", objectSetIn);
       addPropertyTo(obj, "update", update);
       addPropertyTo(obj, "updateIn", updateIn);
+      addPropertyTo(obj, "getIn", getIn);
     }
 
     return makeImmutable(obj, mutatingObjectMethods);
@@ -702,6 +709,7 @@ function immutableInit(config) {
   Immutable.setIn          = toStaticObjectOrArray(objectSetIn, arraySetIn);
   Immutable.update         = toStatic(update);
   Immutable.updateIn       = toStatic(updateIn);
+  Immutable.getIn          = toStatic(getIn);
   Immutable.flatMap        = toStatic(flatMap);
   Immutable.asObject       = toStatic(asObject);
   if (!globalConfig.use_static) {
