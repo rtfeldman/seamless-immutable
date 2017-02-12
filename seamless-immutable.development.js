@@ -615,7 +615,7 @@ function immutableInit(config) {
       return makeImmutableDate(new Date(obj.getTime()));
     } else {
       // Don't freeze the object we were given; make a clone and use that.
-      var prototype = options && options.prototype;
+      var prototype = options && options.prototype || obj["__proto__"];
       var instantiateEmptyObject =
         (!prototype || prototype === Object.prototype) ?
           instantiatePlainObject : (function() { return Object.create(prototype); });
