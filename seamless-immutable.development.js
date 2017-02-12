@@ -499,9 +499,9 @@ function immutableInit(config) {
 
     if (this.hasOwnProperty(head) && typeof(thisHead) === "object" && thisHead !== null) {
       // Might (validly) be object or array
-      newValue = Immutable.setIn(thisHead, tail, value);
+      newValue = Immutable.setIn(thisHead, tail, value,config);
     } else {
-      newValue = objectSetIn.call(immutableEmptyObject, tail, value);
+      newValue = objectSetIn.call(immutableEmptyObject, tail, value,config);
     }
 
     if (this.hasOwnProperty(head) && thisHead === newValue) {
@@ -526,7 +526,7 @@ function immutableInit(config) {
     }
 
     var mutable = quickCopy(this, instantiateEmptyObject(this));
-    mutable[property] = Immutable(value);
+    mutable[property] = Immutable(value,config);
     return makeImmutableObject(mutable);
   }
 
@@ -615,7 +615,7 @@ function immutableInit(config) {
       return makeImmutableDate(new Date(obj.getTime()));
     } else {
       // Don't freeze the object we were given; make a clone and use that.
-      var prototype = options && options.prototype;
+      var prototype = options && options.prototype || obj.__proto__;
       var instantiateEmptyObject =
         (!prototype || prototype === Object.prototype) ?
           instantiatePlainObject : (function() { return Object.create(prototype); });
@@ -636,7 +636,7 @@ function immutableInit(config) {
 
       for (var key in obj) {
         if (Object.getOwnPropertyDescriptor(obj, key)) {
-          clone[key] = Immutable(obj[key], undefined, stackRemaining);
+	        clone[key] = Immutable(obj[key], undefined, stackRemaining);
         }
       }
 
