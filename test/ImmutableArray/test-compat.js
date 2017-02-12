@@ -213,6 +213,8 @@ module.exports = function(config) {
       assert.throw(function() {
         array[methodName].apply(array, methodArgs);
       });
-    }, Immutable.ImmutableError);
+    }, function() { 
+      return new Immutable.ImmutableError(); 
+    });
   });
 };
