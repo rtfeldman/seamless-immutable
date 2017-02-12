@@ -499,9 +499,9 @@ function immutableInit(config) {
 
     if (this.hasOwnProperty(head) && typeof(thisHead) === "object" && thisHead !== null) {
       // Might (validly) be object or array
-      newValue = Immutable.setIn(thisHead, tail, value);
+      newValue = Immutable.setIn(thisHead, tail, value,config);
     } else {
-      newValue = objectSetIn.call(immutableEmptyObject, tail, value);
+      newValue = objectSetIn.call(immutableEmptyObject, tail, value,config);
     }
 
     if (this.hasOwnProperty(head) && thisHead === newValue) {
@@ -526,7 +526,7 @@ function immutableInit(config) {
     }
 
     var mutable = quickCopy(this, instantiateEmptyObject(this));
-    mutable[property] = Immutable(value);
+    mutable[property] = Immutable(value,config);
     return makeImmutableObject(mutable);
   }
 
