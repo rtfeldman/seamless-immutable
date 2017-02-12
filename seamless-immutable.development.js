@@ -99,13 +99,12 @@ function immutableInit(config) {
   ]);
 
   function ImmutableError(message) {
-    var err       = new Error(message);
-    // TODO: Consider `Object.setPrototypeOf(err, ImmutableError);`
-    err.__proto__ = ImmutableError;
-
-    return err;
+    this.name = 'MyError';
+    this.message = message;
+    this.stack = (new Error()).stack;
   }
-  ImmutableError.prototype = Error.prototype;
+  ImmutableError.prototype = new Error;
+  ImmutableError.prototype.constructor = Error;
 
   function makeImmutable(obj, bannedMethods) {
     // Tag it so we can quickly tell it's immutable later.
