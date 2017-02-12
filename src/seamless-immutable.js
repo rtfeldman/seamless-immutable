@@ -636,7 +636,8 @@ function immutableInit(config) {
 
       for (var key in obj) {
         if (Object.getOwnPropertyDescriptor(obj, key)) {
-          clone[key] = Immutable(obj[key], undefined, stackRemaining);
+	        var prototype = (obj[key]) ? obj[key]["__proto__"] : Object.prototype;
+	        clone[key] = Immutable(obj[key], {prototype:prototype}, stackRemaining);
         }
       }
 
