@@ -82,6 +82,16 @@ var getTestUtils = require("./TestUtils.js");
         });
       });
 
+      it("doesn't wrap the promise rejection reason", function() {
+        var reason = new Error('foo');
+        var promise = Promise.reject(reason);
+        var wrappedPromise = Immutable(promise);
+
+        wrappedPromise.catch(catchedReason => {
+          assert.strictEqual(reason, catchedReason, 'The promise rejection reason should be left untouched');
+        });
+      });
+
       it("doesn't fail when a function is defined on Array.prototype", function() {
         Array.prototype.veryEvilFunction = function() {};
         Immutable([]);
