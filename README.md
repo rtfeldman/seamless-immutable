@@ -391,6 +391,10 @@ Returns a mutable copy of the object. For a deeply mutable copy, in which any in
 
 ### Releases
 
+#### 7.1.0
+
+Add `getIn` and assumption that Promises are immutable.
+
 #### 7.0.0
 
 Add `Immutable.static` as the preferred API. Default to development build in webpack.
