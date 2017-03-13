@@ -391,6 +391,10 @@ Returns a mutable copy of the object. For a deeply mutable copy, in which any in
 
 ### Releases
 
+#### 7.1.1
+
+Fix .npmignore
+
 #### 7.1.0
 
 Add `getIn` and assumption that Promises are immutable.
