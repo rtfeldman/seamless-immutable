@@ -103,7 +103,7 @@ function immutableInit(config) {
     this.message = message;
     this.stack = (new Error()).stack;
   }
-  ImmutableError.prototype = new Error;
+  ImmutableError.prototype = new Error();
   ImmutableError.prototype.constructor = Error;
 
   function makeImmutable(obj, bannedMethods) {
