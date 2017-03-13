@@ -38,7 +38,4 @@ Gruntfile.js
 bower.json
 .zuul.yml
 benchmark.js
-seamless-immutable.development.min.js
-seamless-immutable.development.js
-seamless-immutable.production.min.js
 test
