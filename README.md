@@ -248,7 +248,7 @@ var obj = Immutable({status: "bad", errors: 37});
 Immutable.merge(obj, [
   {status: "funky", errors: 1}, {status: "groovy", errors: 2}, {status: "sweet"}]);
 // returns Immutable({status: "sweet", errors: 2})
-// because passing an Array (or just multiple arguments) is shorthand for
+// because passing an Array is shorthand for
 // invoking a separate merge for each object in turn.
 ```
 Returns an Immutable Object containing the properties and values of both
@@ -258,7 +258,7 @@ values whenever the same key is present in both objects.
 Multiple objects can be provided in an Array in which case more `merge`
 invocations will be performed using each provided object in turn.
 
-A second argument can be provided to perform a deep merge: `{deep: true}`.
+A third argument can be provided to perform a deep merge: `{deep: true}`.
 
 ### replace
 
