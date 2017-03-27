@@ -119,6 +119,26 @@ Immutable.from([1, 2, 3]);
 Immutable([1, 2, 3])
 ```
 
+## Immutable.sortBy
+
+JavaScript's Array `sort()` is a mutating function and its use will throw an ImmutableError. This has been done rather than override the `sort()` method with one that returns an immutable Array. The rationale for this is that returning an immutable array from the `sort()` function would be a surprising change to the expected behavior for developers unfamiliar with immutables. However, a convenient method for creating a sorted immutable array from an unsorted one is still desirable. This function closes this gap.
+
+```javascript
+var array = Immutable([1, 3, 2]);
+var sortedArray = Immutable.sortBy(array);
+// returns Immutable([1, 2, 3]);
+```
+
+This function also accepts an optional sorting function as per the original `sort()`:
+
+```javascript
+var array = Immutable([1, 3, 2]);
+var sortedArray = Immutable.sortBy(array, function(a, b) {
+    return b - a;
+});
+// returns Immutable([3, 2, 1]);
+```
+
 ## Immutable Array
 
 Like a regular Array, but immutable! You can construct these by passing
