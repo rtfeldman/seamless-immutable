@@ -577,6 +577,21 @@ function immutableInit(config) {
     return result;
   }
 
+  function sortBy(array, sorter) {
+    var result = [], i, length;
+
+    if (!(array instanceof Array)) {
+      throw new TypeError("The first argument to Immutable#sortBy must be an array.");
+    }
+
+    for (i = 0, length = array.length; i < length; i++) {
+      result.push(array[i]);
+    }
+    result.sort(sorter);
+
+    return makeImmutableArray(result);
+  }
+
   // Creates plain object to be used for cloning
   function instantiatePlainObject() {
     return {};
@@ -719,6 +734,7 @@ function immutableInit(config) {
   Immutable.getIn          = toStatic(getIn);
   Immutable.flatMap        = toStatic(flatMap);
   Immutable.asObject       = toStatic(asObject);
+  Immutable.sortBy         = sortBy;
   if (!globalConfig.use_static) {
       Immutable.static = immutableInit({
           use_static: true
