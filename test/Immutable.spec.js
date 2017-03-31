@@ -164,6 +164,12 @@ var getTestUtils = require("./TestUtils.js");
         delete global.File;
       });
 
+      it("doesn't modify Error objects", function () {
+        var error = new Error('Oh no something bad happened!');
+        var immutableError = Immutable(error);
+        assert.strictEqual(error, immutableError, 'Immutable should pass the error directly through')
+      });
+
       it("detects cycles", function() {
         var obj = {};
         obj.prop = obj;

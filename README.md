@@ -40,7 +40,7 @@ We generally recommend to use the "development" build that enforces immutability
 
 ## Intentional Abstraction Leaks
 
-By popular demand, functions, dates, and [React](https://facebook.github.io/react/)
+By popular demand, functions, errors, dates, and [React](https://facebook.github.io/react/)
 components are treated as immutable even though technically they can be mutated.
 (It turns out that trying to make these immutable leads to more bad things
 than good.) If you call `Immutable()` on any of these, be forewarned: they will
