@@ -617,8 +617,12 @@ function immutableInit(config) {
            typeof obj.then === 'function';
   }
 
+  function isError(obj) {
+    return obj instanceof Error;
+  }
+
   function Immutable(obj, options, stackRemaining) {
-    if (isImmutable(obj) || isReactElement(obj) || isFileObject(obj)) {
+    if (isImmutable(obj) || isReactElement(obj) || isFileObject(obj) || isError(obj)) {
       return obj;
     } else if (isPromise(obj)) {
       return obj.then(Immutable);
