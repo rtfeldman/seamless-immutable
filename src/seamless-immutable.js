@@ -110,7 +110,7 @@ function immutableInit(config) {
     // Tag it so we can quickly tell it's immutable later.
     addImmutabilityTag(obj);
 
-    if (process.env.NODE_ENV !== "production") {
+    if (process && process.env && process.env.NODE_ENV !== "production") {
       // Make all mutating methods throw exceptions.
       for (var index in bannedMethods) {
         if (bannedMethods.hasOwnProperty(index)) {
@@ -638,7 +638,7 @@ function immutableInit(config) {
           instantiatePlainObject : (function() { return Object.create(prototype); });
       var clone = instantiateEmptyObject();
 
-      if (process.env.NODE_ENV !== "production") {
+      if (process && process.env && process.env.NODE_ENV !== "production") {
         /*jshint eqnull:true */
         if (stackRemaining == null) {
           stackRemaining = 64;
