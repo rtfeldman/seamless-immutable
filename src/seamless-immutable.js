@@ -117,10 +117,10 @@ function immutableInit(config) {
           banProperty(obj, bannedMethods[index]);
         }
       }
-
-      // Freeze it and return it.
-      Object.freeze(obj);
     }
+    
+    // Freeze it and return it.
+    Object.freeze(obj);
 
     return obj;
   }
