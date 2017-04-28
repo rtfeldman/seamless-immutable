@@ -578,7 +578,7 @@ function immutableInit(config) {
   }
 
   function sortBy(array, sorter) {
-    var result = [], i, length;
+    var result = [], i, length, rearranged;
 
     if (!(array instanceof Array)) {
       throw new TypeError("The first argument to Immutable#sortBy must be an array.");
@@ -589,7 +589,28 @@ function immutableInit(config) {
     }
     result.sort(sorter);
 
-    return makeImmutableArray(result);
+    // Test if elements of the array have been rearranged
+    rearranged = false;
+    for (i = 0, length = array.length; i < length; i++) {
+      if(result[i] !== array[i]) {
+        // Check if both are NaN. Type checks catch cases where isNaN returns true for strings.
+        if(!(typeof result[i] === "number" && isNaN(result[i]) && typeof array[i] === "number" && isNaN(array[i]))) {
+            rearranged = true;
+        }
+      }
+    }
+
+    // If the elements haven't been rearranged, return the original immutable
+    if(rearranged) {
+      return makeImmutableArray(result);
+    } else {
+      // Ensure that the returned array is immutable
+      if(isImmutable(array)) {
+        return array;
+      } else {
+          return makeImmutableArray(array);
+      }
+    }
   }
 
   // Creates plain object to be used for cloning
