@@ -380,7 +380,7 @@ Multiple keys can be provided, either in an Array or as extra arguments.
 
 ```javascript
 var obj = Immutable({when: "the", levee: "breaks"});
-var mutable = Immutable.asMutable(obj);
+var mutableObject = Immutable.asMutable(obj);
 
 mutableObject.have = "no place to go";
 
