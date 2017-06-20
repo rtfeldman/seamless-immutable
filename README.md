@@ -93,12 +93,14 @@ Seamless-immutable supports both static and instance syntaxes:
 
 ```javascript
 var Immutable = require("seamless-immutable").static;
+var obj = {};
 
 Immutable.setIn(obj, ['key'], data)
 ```
 
 ```javascript
 var Immutable = require("seamless-immutable");
+var obj = {};
 
 obj.setIn(['key'], data)
 ```
