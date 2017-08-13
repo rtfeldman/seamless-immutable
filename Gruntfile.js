@@ -26,7 +26,7 @@ module.exports = function(grunt) {
     },
     uglify: {
       options: {
-        banner: '/* (c) 2016, Richard Feldman, github.com/rtfeldman/seamless-immutable/blob/master/LICENSE */'
+        banner: '/* (c) 2017, Richard Feldman, github.com/rtfeldman/seamless-immutable/blob/master/LICENSE */'
       },
       min: {
         files: {
