@@ -131,6 +131,18 @@ module.exports = function(config) {
     });
 
 
+    it("handles setting a numeric key for existing object", function() {
+      var ob = {foo: {}};
+      var path = ["foo", 0];
+      var val = "val";
+
+      var immutable = Immutable(ob);
+      var final = Immutable.setIn(immutable, path, val);
+
+      assert.deepEqual(final, { foo: {0: "val"} });
+    });
+
+
     it("handles setting a new object on existing leaf array correctly", function () {
       var ob = {foo: []};
       var path = ['foo', 0, 'bar'];
