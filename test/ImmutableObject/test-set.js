@@ -107,6 +107,30 @@ module.exports = function(config) {
     });
 
 
+    it("handles creating an array for missing index properties", function() {
+      var ob = {};
+      var path = ["foo", 0, "bar"];
+      var val = "val";
+
+      var immutable = Immutable(ob);
+      var final = Immutable.setIn(immutable, path, val);
+
+      assert.deepEqual(final, { foo: [{ bar: "val" }] });
+    });
+
+
+    it("handles creating an array for a missing index leaf property", function() {
+      var ob = {};
+      var path = ["foo", 0];
+      var val = "val";
+
+      var immutable = Immutable(ob);
+      var final = Immutable.setIn(immutable, path, val);
+
+      assert.deepEqual(final, { foo: ["val"] });
+    });
+
+
     it("handles setting a new object on existing leaf array correctly", function () {
       var ob = {foo: []};
       var path = ['foo', 0, 'bar'];
