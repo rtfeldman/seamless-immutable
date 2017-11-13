@@ -164,6 +164,19 @@ var getTestUtils = require("./TestUtils.js");
         delete global.File;
       });
 
+      it("doesnt modify Blob objects", function() {
+		global.Blob = TestUtils.BlobMock;
+
+	    var blob = new Blob();
+		var immutableBlob = Immutable(blob);
+
+		assert.typeOf(immutableBlob, 'object');
+		assert.isTrue(immutableBlob instanceof Blob);
+		TestUtils.assertJsonEqual(immutableBlob, blob);
+
+		delete global.Blob;
+      });
+
       it("doesn't modify Error objects", function () {
         var error = new Error('Oh no something bad happened!');
         var immutableError = Immutable(error);
