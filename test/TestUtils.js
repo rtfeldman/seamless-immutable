@@ -156,6 +156,6 @@ module.exports = function(Immutable) {
     checkImmutableMutable:   wrapCheckImmutableMutable(Immutable),
     isDeepEqual:             isDeepEqual,
     FileMock:                File,
-	BlobMock:                Blob
+    BlobMock:                Blob
   }
 };

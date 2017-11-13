@@ -613,8 +613,8 @@ function immutableInit(config) {
   }
 
   function isBlobObject(obj) {
-  	return typeof Blob !== 'undefined' &&
-	       obj instanceof Blob;
+    return typeof Blob !== 'undefined' &&
+           obj instanceof Blob;
   }
 
   function isPromise(obj) {
