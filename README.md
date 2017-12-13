@@ -28,6 +28,14 @@ This level of backwards compatibility requires [ECMAScript 5](http://kangax.gith
 
 [![Sauce Test Status](https://saucelabs.com/browser-matrix/seamless-immutable.svg)](https://saucelabs.com/u/seamless-immutable)
 
+## Installation
+
+Seamless-immutable is available as the [`seamless-immutable`][7] package on npm.
+
+```
+npm install --save seamless-immutable
+```
+
 ## Performance
 
 Whenever you deeply clone large nested objects, it should typically go much faster with `Immutable` data structures. This is because the library reuses the existing nested objects rather than instantiating new ones.
@@ -554,3 +562,4 @@ Run `npm install -g grunt-cli`, `npm install` and then `grunt` to build and test
 [4]: https://badge.fury.io/js/seamless-immutable
 [5]: http://img.shields.io/coveralls/rtfeldman/seamless-immutable.svg
 [6]: https://coveralls.io/r/rtfeldman/seamless-immutable
+[7]: https://www.npmjs.com/package/seamless-immutable
