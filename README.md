@@ -91,16 +91,18 @@ Immutable.merge(obj, {are: {belong: "to us"}})
 
 Seamless-immutable supports both static and instance syntaxes:
 
-```
+```javascript
 var Immutable = require("seamless-immutable").static;
+var obj = {};
 
-Immutable.setIn(obj, 'key', data)
+Immutable.setIn(obj, ['key'], data)
 ```
 
-```
+```javascript
 var Immutable = require("seamless-immutable");
+var obj = {};
 
-obj.setIn('key', data)
+obj.setIn(['key'], data)
 ```
 
 Although the later is shorter and is the current default, it can lead to
