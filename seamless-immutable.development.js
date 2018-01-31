@@ -484,7 +484,7 @@ function immutableInit(config) {
   var immutableEmptyObject = Immutable({});
 
   function objectSetIn(path, value, config) {
-    if (!(path instanceof Array) || path.length === 0) {
+    if (!(Array.isArray(path)) || path.length === 0) {
       throw new TypeError("The first argument to Immutable#setIn must be an array containing at least one \"key\" string.");
     }
 
@@ -613,8 +613,8 @@ function immutableInit(config) {
   }
 
   function isBlobObject(obj) {
-  	return typeof Blob !== 'undefined' &&
-	       obj instanceof Blob;
+    return typeof Blob !== 'undefined' &&
+           obj instanceof Blob;
   }
 
   function isPromise(obj) {
