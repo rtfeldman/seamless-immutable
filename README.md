@@ -395,6 +395,10 @@ Returns a mutable copy of the object. For a deeply mutable copy, in which any in
 
 #### 7.1.2
 
+Treat `Blob` instances as immutable. Use `Array.isArray` over `instanceof`.
+
+#### 7.1.2
+
 Treat `Error` instances as immutable.
 
 #### 7.1.1
