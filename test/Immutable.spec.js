@@ -152,29 +152,21 @@ var getTestUtils = require("./TestUtils.js");
       });
 
       it("doesn't modify File objects", function() {
-        global.File = TestUtils.FileMock;
-
         var file = new File(['part'], 'filename.jpg');
         var immutableFile = Immutable(file);
 
-        assert.typeOf(immutableFile, 'object');
-        assert.isTrue(immutableFile instanceof File);
-        TestUtils.assertJsonEqual(immutableFile, file);
-
-        delete global.File;
+        assert.isTrue(file instanceof File, "file instanceof File");
+        assert.isTrue(immutableFile instanceof File, "immutableFile instanceof File");
+        assert.equal(immutableFile, file);
       });
 
       it("doesnt modify Blob objects", function() {
-		global.Blob = TestUtils.BlobMock;
-
         var blob = new Blob();
         var immutableBlob = Immutable(blob);
 
-        assert.typeOf(immutableBlob, 'object');
-        assert.isTrue(immutableBlob instanceof Blob);
-        TestUtils.assertJsonEqual(immutableBlob, blob);
-
-        delete global.Blob;
+        assert.isTrue(blob instanceof Blob, "blob instanceof Blob");
+        assert.isTrue(immutableBlob instanceof Blob, "immutableBlob instanceof Blob");
+        assert.equal(immutableBlob, blob);
       });
 
       it("doesn't modify Error objects", function () {
