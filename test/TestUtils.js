@@ -138,6 +138,11 @@ function File(parts, filename) {
   this.lastModified = this.lastModifiedDate.getTime();
 }
 
+function Blob() {
+	this.size = 4;
+	this.type = ''
+}
+
 module.exports = function(Immutable) {
   return {
     assertJsonEqual:         assertJsonEqual,
@@ -150,6 +155,7 @@ module.exports = function(Immutable) {
     check:                   check,
     checkImmutableMutable:   wrapCheckImmutableMutable(Immutable),
     isDeepEqual:             isDeepEqual,
-    FileMock:                File
+    FileMock:                File,
+    BlobMock:                Blob
   }
 };

@@ -612,6 +612,11 @@ function immutableInit(config) {
            obj instanceof File;
   }
 
+  function isBlobObject(obj) {
+    return typeof Blob !== 'undefined' &&
+           obj instanceof Blob;
+  }
+
   function isPromise(obj) {
     return typeof obj === 'object' &&
            typeof obj.then === 'function';
@@ -622,7 +627,7 @@ function immutableInit(config) {
   }
 
   function Immutable(obj, options, stackRemaining) {
-    if (isImmutable(obj) || isReactElement(obj) || isFileObject(obj) || isError(obj)) {
+    if (isImmutable(obj) || isReactElement(obj) || isFileObject(obj) || isBlobObject(obj) || isError(obj)) {
       return obj;
     } else if (isPromise(obj)) {
       return obj.then(Immutable);
