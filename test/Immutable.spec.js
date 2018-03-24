@@ -1,3 +1,4 @@
+require('jsdom-global')()
 var JSC          = require("jscheck");
 var assert       = require("chai").assert;
 var _            = require("lodash");
