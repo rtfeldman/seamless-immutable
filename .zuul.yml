@@ -9,4 +9,4 @@ browsers:
   - name: android
     version: ["5.0", "5.1", "6.0"]
   - name: safari
-    version: ["6", "latest"]
+    version: ["7", "latest"]
