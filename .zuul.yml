@@ -10,4 +10,3 @@ browsers:
     version: ["5.0", "5.1", "6.0"]
   - name: safari
     version: ["7", "latest"]
-concurrency: 1
