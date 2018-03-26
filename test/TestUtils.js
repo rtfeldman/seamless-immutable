@@ -141,8 +141,6 @@ module.exports = function(Immutable) {
     TraversableObjectSpecifier: TraversableObjectSpecifier,
     check:                   check,
     checkImmutableMutable:   wrapCheckImmutableMutable(Immutable),
-    isDeepEqual:             isDeepEqual,
-    FileMock:                File,
-    BlobMock:                Blob
+    isDeepEqual:             isDeepEqual
   }
 };
