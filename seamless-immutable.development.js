@@ -402,7 +402,7 @@ function immutableInit(config) {
 
         var newValue;
 
-        if (mergerResult) {
+        if (mergerResult !== undefined) {
           newValue = mergerResult;
         } else if (deep && isMergableObject(currentValue) && isMergableObject(immutableValue)) {
           newValue = Immutable.merge(currentValue, immutableValue, config);
