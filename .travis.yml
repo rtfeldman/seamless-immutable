@@ -9,11 +9,3 @@ before_script:
 - npm install
 
 script: npm run travis-test
-
-env:
-  - SAUCE_USERNAME=seamless-immutable
-
-addons:
-  sauce_connect: true
-  jwt:
-    secure: Ie6IHRQ1KPcnlhEKPR99NhVnMArpuSeMphc9Lr/513FpNSg8rVfWlLqYBVrjP5E1pliXMu47ojT1el4BvFdOYFiwKwYAZq8RnFoSAwV0z65F/BbsqVFhCP8DLOMB6Oy/I4Mu2IMf1uC1Q2FyPygSPI90mQ2jcAZkYuE7e4yYsDU=

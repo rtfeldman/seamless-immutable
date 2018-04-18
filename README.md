@@ -26,8 +26,6 @@ This level of backwards compatibility requires [ECMAScript 5](http://kangax.gith
 
 [![build status][1]][2] [![NPM version][3]][4] [![coverage status][5]][6]
 
-[![Sauce Test Status](https://saucelabs.com/browser-matrix/seamless-immutable.svg)](https://saucelabs.com/u/seamless-immutable)
-
 ## Performance
 
 Whenever you deeply clone large nested objects, it should typically go much faster with `Immutable` data structures. This is because the library reuses the existing nested objects rather than instantiating new ones.
