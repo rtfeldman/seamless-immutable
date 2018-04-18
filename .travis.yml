@@ -3,7 +3,7 @@ sudo: false
 language: node_js
 
 node_js:
-- '5.0'
+- '8.11.1'
 
 before_script:
 - npm install
