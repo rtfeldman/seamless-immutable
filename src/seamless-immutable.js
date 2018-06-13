@@ -467,7 +467,8 @@ function immutableInit(config) {
   }
 
   function objectReplace(value, config) {
-    var deep          = config && config.deep;
+    var deep          = config && config.deep,
+        merger        = config && config.merger;
 
     // Calling .replace() with no arguments is a no-op. Don't bother cloning.
     if (arguments.length === 0) {
@@ -478,7 +479,7 @@ function immutableInit(config) {
       throw new TypeError("Immutable#replace can only be invoked with objects or arrays, not " + JSON.stringify(value));
     }
 
-    return Immutable.merge(this, value, {deep: deep, mode: 'replace'});
+    return Immutable.merge(this, value, {deep: deep, merger: merger, mode: 'replace'});
   }
 
   var immutableEmptyObject = Immutable({});
