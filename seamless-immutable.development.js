@@ -739,19 +739,18 @@ function immutableInit(config) {
   return Immutable;
 }
 
-  var Immutable = immutableInit();
   /* istanbul ignore if */
   if (typeof define === 'function' && define.amd) {
     define(function() {
-      return Immutable;
+      return immutableInit();
     });
   } else if (typeof module === "object") {
-    module.exports = Immutable;
+    module.exports = immutableInit();
   } else if (typeof exports === "object") {
-    exports.Immutable = Immutable;
+    exports.Immutable = immutableInit();
   } else if (typeof window === "object") {
-    window.Immutable = Immutable;
+    window.Immutable = immutableInit();
   } else if (typeof global === "object") {
-    global.Immutable = Immutable;
+    global.Immutable = immutableInit();
   }
 })();
