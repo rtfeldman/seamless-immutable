@@ -294,6 +294,20 @@ module.exports = function(config) {
       assert.equal(original, actualWithMerger);
     });
 
+    it("merges with a custom merger that returns null and makes sure it isn't treated as undefined", function() {
+      var original = Immutable({a: null})
+      var toMerge = {a: undefined}
+      var expected = Immutable({a: null})
+
+      var config = {
+        merger: function(current, other) {
+          return null
+        }
+      }
+      var actual = Immutable.merge(original, toMerge, config)
+      assert.equal(original, actual)
+    })
+
     it("preserves prototypes across merges", function() {
       function TestClass(o) { _.extend(this, o); };
       var data = new TestClass({a: 1, b: 2});
