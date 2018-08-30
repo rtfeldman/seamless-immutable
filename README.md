@@ -52,6 +52,7 @@ Additional packages are available to build on this capability and enable additio
 |Library|Description|
 |--------|------------|
 |[Cursor](https://github.com/MartinSnyder/seamless-immutable-cursor)|Compact Cursor Library built on top of the excellent seamless-immutable. Cursors can be used to manage transitions and manipulations of immutable structures in an application.|
+|[Mergers](https://github.com/crudh/seamless-immutable-mergers)|A collection of mergers for use with seamless-immutable. Also includes documentation about custom mergers, with examples, for writing your own.|
 
 ## API Overview
 
@@ -258,7 +259,16 @@ values whenever the same key is present in both objects.
 Multiple objects can be provided in an Array in which case more `merge`
 invocations will be performed using each provided object in turn.
 
-A third argument can be provided to perform a deep merge: `{deep: true}`.
+A third argument can be provided to configure the merge. It should be an object with any of the following fields:
+
+```javascript
+{
+  deep: true, // perform a deep merge
+  merger: yourCustomMerger // supply a custom merger
+}
+```
+
+You can find examples and documentation about custom mergers [here](https://github.com/crudh/seamless-immutable-mergers).
 
 ### replace
 
