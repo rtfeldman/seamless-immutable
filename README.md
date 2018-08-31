@@ -401,6 +401,10 @@ Returns a mutable copy of the object. For a deeply mutable copy, in which any in
 
 ### Releases
 
+#### 7.1.4
+
+Fixed bug with custom mergers treating all non-truthy values as undefined ([#244](https://github.com/rtfeldman/seamless-immutable/issues/244)).
+
 #### 7.1.3
 
 Treat `Blob` instances as immutable. Use `Array.isArray` over `instanceof`.
