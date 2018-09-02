@@ -156,11 +156,12 @@ Effectively performs a [map](https://developer.mozilla.org/en-US/docs/Web/JavaSc
 iterator function returns an Array, that Array's elements are each added to the final result.
 
 ```javascript
-var a = Immutable([1,2,3])
-> a.map(a => [a+2,a+4])
-[ [ 3, 5 ], [ 4, 6 ], [ 5, 7 ] ]
-> Immutable.flatMap(a, a => [a+2,a+4])
-[ 3, 5, 4, 6, 5, 7 ]
+var array = Immutable([1,2,3]);
+array.map(value => [value+2, value+4]);
+// returns Immutable([ [ 3, 5 ], [ 4, 6 ], [ 5, 7 ] ])
+
+Immutable.flatMap(array, value => [value+2, value+4]);
+// returns Immutable([ 3, 5, 4, 6, 5, 7 ])
 ```
 
 ### asObject
