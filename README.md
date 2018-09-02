@@ -155,6 +155,14 @@ Immutable.flatMap(array, function(value) {
 Effectively performs a [map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map) over the elements in the array, except that whenever the provided
 iterator function returns an Array, that Array's elements are each added to the final result.
 
+```
+var a = Immutable([1,2,3])
+> a.map(a => [a+2,a+4])
+[ [ 3, 5 ], [ 4, 6 ], [ 5, 7 ] ]
+> Immutable.flatMap(a, a => [a+2,a+4])
+[ 3, 5, 4, 6, 5, 7 ]
+```
+
 ### asObject
 
 ```javascript
