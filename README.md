@@ -208,6 +208,17 @@ Immutable.isImmutable(mutableArray)
 
 Returns whether an object is immutable or not.
 
+### Additional Methods
+In addition, Immutable Arrays also provide member functions for the `set`, `setIn`, `update`, `updateIn`, and `getIn` functions (described below).
+```javascript
+var array = Immutable(["hello", "world"]);
+
+// Equivalent to Immutable.set(array, 1, "you");
+var mutatedArray = array.set(1, "you");
+
+mutatedArray // ["hello", "you"]
+```
+
 ## Immutable Object
 
 Like a regular Object, but immutable! You can construct these by passing an
@@ -313,7 +324,16 @@ Immutable.merge(obj, {status: "dead"});
 ```
 (and more convenient with non-literal keys unless you have ES6 ```[computed_property_names]```).
 
-A second argument can be provided to perform a deep compare: `{deep: true}`.
+An additional argument can be provided to perform a deep compare: `{deep: true}`.
+
+When called with an Immutable Array, the property parameter is the index to be changed:
+```javascript
+var array = Immutable(["hello", "world"]);
+var mutatedArray = Immutable.set(array, 1, "you");
+
+mutatedArray // ["hello", "you"]
+```
+If the `{deep: true}` parameter is provided when using an Immutable Array, the object at the provided index will be merged with the provided value using `Immutable.merge()`.
 
 ### setIn
 
@@ -325,7 +345,15 @@ Immutable.setIn(obj, ["type", "sub"], "Norwegian Ridgeback");
 // returns Immutable({type: {main: "parrot", sub: "Norwegian Ridgeback"}, status: "alive"})
 ```
 
-A second argument can be provided to perform a deep compare: `{deep: true}`.
+An additional argument can be provided to perform a deep compare: `{deep: true}`.
+
+When called with an Immutable Array, at least the first value in the path should be an index. This also works with nested arrays:
+```javascript
+var array = Immutable([["one fish", "two fish"], ["red fish", "blue fish"]]);
+var mutatedArray = Immutable.setIn(array, [1, 1], "green fish");
+
+mutatedArray // [["one fish", "two fish"], ["red fish", "green fish"]]
+```
 
 ### getIn
 
