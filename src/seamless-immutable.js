@@ -577,6 +577,42 @@ function immutableInit(config) {
     return result;
   }
 
+  function sortBy(array, sorter) {
+    var result = [], i, length, rearranged;
+
+    if (!(array instanceof Array)) {
+      throw new TypeError("The first argument to Immutable#sortBy must be an array.");
+    }
+
+    for (i = 0, length = array.length; i < length; i++) {
+      result.push(array[i]);
+    }
+    result.sort(sorter);
+
+    // Test if elements of the array have been rearranged
+    rearranged = false;
+    for (i = 0, length = array.length; i < length; i++) {
+      if(result[i] !== array[i]) {
+        // Check if both are NaN. Type checks catch cases where isNaN returns true for strings.
+        if(!(typeof result[i] === "number" && isNaN(result[i]) && typeof array[i] === "number" && isNaN(array[i]))) {
+            rearranged = true;
+        }
+      }
+    }
+
+    // If the elements haven't been rearranged, return the original immutable
+    if(rearranged) {
+      return makeImmutableArray(result);
+    } else {
+      // Ensure that the returned array is immutable
+      if(isImmutable(array)) {
+        return array;
+      } else {
+          return makeImmutableArray(array);
+      }
+    }
+  }
+
   // Creates plain object to be used for cloning
   function instantiatePlainObject() {
     return {};
@@ -728,6 +764,7 @@ function immutableInit(config) {
   Immutable.getIn          = toStatic(getIn);
   Immutable.flatMap        = toStatic(flatMap);
   Immutable.asObject       = toStatic(asObject);
+  Immutable.sortBy         = sortBy;
   if (!globalConfig.use_static) {
       Immutable.static = immutableInit({
           use_static: true
