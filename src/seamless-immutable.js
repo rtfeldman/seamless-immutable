@@ -577,6 +577,15 @@ function immutableInit(config) {
     return result;
   }
 
+  function objectReduce(callback, initialValue) {
+    var keys = Object.keys(this);
+    var self = this;
+    var values = keys.map(function(key) { return self[key] });
+    return values.reduce(function(accumulator, currentValue, index) {
+      return callback(accumulator, currentValue, keys[index], index, this)
+    }, initialValue);
+  }
+
   // Creates plain object to be used for cloning
   function instantiatePlainObject() {
     return {};
@@ -586,6 +595,7 @@ function immutableInit(config) {
   function makeImmutableObject(obj) {
     if (!globalConfig.use_static) {
       addPropertyTo(obj, "merge", merge);
+      addPropertyTo(obj, "reduce", objectReduce);
       addPropertyTo(obj, "replace", objectReplace);
       addPropertyTo(obj, "without", without);
       addPropertyTo(obj, "asMutable", asMutableObject);
@@ -728,6 +738,7 @@ function immutableInit(config) {
   Immutable.getIn          = toStatic(getIn);
   Immutable.flatMap        = toStatic(flatMap);
   Immutable.asObject       = toStatic(asObject);
+  Immutable.reduce         = toStaticObjectOrArray(objectReduce, Array.prototype.reduce);
   if (!globalConfig.use_static) {
       Immutable.static = immutableInit({
           use_static: true
