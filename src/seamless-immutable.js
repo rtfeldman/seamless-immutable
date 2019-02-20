@@ -73,7 +73,7 @@ function immutableInit(config) {
   }
 
   function isMergableObject(target) {
-    return target !== null && typeof target === "object" && !(Array.isArray(target)) && !(target instanceof Date);
+    return target !== null && typeof target === "object" && !(Array.isArray(target)) && !(target instanceof Date) && !isBlobObject(target) && !isFileObject(target) && !isReactElement(target);
   }
 
   var mutatingObjectMethods = [
