@@ -7,9 +7,11 @@ function immutableInit(config) {
   var REACT_ELEMENT_TYPE = typeof Symbol === 'function' && Symbol.for && Symbol.for('react.element');
   var REACT_ELEMENT_TYPE_FALLBACK = 0xeac7;
 
+  var makeImmutableStrategies = [];
   var globalConfig = {
     use_static: false
   };
+
   if (isObject(config)) {
       if (config.use_static !== undefined) {
           globalConfig.use_static = Boolean(config.use_static);
@@ -627,6 +629,14 @@ function immutableInit(config) {
   }
 
   function Immutable(obj, options, stackRemaining) {
+    for (var i = 0; i < makeImmutableStrategies.length; i++) {
+      var strategy = makeImmutableStrategies[i];
+
+      if (strategy.isApplicable(obj)) {
+        return strategy.execute(obj);
+      }
+    }
+    
     if (isImmutable(obj) || isReactElement(obj) || isFileObject(obj) || isBlobObject(obj) || isError(obj)) {
       return obj;
     } else if (isPromise(obj)) {
@@ -733,6 +743,13 @@ function immutableInit(config) {
           use_static: true
       });
   }
+  Immutable.addMakeImmutableStrategy = function (makeImmutable) {
+    makeImmutableStrategies.push(makeImmutable);
+
+    return function () {
+      makeImmutableStrategies.splice(makeImmutableStrategies.indexOf(makeImmutable), 1);
+    };
+  };
 
   Object.freeze(Immutable);
 
