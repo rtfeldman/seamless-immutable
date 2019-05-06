@@ -21,7 +21,7 @@ module.exports = function(grunt) {
           NODE_ENV: "production"
         },
         input: "src/seamless-immutable.js",
-        output: "seamless-immutable.production.min.js"
+        output: "seamless-immutable.production.js"
       }
     },
     uglify: {
@@ -31,7 +31,7 @@ module.exports = function(grunt) {
       min: {
         files: {
           "seamless-immutable.development.min.js": ["seamless-immutable.development.js"],
-          "seamless-immutable.production.min.js": ["seamless-immutable.production.min.js"]
+          "seamless-immutable.production.min.js": ["seamless-immutable.production.js"]
         }
       }
     }

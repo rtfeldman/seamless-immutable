@@ -181,6 +181,32 @@ var getTestUtils = require("./TestUtils.js");
         assert.strictEqual(error, immutableError, 'Immutable should pass the error directly through')
       });
 
+      describe('with custom make immutable strategy', function () {
+        var removeStrategy;
+
+        beforeEach(function () {
+          removeStrategy = Immutable.addMakeImmutableStrategy({
+            isApplicable: function (obj) {
+              return !!obj.immutable;
+            },
+            execute: function (obj) {
+              return obj;
+            }
+          });
+        });
+
+        afterEach(function () {
+          removeStrategy();
+        });
+
+        it("should allow custom make immutable strategy", function () {
+          var component = {immutable: true};
+          var immutable = Immutable(component);
+
+          assert.strictEqual(component, immutable);
+        });
+      });
+
       it("detects cycles", function() {
         var obj = {};
         obj.prop = obj;
