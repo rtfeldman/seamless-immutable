@@ -4,7 +4,8 @@ var testAsObject  = require("./ImmutableArray/test-asObject.js");
 var testAsMutable = require("./ImmutableArray/test-asMutable.js");
 var testSet       = require("./ImmutableArray/test-set.js");
 var testUpdate    = require("./ImmutableArray/test-update.js");
-var testGetIn    = require("./ImmutableArray/test-getIn.js");
+var testGetIn     = require("./ImmutableArray/test-getIn.js");
+var testSortBy    = require("./ImmutableArray/test-sortBy.js")
 var devBuild      = require("../seamless-immutable.development.js");
 var prodBuild     = require("../seamless-immutable.production.min.js");
 var getTestUtils  = require("./TestUtils.js");
@@ -25,6 +26,7 @@ var getTestUtils  = require("./TestUtils.js");
       testSet(config);
       testUpdate(config);
       testGetIn(config);
+      testSortBy(config);
     });
   });
 });

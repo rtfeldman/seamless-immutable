@@ -120,6 +120,36 @@ Immutable.from([1, 2, 3]);
 Immutable([1, 2, 3])
 ```
 
+## Immutable.sortBy
+
+As you may have read, you cannot call `Immutable([/* elements */]).sort()` without
+receiving an error because of the mutable nature of the sort method.
+
+However with `sortBy` you will be able to sort immutable arrays of objects or just plain
+types passing an attribute function. You will have two types of sorting, ascendant or
+descendant order (based on [Lodash](https://lodash.com/docs/4.17.15#sortBy) 
+and [Ramda](https://ramdajs.com/docs/#sortBy) behaviors).
+
+The order types are two constants provided as `Immutable.OrderTypes`, which are:
+- `DESC`: Descendant order.
+- `ASC`: Ascendant order. It is used by default if you don't provide one.
+
+```javascript
+var identityFn = function(x) { return x };
+var array = Immutable([3, 4, 1, 2]);
+
+var sortedAsc = Immutable.sortBy(array, identityFn);
+// sortedAsc will be Immutable([1, 2, 3, 4])
+
+var sortedDesc = Immutable.sortBy(array, identityFn, Immutable.OrderTypes.DESC); // or just 'DESC'
+// sortedAsc will be Immutable([4, 3, 2, 1])
+
+var people = Immutable([ { age: 17 }, { age: 16 }, { age: 40 } ]);
+var byAge = function(obj) { return obj.age; };
+var sortedAscByAge = Immutable.sortBy(people, byAge);
+// sortedByAge will be Immutable([ { age: 16 }, { age: 17 }, { age: 40 } ])
+```
+
 ## Immutable Array
 
 Like a regular Array, but immutable! You can construct these by passing
