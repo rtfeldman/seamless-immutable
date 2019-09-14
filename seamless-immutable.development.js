@@ -713,6 +713,45 @@ function immutableInit(config) {
     return staticWrapper;
   }
 
+  var OrderTypes = {
+    ASC: 'ASC',
+    DESC: 'DESC'
+  };
+
+  function basicSorter(a, b) {
+    return isEqual(a, b) ? 0 : (a > b ? 1 : (-1));
+  }
+
+  function sortBy(attribute, ordering) {
+    var orderType = ordering || OrderTypes.ASC; // Default param simulation on ES5
+    var self = this;
+    if (!Array.isArray(self)) {
+      throw new TypeError('The first argument must be an array, you got ' + typeof self);
+    } else {
+      if (typeof attribute !== 'function') {
+        throw new TypeError('The attribute must be a function that returns the value used to order the array. You got ' + typeof attribute);
+      } else {
+        var mutableArray = asMutableArray.call(self); // No need to be deep, because sort will only modify the temporary array
+        mutableArray.sort(function (a, b) {
+          var finalOrder = OrderTypes.hasOwnProperty(orderType) && (orderType || OrderTypes.ASC);
+          var firstElement = !isObject(a) ? a : attribute(a);
+          var secondElement = !isObject(a) ? b : attribute(b);
+          return finalOrder === OrderTypes.ASC ?
+              basicSorter(firstElement, secondElement)
+              : basicSorter(secondElement, firstElement);
+        });
+        var isAlreadySorted = mutableArray.slice(0).reduce(function (sorted, current, i, array) {
+          if (!sorted) {
+            array.splice(1); // Reduce early exit hack, i refuse to modify variables
+          } else {
+            return sorted && isEqual(current, self[i]);
+          }
+        }, true);
+        return isAlreadySorted ? self : makeImmutableArray(mutableArray);
+      }
+    }
+  }
+
   // Export the library
   Immutable.from           = Immutable;
   Immutable.isImmutable    = isImmutable;
@@ -728,6 +767,8 @@ function immutableInit(config) {
   Immutable.getIn          = toStatic(getIn);
   Immutable.flatMap        = toStatic(flatMap);
   Immutable.asObject       = toStatic(asObject);
+  Immutable.sortBy         = toStatic(sortBy);
+  Immutable.OrderTypes     = OrderTypes;
   if (!globalConfig.use_static) {
       Immutable.static = immutableInit({
           use_static: true
