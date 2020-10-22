@@ -3,9 +3,15 @@ seamless-immutable
 
 Immutable JS data structures which are backwards-compatible with normal Arrays and Objects.
 
+```sh
+npm install seamless-immutable
+```
+
 Use them in `for` loops, pass them to functions expecting vanilla JavaScript data structures, etc.
 
 ```javascript
+const Immutable = require('seamless-immutable')
+
 var array = Immutable(["totally", "immutable", {hammer: "Can’t Touch This"}]);
 
 array[1] = "I'm going to mutate you!"
