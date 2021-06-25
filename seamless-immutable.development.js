@@ -99,7 +99,7 @@ function immutableInit(config) {
   ]);
 
   function ImmutableError(message) {
-    this.name = 'MyError';
+    this.name = 'ImmutableError';
     this.message = message;
     this.stack = (new Error()).stack;
   }
